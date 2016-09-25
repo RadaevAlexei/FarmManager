@@ -11,6 +11,8 @@ return [
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'controllerNamespace' => 'frontend\controllers',
+    'language' => 'ru-RU',
+    'sourceLanguage' => 'ru-RU',
     'components' => [
         'request' => [
             'csrfParam' => '_csrf-frontend',
@@ -36,14 +38,37 @@ return [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
-        /*
+
         'urlManager' => [
+            'class' => '\yii\web\UrlManager',
             'enablePrettyUrl' => true,
             'showScriptName' => false,
+            'enableStrictParsing' => true,
+            'suffix' => '/',
             'rules' => [
+                '/' => 'calf/index',
+                'country' => 'country/index',
+                'list' => 'calf/index',
+                'detail/<id:[0-9]+>' => 'calf/detail',
+                '<controller:[-_0-9a-zA-Z]+>/<action:[-_0-9a-zA-Z]+>' => '<controller>/<action>',
+                '<module:[-_0-9a-zA-Z]+>/<controller:[-_0-9a-zA-Z]+>/<action:[-_0-9a-zA-Z]+>' => '<module>/<controller>/<action>'
             ],
         ],
-        */
+
+        'i18n' => [
+            'translations' => [
+                'app*' => [
+                    'class' => 'yii\i18n\PhpMessageSource',
+                    'forceTranslation' => true,
+                    'basePath' => '@frontend/messages',
+                    'fileMap' => [
+                        'app/front' => 'front.php',
+                        'app/back' => 'back.php'
+                    ],
+                ]
+            ]
+        ]
+
     ],
     'params' => $params,
 ];
