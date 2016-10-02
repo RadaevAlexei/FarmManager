@@ -10,38 +10,49 @@ use yii\helpers\ArrayHelper;
     <table class="table f-table-list table-striped table-hover table-condensed">
 
         <colgroup>
-            <col class="col-xs-2">
-            <col class="col-xs-2">
+            <col class="col-xs-1">
+            <col class="col-xs-1">
+            <col class="col-xs-1">
+            <col class="col-xs-1">
+            <col class="col-xs-1">
+            <col class="col-xs-1">
+            <col class="col-xs-1">
+            <col class="col-xs-1">
+            <col class="col-xs-1">
             <col class="col-xs-1">
             <col class="col-xs-2">
             <col class="col-xs-2">
-            <col class="col-xs-2">
-            <col class="col-xs-1">
         </colgroup>
 
         <thead>
             <tr>
                 <th>№</th>
+                <th>Инд. номер</th>
                 <th>Кличка</th>
                 <th>Пол</th>
                 <th>Дата Рождения</th>
+                <th>Вес при Рождении</th>
                 <th>Группа</th>
                 <th>Цвет</th>
-                <th></th>
+                <th>Последнее взвешивание/<br>Кг</th>
+                <th>Последнее взвешивание/<br>Дата</th>
             </tr>
         </thead>
 
         <tbody>
             <?php if (count($calfs)) : ?>
-                <?php foreach ($calfs as $calf): ?>
+                <?php foreach ($calfs as $index => $calf): ?>
                     <tr data-id="<?=$calf["id"]?>" style="cursor: pointer">
+                        <th><?=($index + 1)?></th>
                         <th><?=ArrayHelper::getValue($calf, "number", "")?></th>
                         <th><?=ArrayHelper::getValue($calf, "nickname", "")?></th>
                         <th><?=ArrayHelper::getValue($calf, "gender", "")?></th>
                         <th><?=(!empty($calf["birthday"]) ? date("d/m/Y", strtotime($calf["birthday"])) : "")?></th>
+                        <th></th>
                         <th><?=ArrayHelper::getValue($calf, "group", "")?></th>
                         <th><?=ArrayHelper::getValue($calf->suit, "name", "")?></th>
-                        <th align="center"><span class="glyphicon glyphicon-trash"></span></th>
+                        <th></th>
+                        <th></th>
                     </tr>
                 <?php endforeach; ?>
             <?php else: ?>

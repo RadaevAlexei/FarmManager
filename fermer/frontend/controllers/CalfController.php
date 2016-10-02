@@ -29,6 +29,10 @@ class CalfController extends Controller
         ]);
     }
 
+    /**
+     * @param null $id
+     * @return string
+     */
     public function actionDetail($id = null)
     {
         $calf = Calf::find()

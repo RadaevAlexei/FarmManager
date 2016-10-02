@@ -15,9 +15,4 @@ class Color extends ActiveRecord
 
     // Масть - Бурая
     const COLOR_CALF_BROWN = 2;
-
-    public function getCalfs()
-    {
-        return $this->hasMany(Calf::className(), ['color' => 'id']);
-    }
 }

@@ -10,6 +10,7 @@ use yii\widgets\Breadcrumbs;
 use frontend\assets\AppAsset;
 use frontend\assets\MainAsset;
 use common\widgets\Alert;
+use yii\helpers\Url;
 
 AppAsset::register($this);
 MainAsset::register($this);
@@ -28,7 +29,9 @@ MainAsset::register($this);
 <?php $this->beginBody() ?>
 
 <div class="wrap">
+
     <?php
+
     NavBar::begin([
         'brandLabel' => 'Ферма',
         'brandUrl' => Yii::$app->homeUrl,
@@ -41,6 +44,8 @@ MainAsset::register($this);
         ['label' => 'О нас', 'url' => ['/site/about']],
         ['label' => 'Контакты', 'url' => ['/site/contact']],
         ['label' => 'Список', 'url' => ['/list']],
+        ['label' => 'Перевески', 'url' => ['/suspension']],
+        ['label' => 'Админка', 'url' => 'http://www.google.ru'],
     ];
     if (Yii::$app->user->isGuest) {
         $menuItems[] = ['label' => 'Регистрация', 'url' => ['/site/signup']];
@@ -63,6 +68,25 @@ MainAsset::register($this);
     ?>
 
     <div class="container">
+
+        <div class="btn-group">
+            <button type="button" class="btn btn-info">Администрирование</button>
+            <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">
+                <span class="caret"></span>
+                <span class="sr-only"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+                <li><a href="<?=Url::toRoute(['/functions'])?>">Должности</a></li>
+                <li><a href="<?=Url::toRoute(['/employees'])?>">Сотрудники</a></li>
+                <li><a href="<?=Url::toRoute(['/groups'])?>">Группы</a></li>
+                <li class="divider"></li>
+                <li><a href="<?=Url::toRoute(['/calf/add'])?>">Добавить теленка</a></li>
+                <li><a href="<?=Url::toRoute(['/group/add'])?>">Добавить группу</a></li>
+                <li><a href="<?=Url::toRoute(['/employee/add'])?>">Добавить сотрудника</a></li>
+                <li><a href="<?=Url::toRoute(['/function/add'])?>">Добавить должность</a></li>
+            </ul>
+        </div>
+
         <?= Breadcrumbs::widget([
             'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
         ]) ?>

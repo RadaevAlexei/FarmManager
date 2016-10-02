@@ -13,18 +13,20 @@ class m160924_115840_create_calf_table extends Migration
     public function up()
     {
         $this->createTable('calf', [
-            'id' => $this->primaryKey(),
-            'number' => $this->string(15)->notNull(),
-            'nickname' => $this->string(15),
-            'group' => $this->string(15),
-            'birthday' => $this->dateTime()->notNull(),
-            'gender' => $this->string(1)->notNull(),
-            'birthWeight' => $this->float()->notNull(),
-            'previousWeighing' => $this->float(),
-            'lastWeighing' => $this->float(),
-            'color' => $this->integer(),
-            'motherId' => $this->integer(),
-            'fatherId' => $this->integer()
+            'id' => $this->primaryKey(),                  // id
+            'number' => $this->string(15)->notNull(),     // *Индивидуальный номер
+            'nickname' => $this->string(15),              // Кличка
+            'group' => $this->string(15),                 // Группа
+            'birthday' => $this->dateTime()->notNull(),   // *Дата Рождения
+            'gender' => $this->string(1)->notNull(),      // *Пол
+            'birthWeight' => $this->float()->notNull(),   // *Вес при рождении
+            'previousWeighingDate' => $this->dateTime(),  // Предыдущее взвешивание, Дата
+            'previousWeighing' => $this->float(),         // Предыдущее взвешивание, Вес/кг
+            'lastWeighingDate' => $this->dateTime(),      // Последнее взвешивание, Дата
+            'lastWeighing' => $this->float(),             // Последнее взвешивание, Вес/кг
+            'color' => $this->integer(),                  // Масть
+            'motherId' => $this->integer(),               // Мать
+            'fatherId' => $this->integer()                // Отец
         ]);
     }
 
