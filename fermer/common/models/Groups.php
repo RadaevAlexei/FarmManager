@@ -11,6 +11,33 @@ use yii\db\ActiveRecord;
  */
 class Groups extends ActiveRecord
 {
+    public function attributeLabels()
+    {
+        //TODO:: Сделать переводами
+        return [
+            'name' => 'Название группы',
+            'employeeId' => 'Ответственный группы',
+            'directorId' => 'Исполнительный директор',
+            'mainZootechnicianId' => 'Главный зоотехник',
+            'accountantId' => 'Бухгалтер',
+            'calfEmployeeId' => 'Телятник(ца)',
+            'directorSecurityId' => 'Начальник службы безопасности',
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function rules()
+    {
+        return [
+            [['name'], 'unique'],
+            [['name'], 'trim'],
+            [['name', 'employeeId', 'directorId', 'mainZootechnicianId', 'accountantId', 'calfEmployeeId', 'directorSecurityId'], 'required'],
+            [['employeeId', 'directorId', 'mainZootechnicianId', 'accountantId', 'calfEmployeeId', 'directorSecurityId'], 'integer']
+        ];
+    }
+
     /**
      * К какому сотруднику привязана группа
      * @return array|null|ActiveRecord

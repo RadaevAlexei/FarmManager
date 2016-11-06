@@ -41,11 +41,10 @@ MainAsset::register($this);
     ]);
     $menuItems = [
         ['label' => 'Главная', 'url' => ['/site/index']],
-        ['label' => 'О нас', 'url' => ['/site/about']],
         ['label' => 'Контакты', 'url' => ['/site/contact']],
-        ['label' => 'Список', 'url' => ['/list']],
+        ['label' => 'Список телят', 'url' => ['/list']],
         ['label' => 'Перевески', 'url' => ['/suspension']],
-        ['label' => 'Админка', 'url' => 'http://www.google.ru'],
+        ['label' => 'Админка', 'url' => 'http://fermer.admin/', 'linkOptions' => ['target' => '_blank']]
     ];
     if (Yii::$app->user->isGuest) {
         $menuItems[] = ['label' => 'Регистрация', 'url' => ['/site/signup']];
@@ -68,25 +67,6 @@ MainAsset::register($this);
     ?>
 
     <div class="container">
-
-        <div class="btn-group">
-            <button type="button" class="btn btn-info">Администрирование</button>
-            <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">
-                <span class="caret"></span>
-                <span class="sr-only"></span>
-            </button>
-            <ul class="dropdown-menu" role="menu">
-                <li><a href="<?=Url::toRoute(['/functions'])?>">Должности</a></li>
-                <li><a href="<?=Url::toRoute(['/employees'])?>">Сотрудники</a></li>
-                <li><a href="<?=Url::toRoute(['/groups'])?>">Группы</a></li>
-                <li class="divider"></li>
-                <li><a href="<?=Url::toRoute(['/calf/add'])?>">Добавить теленка</a></li>
-                <li><a href="<?=Url::toRoute(['/group/add'])?>">Добавить группу</a></li>
-                <li><a href="<?=Url::toRoute(['/employee/add'])?>">Добавить сотрудника</a></li>
-                <li><a href="<?=Url::toRoute(['/function/add'])?>">Добавить должность</a></li>
-            </ul>
-        </div>
-
         <?= Breadcrumbs::widget([
             'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
         ]) ?>
@@ -97,7 +77,7 @@ MainAsset::register($this);
 
 <footer class="footer">
     <div class="container">
-        <p class="pull-left">&copy; My Company <?= date('Y') ?></p>
+        <p class="pull-left">&copy; Ферма <?= date('Y') ?></p>
 
         <p class="pull-right"><?= Yii::powered() ?></p>
     </div>

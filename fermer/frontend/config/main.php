@@ -51,25 +51,6 @@ return [
                 'list' => 'calf/index',
                 'suspension' => 'suspension/index',
 
-                'employees' => 'admin/employees-list',
-                'employee/detail' => 'admin/employee-detail',
-                'employee/add' => 'admin/employee-add',
-                'employee/save' => 'admin/employee-save',
-                'employee/delete' => 'admin/employee-delete',
-
-                'groups' => 'admin/groups-list',
-                'group/detail' => 'admin/group-detail',
-                'group/add' => 'admin/group-add',
-                'group/edit' => 'admin/group-edit',
-                'group/save' => 'admin/group-save',
-                'group/delete' => 'admin/group-delete',
-
-                'functions' => 'admin/functions-list',
-                'function/add' => 'admin/function-add',
-                'function/edit' => 'admin/function-edit',
-                'function/save' => 'admin/function-save',
-                'function/delete' => 'admin/function-delete',
-
                 'detail/<id:[0-9]+>' => 'calf/detail',
                 '<controller:[-_0-9a-zA-Z]+>/<action:[-_0-9a-zA-Z]+>' => '<controller>/<action>',
                 '<module:[-_0-9a-zA-Z]+>/<controller:[-_0-9a-zA-Z]+>/<action:[-_0-9a-zA-Z]+>' => '<module>/<controller>/<action>'
@@ -84,7 +65,6 @@ return [
                     'basePath' => '@frontend/messages',
                     'fileMap' => [
                         'app/front' => 'front.php',
-                        'app/back' => 'back.php'
                     ],
                 ]
             ]

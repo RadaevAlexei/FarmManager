@@ -2,6 +2,8 @@
 
 use yii\helpers\ArrayHelper;
 
+
+
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app/front', "CalfDetailInfo")];
 ?>
 
@@ -67,3 +69,70 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app/front', "CalfDetailInfo
 
     </tbody>
 </table>
+
+<div style="width:75%;">
+    <canvas id="canvas"></canvas>
+</div>
+
+<script type="text/javascript">
+    function drawChart(weights, dates) {
+        var MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        var randomScalingFactor = function() {
+            return Math.ceil(Math.random() * 10.0) * Math.pow(10, Math.ceil(Math.random() * 5));
+        };
+        var randomColorFactor = function() {
+            return Math.round(Math.random() * 255);
+        };
+        var randomColor = function(opacity) {
+            return 'rgba(' + randomColorFactor() + ',' + randomColorFactor() + ',' + randomColorFactor() + ',' + (opacity || '.3') + ')';
+        };
+        var config = {
+            type: 'line',
+            data: {
+                labels: dates,
+                datasets: [{
+                    label: "My Second dataset",
+                    data: weights,
+                }]
+            },
+            options: {
+                responsive: true,
+                title:{
+                    display:true,
+                    text:'Chart.js Line Chart - Logarithmic'
+                },
+                scales: {
+                    xAxes: [{
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'x axis'
+                        }
+                    }],
+                    yAxes: [{
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'y axis'
+                        }
+                    }]
+                }
+            }
+        };
+        $.each(config.data.datasets, function(i, dataset) {
+            dataset.borderColor = randomColor(0.4);
+            dataset.backgroundColor = randomColor(0.5);
+            dataset.pointBorderColor = randomColor(0.7);
+            dataset.pointBackgroundColor = randomColor(0.5);
+            dataset.pointBorderWidth = 1;
+        });
+
+        var ctx = document.getElementById("canvas").getContext("2d");
+        window.myLine = new Chart(ctx, config);
+    }
+
+    drawChart([1,2],
+        [1,2]);
+
+
+</script>

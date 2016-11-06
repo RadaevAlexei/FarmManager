@@ -4,6 +4,7 @@ namespace frontend\controllers;
 
 
 use common\models\Calf;
+use common\models\Suspension;
 use yii\data\Pagination;
 use yii\web\Controller;
 
@@ -39,8 +40,13 @@ class CalfController extends Controller
             ->where(['id' => $id])
             ->one();
 
+        $calfSuspension = Suspension::find()
+            ->where(['id' => $id])
+            ->all();
+
         return $this->render('detail', [
-            "calf" => $calf
+            "calf" => $calf,
+            "suspensions" => $calfSuspension
         ]);
     }
 }

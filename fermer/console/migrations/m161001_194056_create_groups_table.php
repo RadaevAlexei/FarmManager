@@ -8,22 +8,20 @@ use yii\db\Migration;
 class m161001_194056_create_groups_table extends Migration
 {
     /**
+     * Группа
      * @inheritdoc
      */
     public function up()
     {
         $this->createTable('groups', [
-            'id' => $this->primaryKey(),
-            'name' => $this->string(50)->notNull()->unique(),
-            'employeeId' => $this->integer()->notNull(),
-            'directorId' => $this->integer()->notNull(),
-            'mainZootechnicianId' => $this->integer()->notNull(),
-            'accountantId' => $this->integer()->notNull(),
-            'calfEmployeeId' => $this->integer()->notNull(),
-            'directorSecurityId' => $this->integer()->notNull(),
-            'created_at' => $this->timestamp(),
-            'updated_at' => $this->timestamp(),
-            'deleted_at' => $this->timestamp(),
+            'id' => $this->primaryKey(),                           // id
+            'name' => $this->string(50)->notNull()->unique(),      // Название группы
+            'employeeId' => $this->integer()->notNull(),           // Сотрудник(чья группа)
+            'directorId' => $this->integer()->notNull(),           // Исполнительный директор
+            'mainZootechnicianId' => $this->integer()->notNull(),  // Главный зоотехник
+            'accountantId' => $this->integer()->notNull(),         // Бухгалтер
+            'calfEmployeeId' => $this->integer()->notNull(),       // Телятник(ца)
+            'directorSecurityId' => $this->integer()->notNull(),   // Начальник службы безопасности
         ]);
     }
 

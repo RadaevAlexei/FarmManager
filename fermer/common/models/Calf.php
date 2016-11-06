@@ -11,21 +11,6 @@ use yii\db\ActiveRecord;
  */
 class Calf extends ActiveRecord
 {
-    /*public $id;
-    public $number;
-    public $nickname;
-    public $group;
-    public $birthday;
-    public $gender;
-    public $birthWeight;
-    public $previousWeighingDate;
-    public $previousWeighing;
-    public $lastWeighingDate;
-    public $lastWeighing;
-    public $color;
-    public $motherId;
-    public $fatherId;*/
-
     /**
      * Получение информации о масти
      * @return array|null|ActiveRecord

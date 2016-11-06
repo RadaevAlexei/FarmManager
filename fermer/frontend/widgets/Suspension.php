@@ -4,6 +4,7 @@ namespace frontend\widgets;
 
 
 use common\models\Groups;
+use frontend\assets\SuspensionAsset;
 use yii\base\Widget;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
@@ -18,12 +19,12 @@ class Suspension extends Widget
     /**
      * @var
      */
-    public $view;
+    public $data;
 
     /**
      * @var
      */
-    public $data;
+    public $result;
 
     /**
      * @inheritDoc
@@ -32,24 +33,24 @@ class Suspension extends Widget
     {
     }
 
+
     /**
      * @inheritdoc
      */
     public function run()
     {
-//        SuspensionAsset::register($this->view);
-
         $values = [];
         $mainTable = $this->generateSuspensionTable($this->data, $values)["content"];
         $baseResultTable = $this->generateBaseResultTable($values);
         $movedTable = $this->generateMovedCalfTable();
         $leadershipTable = $this->generateLeadershipTable(2);
 
-        return $this->render($this->view, [
+        return $this->render("suspension", [
             "mainTable" => $mainTable,
             "baseResultTable" => $baseResultTable,
             "movedTable" => $movedTable,
             "leadershipTable" => $leadershipTable,
+            "result" => $this->result
         ]);
     }
 
@@ -66,23 +67,23 @@ class Suspension extends Widget
             $content[] = Html::tag("td", "Нет ничего", ['align' => 'center', 'colspan' => 17]);
             $content[] = Html::endTag("tr");
         } else {
-            foreach ($data as $index => $calf) {
-                $content[] = Html::beginTag("tr", ['data-id' => $calf["id"], 'style' => 'cursor: pointer']);
+            foreach ($data as $index => $suspension) {
+                $content[] = Html::beginTag("tr", ['data-id' => $suspension->calfInfo["id"], 'style' => 'cursor: pointer']);
                 $content[] = Html::tag("td", $index + 1);
-                $content[] = Html::tag("td", ArrayHelper::getValue($calf, "number", ""));
+                $content[] = Html::tag("td", ArrayHelper::getValue($suspension->calfInfo, "number", ""));
 
-                $birthday = (!empty($calf["birthday"]) ? date("d/m/Y", strtotime($calf["birthday"])) : "");
+                $birthday = (!empty($suspension->calfInfo["birthday"]) ? date("d/m/Y", strtotime($suspension->calfInfo["birthday"])) : "");
                 $content[] = Html::tag("td", $birthday);
 
-                $content[] = Html::tag("td", ArrayHelper::getValue($calf, "birthWeight", ""));
-                $content[] = Html::tag("td", ArrayHelper::getValue($calf, "gender", ""));
+                $content[] = Html::tag("td", ArrayHelper::getValue($suspension->calfInfo, "birthWeight", ""));
+                $content[] = Html::tag("td", ArrayHelper::getValue($suspension->calfInfo, "gender", ""));
                 $content[] = Html::tag("td", "");
-                $content[] = Html::tag("td", ArrayHelper::getValue($calf, "previousWeighing", ""));
+                $content[] = Html::tag("td", ArrayHelper::getValue($suspension->calfInfo, "previousWeighing", ""));
                 $content[] = Html::tag("td", "");
-                $content[] = Html::tag("td", ArrayHelper::getValue($calf, "lastWeighing", ""));
+                $content[] = Html::tag("td", ArrayHelper::getValue($suspension->calfInfo, "lastWeighing", ""));
 
                 $now = new \DateTime("now");
-                $birthDay = new \DateTime($calf["birthday"]);
+                $birthDay = new \DateTime($suspension->calfInfo["birthday"]);
                 $interval = date_diff($now, $birthDay);
                 $content[] = Html::tag("td", $interval->d);
                 $content[] = Html::tag("td", $interval->m);
@@ -91,7 +92,7 @@ class Suspension extends Widget
                 $feedDays = date_diff(new \DateTime("tomorrow"), new \DateTime("now"))->d;
                 $content[] = Html::tag("td", $feedDays);
 
-                $weightGain = $calf["lastWeighing"] - $calf["previousWeighing"];
+                $weightGain = $suspension->calfInfo["lastWeighing"] - $suspension->calfInfo["previousWeighing"];
                 $content[] = Html::tag("td", $weightGain);
 
                 $averageDailyGain = !empty($feedDays) ? $weightGain / $feedDays : "";

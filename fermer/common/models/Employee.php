@@ -3,6 +3,7 @@
 namespace common\models;
 
 
+use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 
 /**
@@ -19,6 +20,7 @@ class Employee extends ActiveRecord
      * Женский пол
      */
     const GENDER_FEMALE = 1;
+
     /**
      * @return array
      */
@@ -40,7 +42,7 @@ class Employee extends ActiveRecord
      */
     public function getFunction()
     {
-        return $this->hasOne(Functions::className(), ['id' => 'functionId'])->one();
+        return $this->hasOne(Functions::className(), ['id' => 'functionId']);
     }
 
     /**
@@ -49,13 +51,24 @@ class Employee extends ActiveRecord
     public function rules()
     {
         return [
-            [['firstName', 'lastName', 'middleName', 'gender', 'functionId'], 'required'],
+            [['firstName', 'lastName', 'middleName', 'gender', 'functionId', 'birthday'], 'required'],
 
             [['firstName', 'lastName', 'middleName'], 'string', 'min' => 2, 'max' => 20],
             [['firstName', 'lastName', 'middleName'], 'trim'],
             ['gender', 'in', 'range' => [self::GENDER_MALE, self::GENDER_FEMALE]],
             ['functionId', 'in', 'range' => Functions::find()->select('id')->asArray()->column()],
-            ['birthday', 'date'],
+//            ['birthday', 'date'],
         ];
+    }
+
+    /** @inheritdoc */
+    public function beforeSave($insert)
+    {
+        $this->birthday = strtotime($this->birthday);
+        if (parent::beforeSave($insert)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

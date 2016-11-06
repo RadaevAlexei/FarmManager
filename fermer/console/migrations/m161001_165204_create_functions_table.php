@@ -8,13 +8,15 @@ use yii\db\Migration;
 class m161001_165204_create_functions_table extends Migration
 {
     /**
+     * Должность
      * @inheritdoc
      */
     public function up()
     {
         $this->createTable('functions', [
-            'id' => $this->primaryKey(),
-            'name' => $this->string(30)->notNull()->unique()
+            'id' => $this->primaryKey(),                             // id
+            'name' => $this->string(50)->unique()->notNull(),        // Название должности
+            'short_name' => $this->string(30)->unique()->notNull(),  // Короткое название должности
         ]);
     }
 

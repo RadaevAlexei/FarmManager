@@ -72,3 +72,11 @@ use yii\helpers\ArrayHelper;
         <?=$leadershipTable?>
     </tbody>
 </table>
+
+<div style="width:75%;">
+    <canvas id="canvas"></canvas>
+</div>
+
+<script type="text/javascript">
+    window.result = <?=json_encode($result)?>
+</script>

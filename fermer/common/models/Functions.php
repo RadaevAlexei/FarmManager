@@ -11,6 +11,7 @@ use yii\db\ActiveRecord;
  */
 class Functions extends ActiveRecord
 {
+
     /**
      * @return array
      */
@@ -18,7 +19,8 @@ class Functions extends ActiveRecord
     {
         //TODO:: Сделать переводами
         return [
-            'name' => 'Название должности'
+            'name' => 'Название должности',
+            'short_name' => 'Сокращенное название'
         ];
     }
 
@@ -28,10 +30,10 @@ class Functions extends ActiveRecord
     public function rules()
     {
         return [
-            ['name', 'unique'],
-            ['name', 'trim'],
-            ['name', 'required'],
-            ['name', 'string', 'min' => 3, 'max' => 50],
+            [['name', 'short_name'], 'unique'],
+            [['name', 'short_name'], 'trim'],
+            [['name', 'short_name'], 'required'],
+            [['name', 'short_name'], 'string', 'min' => 4, 'max' => 50]
         ];
     }
 }
