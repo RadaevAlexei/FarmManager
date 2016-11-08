@@ -44,7 +44,7 @@ class FunctionsController extends Controller
      * @return string|\yii\web\Response
      * @throws \Exception
      */
-    public function actionAction($action = null, $id = null)
+    public function actionActions($action = null, $id = null)
     {
         if (empty($action)) {
             return $this->redirect(["functions/list"]);
@@ -72,7 +72,7 @@ class FunctionsController extends Controller
     /**
      * @return string|\yii\web\Response
      */
-    public function actionFunctionSaveUpdate($action = null, $id = null)
+    public function actionSaveUpdate($action = null, $id = null)
     {
         if (empty($action)) {
             return $this->redirect(["/functions"]);

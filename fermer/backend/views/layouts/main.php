@@ -72,12 +72,14 @@ MainBackendAsset::register($this);
                 <li><a href="<?=Url::toRoute(['/functions'])?>">Должности</a></li>
                 <li><a href="<?=Url::toRoute(['/employees'])?>">Сотрудники</a></li>
                 <li><a href="<?=Url::toRoute(['/groups'])?>">Группы</a></li>
+                <li><a href="<?=Url::toRoute(['/calfs'])?>">Телята</a></li>
+                <li><a href="<?=Url::toRoute(['/suspensions'])?>">Перевески</a></li>
                 <li class="divider"></li>
-                <li><a href="<?=Url::toRoute(['/calf/add'])?>">Добавить теленка</a></li>
-                <li><a href="<?=Url::toRoute(['/group/add'])?>">Добавить группу</a></li>
+                <li><a href="<?=Url::toRoute(['/calf/new/'])?>">Добавить теленка</a></li>
+                <li><a href="<?=Url::toRoute(['/group/new/'])?>">Добавить группу</a></li>
                 <li><a href="<?=Url::toRoute(['/employee/new/'])?>">Добавить сотрудника</a></li>
                 <li><a href="<?=Url::toRoute(['/function/new/'])?>">Добавить должность</a></li>
-                <li><a href="<?=Url::toRoute(['/suspension/add'])?>">Добавить взвешивание</a></li>
+                <li><a href="<?=Url::toRoute(['/suspension/new/'])?>">Добавить взвешивание</a></li>
             </ul>
         </div>
 

@@ -68,6 +68,19 @@ return [
                 'group/<action:(save)>' => 'groups/save-update',
                 'group/<action:(save|update)>/<id:\d+>' => 'groups/save-update',
 
+                'calfs' => 'calfs/list',
+                'calf/detail/<id:\d+>' => 'calfs/detail',
+                'calf/<action:(new)>' => 'calfs/actions',
+                'calf/<action:(new|edit|delete)>/<id:\d+>' => 'calfs/actions',
+                'calf/<action:(save)>' => 'calfs/save-update',
+                'calf/<action:(save|update)>/<id:\d+>' => 'calfs/save-update',
+
+                'suspensions' => 'suspensions/list',
+                'suspension/<action:(new)>' => 'suspensions/actions',
+                'suspension/<action:(new|edit|delete)>/<id:\d+>' => 'suspensions/actions',
+                'suspension/<action:(save)>' => 'suspensions/save-update',
+                'suspension/<action:(save|update)>/<id:\d+>' => 'suspensions/save-update',
+
                 'suspension/add' => 'admin/suspension-add',
                 'suspension/save' => 'admin/suspension-save',
 

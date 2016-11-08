@@ -20,4 +20,26 @@ class Suspension extends ActiveRecord
     {
         return $this->hasOne(Calf::className(), ['id' => 'calf'])->one();
     }
+
+    /**
+     * @param bool $insert
+     * @return bool
+     */
+    public function beforeSave($insert)
+    {
+        $this->date = strtotime($this->date);
+        if (parent::beforeSave($insert)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function rules()
+    {
+        return [
+            [['calf', 'weight', 'date'], 'required'],
+            ['weight', 'double'],
+        ];
+    }
 }

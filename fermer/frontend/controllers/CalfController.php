@@ -6,6 +6,7 @@ namespace frontend\controllers;
 use common\models\Calf;
 use common\models\Suspension;
 use yii\data\Pagination;
+use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 
 class CalfController extends Controller
@@ -34,14 +35,15 @@ class CalfController extends Controller
      * @param null $id
      * @return string
      */
-    public function actionDetail($id = null)
+    public function actionDetail($number = null)
     {
         $calf = Calf::find()
-            ->where(['id' => $id])
+            ->where(['number' => $number])
             ->one();
 
+        $calfId = ArrayHelper::getValue($calf, "id", null);
         $calfSuspension = Suspension::find()
-            ->where(['id' => $id])
+            ->where(['id' => $calfId])
             ->all();
 
         return $this->render('detail', [

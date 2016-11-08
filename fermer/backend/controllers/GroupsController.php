@@ -25,7 +25,6 @@ class GroupsController extends Controller
         ]);
 
         $groups = $query->orderBy('id')
-            ->with('employee')
             ->offset($pagination->offset)
             ->limit($pagination->limit)
             ->asArray()

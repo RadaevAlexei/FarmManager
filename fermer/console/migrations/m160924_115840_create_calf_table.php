@@ -17,7 +17,7 @@ class m160924_115840_create_calf_table extends Migration
             'id' => $this->primaryKey(),                  // id
             'number' => $this->string(15)->notNull(),     // *Индивидуальный номер
             'nickname' => $this->string(15),              // Кличка
-            'group' => $this->string(15),                 // Группа
+            'groupId' => $this->integer() ,               // Группа
             'birthday' => $this->integer()->notNull(),    // *Дата Рождения
             'gender' => $this->string(1)->notNull(),      // *Пол
             'birthWeight' => $this->float()->notNull(),   // *Вес при рождении
@@ -28,9 +28,9 @@ class m160924_115840_create_calf_table extends Migration
             'color' => $this->integer(),                  // Масть
             'motherId' => $this->integer(),               // Мать
             'fatherId' => $this->integer(),               // Отец
-            'created_at' => $this->integer(),           // Дата создания
-            'updated_at' => $this->integer(),           // Дата обновления
-            'deleted_at' => $this->integer(),           // Дата удаления(пометка на удаление)
+            'created_at' => $this->integer(),             // Дата создания
+            'updated_at' => $this->integer(),             // Дата обновления
+            'deleted_at' => $this->integer(),             // Дата удаления(пометка на удаление)
         ]);
     }
 

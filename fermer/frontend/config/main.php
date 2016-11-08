@@ -51,7 +51,7 @@ return [
                 'list' => 'calf/index',
                 'suspension' => 'suspension/index',
 
-                'detail/<id:[0-9]+>' => 'calf/detail',
+                'detail/<number:[0-9]+>' => 'calf/detail',
                 '<controller:[-_0-9a-zA-Z]+>/<action:[-_0-9a-zA-Z]+>' => '<controller>/<action>',
                 '<module:[-_0-9a-zA-Z]+>/<controller:[-_0-9a-zA-Z]+>/<action:[-_0-9a-zA-Z]+>' => '<module>/<controller>/<action>'
             ],
