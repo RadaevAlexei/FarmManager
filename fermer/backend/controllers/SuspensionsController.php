@@ -5,6 +5,7 @@ namespace backend\controllers;
 use common\models\Calf;
 use common\models\Suspension;
 use yii\data\Pagination;
+use yii\db\Query;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use yii\web\Controller;
@@ -18,7 +19,14 @@ class SuspensionsController extends Controller
      */
     public function actionList()
     {
-        $query = Suspension::find();
+        $number = 111;
+
+        $query = Suspension::find()
+            ->innerJoinWith([
+               'calfInfo' => function (Query $q) use ($number) {
+                   $q->andOnCondition(["=", "number", $number]);
+               }
+            ]);
 
         $pagination = new Pagination([
             'defaultPageSize' => 10,

@@ -4,6 +4,7 @@ namespace common\models;
 
 
 use yii\db\ActiveRecord;
+use yii\helpers\ArrayHelper;
 
 class Suspension extends ActiveRecord
 {
@@ -16,10 +17,15 @@ class Suspension extends ActiveRecord
         ];
     }
 
-    public function getCalfInfo()
+    public function afterFind()
     {
-        return $this->hasOne(Calf::className(), ['id' => 'calf'])->one();
+        parent::afterFind();
+        $this->calf = [
+            'nickname' => ArrayHelper::getValue($this, 'calfInfo.nickname', null),
+            'birthday' => ArrayHelper::getValue($this, 'calfInfo.birthday', null)
+        ];
     }
+
 
     /**
      * @param bool $insert
@@ -41,5 +47,10 @@ class Suspension extends ActiveRecord
             [['calf', 'weight', 'date'], 'required'],
             ['weight', 'double'],
         ];
+    }
+
+    public function getCalfInfo()
+    {
+        return $this->hasOne(Calf::className(), ['number' => 'calf']);
     }
 }

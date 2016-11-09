@@ -42,7 +42,7 @@ $headerText = !empty($action) ? \Yii::t('app/back', 'SUSPENSION_' . strtoupper($
             <?php endforeach; ?>
         <?php else: ?>
             <tr>
-                <td align="center" colspan="4"><?=\Yii::t('app/back', 'SUSPENSIONS_NOT_FOUND')?></td>
+                <td align="center" colspan="5"><?=\Yii::t('app/back', 'SUSPENSIONS_NOT_FOUND')?></td>
             </tr>
         <?php endif; ?>
 
