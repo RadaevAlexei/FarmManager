@@ -2,10 +2,14 @@
 
 namespace backend\controllers;
 
+use common\helpers\DataHelper;
 use common\models\Calf;
 use common\models\Color;
 use common\models\Groups;
+use common\models\Suspension;
+use frontend\assets\SuspensionAsset;
 use yii\data\Pagination;
+use yii\db\Query;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use yii\web\Controller;
@@ -19,7 +23,7 @@ class CalfsController extends Controller
      */
     public function actionList()
     {
-        $query = Calf::find();
+        $query = Calf::find()->innerJoinWith(['suit', 'calfGroup']);
 
         $pagination = new Pagination([
             'defaultPageSize' => 10,
@@ -49,15 +53,72 @@ class CalfsController extends Controller
         foreach ($calfs as &$calf) {
             $this->viewDataCalf($calf);
         }
-
     }
 
+    /**
+     * @param null $id
+     * @return string
+     */
+    public function actionDetail($number = null)
+    {
+        $calf = Calf::find()
+            ->where(['number' => $number])
+            ->one();
+
+        $calfSuspension = Suspension::find()
+            ->where(['calf' => $number])
+            ->asArray()
+            ->all();
+
+        $this->viewCalfSuspension($calfSuspension);
+
+        $map = ArrayHelper::map($calfSuspension, 'date', 'weight');
+        $dates = array_keys($map);
+        $weights = array_values($map);
+
+        return $this->render('detail', [
+            "calf" => $calf,
+            "suspensions" => $calfSuspension,
+            "dates" => $dates,
+            "weights" => $weights
+        ]);
+    }
+
+    /**
+     * @param null $suspensions
+     */
+    private function viewCalfSuspension(&$suspensions = null)
+    {
+        if (empty($suspensions)) {
+            return;
+        }
+
+        foreach ($suspensions as &$suspension) {
+            $suspension["date"] = DataHelper::getDate(ArrayHelper::getValue($suspension, "date"));
+        }
+    }
+
+    /**
+     * Преобразование данных для вывода
+     * @param null $calf
+     */
     private function viewDataCalf(&$calf = null)
     {
         if (empty($calf)) {
             return;
         }
-        $calf["birthday"] = date("d/m/Y", ArrayHelper::getValue($calf, "birthday", null));
+
+        $calf["birthday"] = DataHelper::getDate(ArrayHelper::getValue($calf, "birthday"), "d.m.Y");
+
+        $calf["previousWeighing"] = DataHelper::concatArrayIsNotEmptyElement([
+            DataHelper::getDate(ArrayHelper::getValue($calf, "previousWeighingDate"), "d.m.Y"),
+            ArrayHelper::getValue($calf, "previousWeighing")
+        ], " / ");
+
+        $calf["currentWeighing"] = DataHelper::concatArrayIsNotEmptyElement([
+            DataHelper::getDate(ArrayHelper::getValue($calf, "currentWeighingDate"), "d.m.Y"),
+            ArrayHelper::getValue($calf, "currentWeighing")
+        ], " / ");
     }
 
     /**
@@ -76,7 +137,7 @@ class CalfsController extends Controller
                 $url = Url::toRoute(['/calf/save/']);
             } else if ($action == "edit") {
                 $model = Calf::find()->where(['id' => $id])->one();
-                $model["birthday"] = date("Y-m-d", $model["birthday"]);
+                $model["birthday"] = DataHelper::getDate($model["birthday"], "Y-m-d");
                 $url = Url::toRoute(['/calf/update/' . $id . '/']);
             } else if ($action == "delete") {
                 $model = Calf::find()->where(['id' => $id])->one();
@@ -85,8 +146,8 @@ class CalfsController extends Controller
             }
         }
 
-        $groups = Groups::find()->select(['name', 'employeeId', 'id'])->orderBy(['id' => SORT_ASC])->column();
-        $colors = Color::find()->select(['name', 'id'])->orderBy(['id' => SORT_ASC])->column();
+        $groups = Groups::find()->select(['name', 'employeeId', 'id'])->indexBy("id")->orderBy(['id' => SORT_ASC])->column();
+        $colors = Color::find()->select(['name', 'id'])->indexBy("id")->orderBy(['id' => SORT_ASC])->column();
         $mothers = [];
         $fathers = [];
 
@@ -124,9 +185,6 @@ class CalfsController extends Controller
         $isLoading = $model->load(\Yii::$app->request->post());
 
         if ($isLoading && $model->validate()) {
-            $model->previousWeighing = $model->birthWeight;
-            $model->currentWeighingDate = $model->birthWeight;
-            $model->currentWeighing = $model->birthWeight;
             $model->save();
 
             \Yii::$app->session->setFlash('success', \Yii::t('app/back', 'CALF_' . strtoupper($action) . '_SUCCESS'));

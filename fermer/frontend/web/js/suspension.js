@@ -75,7 +75,7 @@ function isEmpty(field)
     if (field == undefined) {
         return true;
     } else {
-        if (field.length > 0) {
+        if  (field.length > 0) {
             return false;
         } else {
             return true;
@@ -139,50 +139,6 @@ function drawChart(weights, dates) {
     window.myLine = new Chart(ctx, config);
 }
 
-function loadSuspensions(groupId, selectDate) {
-    var isEmptyGroupId = isEmpty(groupId);
-    var isEmptySelectDate = isEmpty(selectDate);
-
-    if (isEmptyGroupId || isEmptySelectDate) {
-        return false;
-    }
-
-    $.ajax({
-        url: document.location.protocol + "//" + document.location.host + '/suspension/load-suspensions/',
-        data: {
-            groupId : groupId,
-            date : selectDate
-        },
-        method: 'GET',
-        success: function (data) {
-            $("#suspensionBlock").next("div.row").html(data);
-            var weights = window.result.weights;
-            var dates = window.result.dates;
-            console.log(weights);
-            console.log(dates);
-            drawChart(weights, dates);
-        },
-        error: function (er) {
-        },
-        complete: function(){
-        }
-    });
-}
-
 $(function() {
-    var $groups = $("select[name=groups]");
-    var $datepicker = $('#suspensionDatepicker');
-
-    $(document).on("change", "select[name=groups]", function (e) {
-        var groupId = $(this).val();
-        if (groupId != "") {
-            loadDates($datepicker, groupId);
-            $datepicker.change(function () {
-                var groupId = $groups.val();
-                var selectDate = $datepicker.val();
-                loadSuspensions(groupId, selectDate);
-            });
-        }
-    });
 
 });

@@ -5,9 +5,10 @@ use \yii\bootstrap\Html;
 use \yii\helpers\Url;
 use \common\models\Functions;
 
+$headerText = !empty($action) ? \Yii::t('app/back', 'SUSPENSION_' . strtoupper($action)) : "";
 ?>
 
-<h2>Добавление взвешивания</h2>
+<h2><?=$headerText?></h2>
 
 <?php $form = ActiveForm::begin(['action' => $url, 'id' => 'suspension-form']); ?>
     <table class="table f-table-list table-striped table-bordered">

@@ -75,7 +75,7 @@ return [
                 'group/<action:(save|update)>/<id:\d+>' => 'groups/save-update',
 
                 'calfs' => 'calfs/list',
-                'calf/detail/<id:\d+>' => 'calfs/detail',
+                'calf/detail/<number:\d+>' => 'calfs/detail',
                 'calf/<action:(new)>' => 'calfs/actions',
                 'calf/<action:(new|edit|delete)>/<id:\d+>' => 'calfs/actions',
                 'calf/<action:(save)>' => 'calfs/save-update',

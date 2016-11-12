@@ -5,10 +5,9 @@ use yii\widgets\LinkPager;
 use yii\helpers\ArrayHelper;
 use \yii\helpers\Url;
 
-$headerText = !empty($action) ? \Yii::t('app/back', 'SUSPENSION_' . strtoupper($action)) : "";
 ?>
 
-<h1><?=$headerText?></h1>
+<h2><?=\Yii::t('app/back', 'SUSPENSIONS')?></h2>
 <table class="table f-table-list table-striped table-hover table-condensed">
 
     <thead>

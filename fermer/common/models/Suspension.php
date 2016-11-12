@@ -20,10 +20,10 @@ class Suspension extends ActiveRecord
     public function afterFind()
     {
         parent::afterFind();
-        $this->calf = [
-            'nickname' => ArrayHelper::getValue($this, 'calfInfo.nickname', null),
-            'birthday' => ArrayHelper::getValue($this, 'calfInfo.birthday', null)
-        ];
+        /*$this->calf = [
+            'nickname' => ArrayHelper::getValue($this, 'calfInfo.nickname'),
+            'birthday' => ArrayHelper::getValue($this, 'calfInfo.birthday')
+        ];*/
     }
 
 

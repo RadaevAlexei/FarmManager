@@ -11,18 +11,15 @@ use yii\db\ActiveRecord;
  */
 class Calf extends ActiveRecord
 {
-    /**
-     * Получение информации о масти
-     * @return array|null|ActiveRecord
-     */
+
     public function getSuit()
     {
-        return $this->hasOne(Color::className(), ['id' => 'color'])->one();
+        return $this->hasOne(Color::className(), ['id' => 'color']);
     }
 
     public function getCalfGroup()
     {
-        return $this->hasOne(Groups::className(), ['id' => 'groupId'])->one();
+        return $this->hasOne(Groups::className(), ['id' => 'groupId']);
     }
 
     public function attributeLabels()
@@ -51,8 +48,14 @@ class Calf extends ActiveRecord
      */
     public function beforeSave($insert)
     {
-        $this->birthday = strtotime($this->birthday);
         if (parent::beforeSave($insert)) {
+
+            $this->birthday = strtotime($this->birthday);
+            $this->previousWeighingDate = $this->birthday;
+            $this->currentWeighingDate = $this->birthday;
+            $this->previousWeighing = $this->birthWeight;
+            $this->currentWeighing = $this->birthWeight;
+
             return true;
         } else {
             return false;

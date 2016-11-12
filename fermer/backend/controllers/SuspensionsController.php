@@ -19,14 +19,7 @@ class SuspensionsController extends Controller
      */
     public function actionList()
     {
-        $number = 111;
-
-        $query = Suspension::find()
-            ->innerJoinWith([
-               'calfInfo' => function (Query $q) use ($number) {
-                   $q->andOnCondition(["=", "number", $number]);
-               }
-            ]);
+        $query = Suspension::find()->innerJoinWith(['calfInfo']);
 
         $pagination = new Pagination([
             'defaultPageSize' => 10,

@@ -21,7 +21,7 @@ use \yii\helpers\Url;
         <col class="col-xs-1">
         <col class="col-xs-1">
         <col class="col-xs-1">
-        <col class="col-xs-2">
+        <col class="col-xs-1">
         <col class="col-xs-1">
     </colgroup>
 
@@ -34,9 +34,9 @@ use \yii\helpers\Url;
             <th>Дата Рождения</th>
             <th>Вес при Рождении,кг</th>
             <th>Группа</th>
-            <th>Цвет</th>
-            <th>Последнее взвешивание/<br>Кг</th>
-            <th>Последнее взвешивание/<br>Дата</th>
+            <th>Масть</th>
+            <th>Последнее взвешивание</th>
+            <th>Текущее взвешивание</th>
             <th></th>
         </tr>
     </thead>
@@ -46,15 +46,19 @@ use \yii\helpers\Url;
             <?php foreach ($calfs as $index => $calf): ?>
                 <tr data-id="<?=$calf["id"]?>" style="cursor: pointer">
                     <th><?=($index + 1)?></th>
-                    <th><?=ArrayHelper::getValue($calf, "number", "")?></th>
-                    <th><?=ArrayHelper::getValue($calf, "nickname", "")?></th>
-                    <th><?=ArrayHelper::getValue($calf, "gender", "")?></th>
-                    <th><?=ArrayHelper::getValue($calf, "birthday", "")?></th>
-                    <th><?=ArrayHelper::getValue($calf, "birthWeight", "")?></th>
-                    <th><?=ArrayHelper::getValue($calf->calfGroup, "name", "")?></th>
-                    <th><?=ArrayHelper::getValue($calf->suit, "name", "")?></th>
-                    <th><?=ArrayHelper::getValue($calf, "previousWeighing", "")?></th>
-                    <th><?=ArrayHelper::getValue($calf, "currentWeighing", "")?></th>
+                    <th>
+                        <a href="<?=Url::toRoute(['/calf/detail/' . ArrayHelper::getValue($calf, "number") . "/"])?>">
+                            <?=ArrayHelper::getValue($calf, "number")?>
+                        </a>
+                    </th>
+                    <th><?=ArrayHelper::getValue($calf, "nickname")?></th>
+                    <th><?=ArrayHelper::getValue($calf, "gender")?></th>
+                    <th><?=ArrayHelper::getValue($calf, "birthday")?></th>
+                    <th><?=ArrayHelper::getValue($calf, "birthWeight")?></th>
+                    <th><?=ArrayHelper::getValue($calf, "calfGroup.name")?></th>
+                    <th><?=ArrayHelper::getValue($calf, "suit.name")?></th>
+                    <th><?=ArrayHelper::getValue($calf, "previousWeighing")?></th>
+                    <th><?=ArrayHelper::getValue($calf, "currentWeighing")?></th>
                     <th align="center">
                         <div class="btn-group">
                             <button type="button" class="btn btn-warning btn-sm  dropdown-toggle" data-toggle="dropdown">Действие <span class="caret"></span></button>

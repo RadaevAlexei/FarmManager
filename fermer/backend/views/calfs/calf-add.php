@@ -36,7 +36,7 @@ $headerText = !empty($action) ? \Yii::t('app/back', 'CALF_' . strtoupper($action
             <tr>
                 <td>
                     <?=$form->field($model, 'gender')->dropDownList([
-                        "Т" => "Телёнок",
+                        "Т" => "Тёлочка",
                         "Б" => "Бычок"
                     ], ['prompt' => 'Выберите пол'])?>
                 </td>
