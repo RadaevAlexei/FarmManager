@@ -55,5 +55,5 @@ use \yii\helpers\Url;
 <?= LinkPager::widget(['pagination' => $pagination]) ?>
 
 <div class="pull-right">
-    <button type="button" id="addFunction" data-url="<?=Url::toRoute(['/function/new/'])?>" class="btn btn-info">Добавить</button>
+    <button type="button" data-url="<?=Url::toRoute(['/function/new/'])?>" class="btn btn-info addItem">Добавить</button>
 </div>

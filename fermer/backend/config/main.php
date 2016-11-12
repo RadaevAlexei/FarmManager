@@ -61,6 +61,12 @@ return [
                 'function/<action:(save)>' => 'functions/save-update',
                 'function/<action:(save|update)>/<id:\d+>' => 'functions/save-update',
 
+                'colors' => 'colors/list',
+                'color/<action:(new)>' => 'colors/actions',
+                'color/<action:(new|edit|delete)>/<id:\d+>' => 'colors/actions',
+                'color/<action:(save)>' => 'colors/save-update',
+                'color/<action:(save|update)>/<id:\d+>' => 'colors/save-update',
+
                 'groups' => 'groups/list',
                 'group/detail/<id:\d+>' => 'groups/detail',
                 'group/<action:(new)>' => 'groups/actions',

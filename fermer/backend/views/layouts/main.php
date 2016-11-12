@@ -73,9 +73,11 @@ MainBackendAsset::register($this);
                 <li><a href="<?=Url::toRoute(['/employees'])?>">Сотрудники</a></li>
                 <li><a href="<?=Url::toRoute(['/groups'])?>">Группы</a></li>
                 <li><a href="<?=Url::toRoute(['/calfs'])?>">Телята</a></li>
+                <li><a href="<?=Url::toRoute(['/colors'])?>">Масти</a></li>
                 <li><a href="<?=Url::toRoute(['/suspensions'])?>">Перевески</a></li>
                 <li class="divider"></li>
                 <li><a href="<?=Url::toRoute(['/calf/new/'])?>">Добавить теленка</a></li>
+                <li><a href="<?=Url::toRoute(['/color/new/'])?>">Добавить масть</a></li>
                 <li><a href="<?=Url::toRoute(['/group/new/'])?>">Добавить группу</a></li>
                 <li><a href="<?=Url::toRoute(['/employee/new/'])?>">Добавить сотрудника</a></li>
                 <li><a href="<?=Url::toRoute(['/function/new/'])?>">Добавить должность</a></li>

@@ -44,7 +44,7 @@ MainAsset::register($this);
         ['label' => 'Контакты', 'url' => ['/site/contact']],
         ['label' => 'Список телят', 'url' => ['/list']],
         ['label' => 'Перевески', 'url' => ['/suspension']],
-        ['label' => 'Админка', 'url' => 'http://farm.admin/', 'linkOptions' => ['target' => '_blank']]
+        ['label' => 'Админка', 'url' => 'http://fermer.admin/', 'linkOptions' => ['target' => '_blank']]
     ];
     if (Yii::$app->user->isGuest) {
         $menuItems[] = ['label' => 'Регистрация', 'url' => ['/site/signup']];

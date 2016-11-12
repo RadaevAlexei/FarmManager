@@ -20,6 +20,14 @@ return [
     "FUNCTION_SAVE_SUCCESS" => "Успешное сохранение должности",
     "FUNCTION_UPDATE_SUCCESS" => "Успешное редактирование должности",
 
+    // Масти
+    "COLORS" => "Список мастей",
+    "COLORS_NOT_FOUND" => "Мастей нет",
+    "COLOR_NEW" => "Добавление масти",
+    "COLOR_EDIT" => "Редактирование масти",
+    "COLOR_SAVE_SUCCESS" => "Успешное сохранение масти",
+    "COLOR_UPDATE_SUCCESS" => "Успешное редактирование масти",
+
     // Группы
     "GROUPS" => "Группы",
     "GROUPS_NOT_FOUND" => "Групп нет",

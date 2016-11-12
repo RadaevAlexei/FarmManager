@@ -65,7 +65,7 @@ use yii\helpers\ArrayHelper;
     </tbody>
 </table>
 <div class="pull-right">
-    <button type="button" id="addEmployee" data-url="<?=Url::toRoute(['/employee/new/'])?>" class="btn btn-info">Добавить</button>
+    <button type="button" data-url="<?=Url::toRoute(['/employee/new/'])?>" class="btn btn-info addItem">Добавить</button>
 </div>
 
 <?= LinkPager::widget(['pagination' => $pagination]) ?>

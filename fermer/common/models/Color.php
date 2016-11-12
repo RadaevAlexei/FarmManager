@@ -7,12 +7,30 @@ use yii\db\ActiveRecord;
 
 class Color extends ActiveRecord
 {
-    // Масть - Красно-пестрая
-    const COLOR_CALF_RED_MOTLEY = 1;
 
-    // Масть - Черно-пестрая
-    const COLOR_CALF_BLACK_MOTLEY = 2;
+    /**
+     * @return array
+     */
+    public function attributeLabels()
+    {
+        //TODO:: Сделать переводами
+        return [
+            'name' => 'Название масти',
+            'short_name' => 'Сокращенное название'
+        ];
+    }
 
-    // Масть - Бурая
-    const COLOR_CALF_BROWN = 3;
+    /**
+     * @return array
+     */
+    public function rules()
+    {
+        return [
+            [['name', 'short_name'], 'unique'],
+            [['name', 'short_name'], 'trim'],
+            [['name', 'short_name'], 'required'],
+            ['name', 'string', 'length' => [4, 30]],
+            ['short_name', 'string', 'length' => [1, 15]]
+        ];
+    }
 }

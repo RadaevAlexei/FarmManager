@@ -76,7 +76,7 @@ use \yii\helpers\Url;
 </table>
 
 <div class="pull-right">
-    <button type="button" id="addCalf" data-url="<?=Url::toRoute(['/calf/new/'])?>" class="btn btn-info">Добавить</button>
+    <button type="button" data-url="<?=Url::toRoute(['/calf/new/'])?>" class="btn btn-info addItem">Добавить</button>
 </div>
 
 <?= LinkPager::widget(['pagination' => $pagination]) ?>

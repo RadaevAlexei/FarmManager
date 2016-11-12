@@ -50,7 +50,7 @@ $headerText = !empty($action) ? \Yii::t('app/back', 'SUSPENSION_' . strtoupper($
 </table>
 
 <div class="pull-right">
-    <button type="button" id="addSuspension" data-url="<?=Url::toRoute(['/suspension/new/'])?>" class="btn btn-info">Добавить</button>
+    <button type="button" data-url="<?=Url::toRoute(['/suspension/new/'])?>" class="btn btn-info addItem">Добавить</button>
 </div>
 
 <?= LinkPager::widget(['pagination' => $pagination]) ?>

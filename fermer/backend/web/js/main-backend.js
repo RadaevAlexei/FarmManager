@@ -1,6 +1,6 @@
 $(function() {
 
-    $(document).on("click", "button#addFunction, button#addEmployee, button#addGroup, button#addCalf, button#addSuspension", function (e) {
+    $(document).on("click", "button.addItem", function (e) {
         url = $(this).data("url");
         document.location.href = url;
     });
