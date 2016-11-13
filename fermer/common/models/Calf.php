@@ -34,8 +34,8 @@ class Calf extends ActiveRecord
             'birthWeight' => 'Вес при рождении',
             'previousWeighingDate' => 'Дата предыдущего взвешивания',
             'previousWeighing' => 'Предыдущее взвешивание',
-            'currentWeighingDate' => 'Дата последнего взвешивания',
-            'currentWeighing' => 'Последнее взвешивание',
+            'currentWeighingDate' => 'Дата текущего взвешивания',
+            'currentWeighing' => 'Текущее взвешивание',
             'color' => 'Масть',
             'motherId' => 'Мать',
             'fatherId' => 'Отец',
@@ -49,12 +49,25 @@ class Calf extends ActiveRecord
     public function beforeSave($insert)
     {
         if (parent::beforeSave($insert)) {
+            $birthdayStr = $this->birthday;
 
             $this->birthday = strtotime($this->birthday);
             $this->previousWeighingDate = $this->birthday;
             $this->currentWeighingDate = $this->birthday;
             $this->previousWeighing = $this->birthWeight;
             $this->currentWeighing = $this->birthWeight;
+
+            $suspensionModel = new Suspension();
+
+            $suspensionModel->setAttributes([
+                'calf' => $this->number,
+                'weight' => $this->birthWeight,
+                'date' => $birthdayStr
+            ]);
+
+            if ($suspensionModel->validate()) {
+                $suspensionModel->save();
+            }
 
             return true;
         } else {

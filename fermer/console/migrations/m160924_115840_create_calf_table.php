@@ -19,7 +19,7 @@ class m160924_115840_create_calf_table extends Migration
             'nickname' => $this->string(15),              // Кличка
             'groupId' => $this->integer() ,               // Группа
             'birthday' => $this->integer()->notNull(),    // *Дата Рождения
-            'gender' => $this->string(1)->notNull(),      // *Пол
+            'gender' => $this->smallInteger()->notNull(), // *Пол
             'birthWeight' => $this->float()->notNull(),   // *Вес при рождении
             'previousWeighingDate' => $this->integer(),   // Предыдущее взвешивание, Дата
             'previousWeighing' => $this->float(),         // Предыдущее взвешивание, Вес/кг

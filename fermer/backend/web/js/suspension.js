@@ -99,11 +99,11 @@ function drawChart(d, labels) {
                 {
                     label: "График роста",
                     data: labels
-                },
+                }/*,
                 {
                     label: 'Норма',
                     data: [130, 220, 410, 150, 670]
-                }
+                }*/
             ]
         },
         options: {

@@ -35,7 +35,7 @@ use \yii\helpers\Url;
             <th>Вес при Рождении,кг</th>
             <th>Группа</th>
             <th>Масть</th>
-            <th>Последнее взвешивание</th>
+            <th>Предыдущее взвешивание</th>
             <th>Текущее взвешивание</th>
             <th></th>
         </tr>
@@ -52,7 +52,7 @@ use \yii\helpers\Url;
                         </a>
                     </th>
                     <th><?=ArrayHelper::getValue($calf, "nickname")?></th>
-                    <th><?=ArrayHelper::getValue($calf, "gender")?></th>
+                    <th><?=ArrayHelper::getValue($calf, "gender_short")?></th>
                     <th><?=ArrayHelper::getValue($calf, "birthday")?></th>
                     <th><?=ArrayHelper::getValue($calf, "birthWeight")?></th>
                     <th><?=ArrayHelper::getValue($calf, "calfGroup.name")?></th>

@@ -2,6 +2,10 @@
 
 return [
 
+    "CALF_NAME" => "{gender} - {number}",
+    "CALF_DETAIL_INFO" => "Детальная страничка теленка",
+    "CALF_LIST" => "Список телят",
+
     // Сотрудники
     "EMPLOYEES" => "Список сотрудников",
     "EMPLOYEE_GENDER_0" => "Мужской",

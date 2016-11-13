@@ -2,13 +2,29 @@
 
 use yii\helpers\ArrayHelper;
 use \backend\assets\ChartAsset;
+use \yii\helpers\Url;
+use \yii\helpers\Html;
 
 ChartAsset::register($this);
 
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app/front', "CalfDetailInfo")];
+$this->params['breadcrumbs'][] = [
+    'label' => Yii::t('app/back', "CALF_LIST"),
+    'url' => Url::toRoute(['/calfs/list'])
+];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app/back', "CALF_DETAIL_INFO")];
 ?>
 
-<h1><?=Yii::t('app/front', 'Calf', ['number' => ArrayHelper::getValue($calf, "number")])?></h1>
+<h1>
+    <?=Yii::t(
+        'app/back',
+        'CALF_NAME',
+        [
+            'gender' => ArrayHelper::getValue($calf, "gender"),
+            'number' => ArrayHelper::getValue($calf, "number")
+        ]
+    )?>
+</h1>
+
 <table class="table table-striped table-hover table-condensed">
 
     <colgroup>
@@ -18,56 +34,48 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app/front', "CalfDetailInfo
 
     <tbody>
         <tr>
-            <td><?=Yii::t('app/front', 'Number')?></td>
-            <td><?=ArrayHelper::getValue($calf, "number")?></td>
+            <td><?=$calf->getAttributeLabel("nickname")?></td>
+            <td><?=ArrayHelper::getValue($calf, "nickname")?></td>
         </tr>
         <tr>
-            <td><?=Yii::t('app/front', 'Nickname')?></td>
-            <td><?=ArrayHelper::getValue($calf, "nickname", "")?></td>
+            <td><?=$calf->getAttributeLabel("groupId")?></td>
+            <td><?=ArrayHelper::getValue($calf, "calfGroup.name")?></td>
         </tr>
         <tr>
-            <td><?=Yii::t('app/front', 'Group')?></td>
-            <td><?=ArrayHelper::getValue($calf, "groupId")?></td>
+            <td><?=$calf->getAttributeLabel("birthday")?></td>
+            <td><?=ArrayHelper::getValue($calf, "birthday")?></td>
         </tr>
         <tr>
-            <td><?=Yii::t('app/front', 'Birthday')?></td>
-            <td><?=(!empty($calf["birthday"]) ? date("d/m/Y", strtotime($calf["birthday"])) : "")?></td>
+            <td><?=$calf->getAttributeLabel("birthWeight")?></td>
+            <td><?=ArrayHelper::getValue($calf, "birthWeight")?></td>
         </tr>
         <tr>
-            <td><?=Yii::t('app/front', 'Gender')?></td>
-            <td><?=ArrayHelper::getValue($calf, "gender", "")?></td>
+            <td><?=$calf->getAttributeLabel("previousWeighing")?></td>
+            <td><?=ArrayHelper::getValue($calf, "previousWeighing")?></td>
         </tr>
         <tr>
-            <td><?=Yii::t('app/front', 'BirthWeight')?></td>
-            <td><?=ArrayHelper::getValue($calf, "birthWeight", "")?></td>
+            <td><?=$calf->getAttributeLabel("currentWeighing")?></td>
+            <td><?=ArrayHelper::getValue($calf, "currentWeighing")?></td>
         </tr>
         <tr>
-            <td><?=Yii::t('app/front', 'PreviousWeighing')?></td>
-            <td><?=ArrayHelper::getValue($calf, "previousWeighing", "")?></td>
-        </tr>
-        <tr>
-            <td><?=Yii::t('app/front', 'CurrentWeighing')?></td>
-            <td><?=ArrayHelper::getValue($calf, "currentWeighing", "")?></td>
-        </tr>
-        <tr>
-            <td><?=Yii::t('app/front', 'Color')?></td>
-            <td><?=ArrayHelper::getValue($calf->suit, "name", "")?></td>
+            <td><?=$calf->getAttributeLabel("color")?></td>
+            <td><?=ArrayHelper::getValue($calf, "suit.name")?></td>
         </tr>
 
         <?php if (!empty($calf["motherId"])) : ?>
             <tr>
-                <td><?=Yii::t('app/front', 'Mother')?></td>
+                <td><?=$calf->getAttributeLabel("motherId")?></td>
                 <td>
-                    <a href="<?=\yii\helpers\Url::toRoute(['detail', 'id' => $calf["motherId"]])?>">Посмотреть</a>
+                    <a href="<?=Url::toRoute(['/calf/detail/' . $calf["motherId"] . "/"])?>">Посмотреть</a>
                 </td>
             </tr>
         <?php endif; ?>
 
         <?php if (!empty($calf["fatherId"])) : ?>
             <tr>
-                <td><?=Yii::t('app/front', 'Father')?></td>
+                <td><?=$calf->getAttributeLabel("fatherId")?></td>
                 <td>
-                    <a href="<?=\yii\helpers\Url::toRoute(['detail', 'id' => $calf["fatherId"]])?>">Посмотреть</a>
+                    <a href="<?=Url::toRoute(['/calf/detail/' . $calf["fatherId"] . "/"])?>">Посмотреть</a>
                 </td>
             </tr>
         <?php endif; ?>
@@ -103,7 +111,7 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app/front', "CalfDetailInfo
             <?php endforeach; ?>
         <?php else : ?>
             <tr>
-                <td colspan="3">Теленок ни разу не взвешивался</td>
+                <td align="center" colspan="3">Теленок ни разу не взвешивался</td>
             </tr>
         <?php endif; ?>
     </tbody>

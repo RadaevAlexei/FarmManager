@@ -44,6 +44,7 @@ class Suspension extends ActiveRecord
     public function rules()
     {
         return [
+            [['calf', 'weight'], 'trim'],
             [['calf', 'weight', 'date'], 'required'],
             ['weight', 'double'],
         ];

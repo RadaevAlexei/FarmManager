@@ -20,8 +20,8 @@ use \yii\helpers\Url;
     <thead>
     <tr>
         <th>№</th>
-        <th>Сокращенное название</th>
         <th>Название масти</th>
+        <th>Сокращенное название</th>
         <th></th>
     </tr>
     </thead>

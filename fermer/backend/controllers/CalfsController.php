@@ -51,7 +51,7 @@ class CalfsController extends Controller
         }
 
         foreach ($calfs as &$calf) {
-            $this->viewDataCalf($calf);
+            $this->viewListDataCalf($calf);
         }
     }
 
@@ -63,6 +63,7 @@ class CalfsController extends Controller
     {
         $calf = Calf::find()
             ->where(['number' => $number])
+            ->innerJoinWith(['suit', 'calfGroup'])
             ->one();
 
         $calfSuspension = Suspension::find()
@@ -70,6 +71,7 @@ class CalfsController extends Controller
             ->asArray()
             ->all();
 
+        $this->viewDataDetailCalf($calf);
         $this->viewCalfSuspension($calfSuspension);
 
         $map = ArrayHelper::map($calfSuspension, 'date', 'weight');
@@ -82,6 +84,28 @@ class CalfsController extends Controller
             "dates" => $dates,
             "weights" => $weights
         ]);
+    }
+
+    private function viewDataDetailCalf(&$calf = null)
+    {
+        if (empty($calf)) {
+            return;
+        }
+
+        $gender = ArrayHelper::getValue($calf, "gender");
+        $calf["gender"] = empty($gender) ? "Тёлочка" : "Бычок";
+
+        $calf["birthday"] = DataHelper::getDate(ArrayHelper::getValue($calf, "birthday"), "d.m.Y");
+
+        $calf["previousWeighing"] = DataHelper::concatArrayIsNotEmptyElement([
+            DataHelper::getDate(ArrayHelper::getValue($calf, "previousWeighingDate"), "d.m.Y"),
+            ArrayHelper::getValue($calf, "previousWeighing")
+        ], " / ");
+
+        $calf["currentWeighing"] = DataHelper::concatArrayIsNotEmptyElement([
+            DataHelper::getDate(ArrayHelper::getValue($calf, "currentWeighingDate"), "d.m.Y"),
+            ArrayHelper::getValue($calf, "currentWeighing")
+        ], " / ");
     }
 
     /**
@@ -102,11 +126,14 @@ class CalfsController extends Controller
      * Преобразование данных для вывода
      * @param null $calf
      */
-    private function viewDataCalf(&$calf = null)
+    private function viewListDataCalf(&$calf = null)
     {
         if (empty($calf)) {
             return;
         }
+
+        $gender = ArrayHelper::getValue($calf, "gender");
+        $calf["gender_short"] = empty($gender) ? "Т" : "Б";
 
         $calf["birthday"] = DataHelper::getDate(ArrayHelper::getValue($calf, "birthday"), "d.m.Y");
 
