@@ -61,11 +61,14 @@ class Employee extends ActiveRecord
         ];
     }
 
-    /** @inheritdoc */
+    /**
+     * @param bool $insert
+     * @return bool
+     */
     public function beforeSave($insert)
     {
-        $this->birthday = strtotime($this->birthday);
         if (parent::beforeSave($insert)) {
+            $this->birthday = strtotime($this->birthday);
             return true;
         } else {
             return false;

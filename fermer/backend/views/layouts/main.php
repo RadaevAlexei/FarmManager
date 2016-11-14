@@ -70,6 +70,7 @@ MainBackendAsset::register($this);
             </button>
             <ul class="dropdown-menu" role="menu">
                 <li><a href="<?=Url::toRoute(['/functions'])?>">Должности</a></li>
+                <li><a href="<?=Url::toRoute(['/transfers'])?>">Переводы</a></li>
                 <li><a href="<?=Url::toRoute(['/employees'])?>">Сотрудники</a></li>
                 <li><a href="<?=Url::toRoute(['/groups'])?>">Группы</a></li>
                 <li><a href="<?=Url::toRoute(['/calfs'])?>">Телята</a></li>
@@ -81,6 +82,7 @@ MainBackendAsset::register($this);
                 <li><a href="<?=Url::toRoute(['/group/new/'])?>">Добавить группу</a></li>
                 <li><a href="<?=Url::toRoute(['/employee/new/'])?>">Добавить сотрудника</a></li>
                 <li><a href="<?=Url::toRoute(['/function/new/'])?>">Добавить должность</a></li>
+                <li><a href="<?=Url::toRoute(['/transfer/new/'])?>">Добавить перевод</a></li>
                 <li><a href="<?=Url::toRoute(['/suspension/new/'])?>">Добавить взвешивание</a></li>
             </ul>
         </div>

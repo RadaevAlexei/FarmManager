@@ -18,15 +18,8 @@ class m161105_105238_create_transfers_table extends Migration
             'groupFromId' => $this->integer()->notNull(),  // Группа, из которой переводится теленок
             'groupToId' => $this->integer()->notNull(),    // Группа, в которую переводится теленок
             'date' => $this->integer()->notNull(),         // Дата перевода
-            'calfId' => $this->integer()->notNull()        // Теленок
+            'calf' => $this->integer()->notNull()          // Теленок
         ]);
-    }
-
-    public function behaviors()
-    {
-        return [
-            \yii\behaviors\TimestampBehavior::className(),
-        ];
     }
 
     /**

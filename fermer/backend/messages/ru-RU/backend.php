@@ -55,6 +55,14 @@ return [
     "SUSPENSION_EDIT" => "Редактирование взвешивания",
     "SUSPENSION_SAVE_SUCCESS" => "Успешное сохранение данных о взвешивании",
     "SUSPENSION_UPDATE_SUCCESS" => "Успешное редактирование данных о взвешивании",
+
+    // Переводы
+    "TRANSFERS" => "Список переводов",
+    "TRANSFERS_NOT_FOUND" => "Переводов нет",
+    "TRANSFER_NEW" => "Добавление перевода",
+    "TRANSFER_EDIT" => "Редактирование перевода",
+    "TRANSFER_SAVE_SUCCESS" => "Успешное сохранение перевода",
+    "TRANSFER_UPDATE_SUCCESS" => "Успешное редактирование перевода",
 ];
 
 ?>

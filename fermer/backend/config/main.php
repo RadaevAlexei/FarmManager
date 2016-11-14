@@ -61,6 +61,12 @@ return [
                 'function/<action:(save)>' => 'functions/save-update',
                 'function/<action:(save|update)>/<id:\d+>' => 'functions/save-update',
 
+                'transfers' => 'transfers/list',
+                'transfer/<action:(new)>' => 'transfers/actions',
+                'transfer/<action:(new|edit|delete)>/<id:\d+>' => 'transfers/actions',
+                'transfer/<action:(save)>' => 'transfers/save-update',
+                'transfer/<action:(save|update)>/<id:\d+>' => 'transfers/save-update',
+
                 'colors' => 'colors/list',
                 'color/<action:(new)>' => 'colors/actions',
                 'color/<action:(new|edit|delete)>/<id:\d+>' => 'colors/actions',
@@ -86,9 +92,6 @@ return [
                 'suspension/<action:(new|edit|delete)>/<id:\d+>' => 'suspensions/actions',
                 'suspension/<action:(save)>' => 'suspensions/save-update',
                 'suspension/<action:(save|update)>/<id:\d+>' => 'suspensions/save-update',
-
-                'suspension/add' => 'admin/suspension-add',
-                'suspension/save' => 'admin/suspension-save',
 
                 '<controller:[-_0-9a-zA-Z]+>/<action:[-_0-9a-zA-Z]+>' => '<controller>/<action>',
                 '<module:[-_0-9a-zA-Z]+>/<controller:[-_0-9a-zA-Z]+>/<action:[-_0-9a-zA-Z]+>' => '<module>/<controller>/<action>'
