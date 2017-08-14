@@ -2,13 +2,14 @@
 
 use yii\helpers\Html;
 use yii\helpers\Url;
-use yii\widgets\LinkPager;
 use yii\helpers\ArrayHelper;
+use \common\models\Group;
+
+/** @var $group Group */
 
 ?>
 
-
-<h2><?=ArrayHelper::getValue($group, "name", "")?></h2>
+<h2><?=ArrayHelper::getValue($group, "name")?></h2>
 <hr>
 
 <h4>Основная информация</h4>

@@ -6,7 +6,10 @@ use common\helpers\DataHelper;
 use common\helpers\TransfersAct;
 use common\models\Functions;
 use common\models\Groups;
+use common\models\search\TransferSearch;
+use common\models\Transfer;
 use common\models\Transfers;
+use yii\data\ActiveDataProvider;
 use yii\data\Pagination;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
@@ -21,10 +24,44 @@ use yii\web\NotFoundHttpException;
 class TransferController extends BackendController
 {
     /**
+     * @return string
+     */
+    public function actionIndex()
+    {
+        /** @var TransferSearch $searchModel */
+        $searchModel = new TransferSearch([
+            "scenario" => Transfer::SCENARIO_FILTER
+        ]);
+
+        /** @var ActiveDataProvider $dataProvider */
+        $dataProvider = $searchModel->search(\Yii::$app->request->queryParams);
+
+        return $this->render('index', [
+            "searchModel"  => $searchModel,
+            "dataProvider" => $dataProvider,
+        ]);
+    }
+
+    /**
+     * Детальная карточка перевода
+     * @param $id
+     * @return string
+     */
+    public function actionView($id)
+    {
+        /** @var Transfer $transfer */
+        $transfer = Transfer::findOne($id);
+
+        return $this->render('detail', [
+            "transfer" => $transfer
+        ]);
+    }
+
+    /**
      * Список переводов
      * @return string
      */
-    public function actionList()
+    /*public function actionList()
     {
         $query = Transfers::find()->with(
             ['groupFrom', 'groupTo', 'calfInfo']
@@ -47,7 +84,7 @@ class TransferController extends BackendController
             'transfers' => $transfers,
             'pagination' => $pagination,
         ]);
-    }
+    }*/
 
     public function actionExport()
     {

@@ -3,12 +3,13 @@
 namespace backend\controllers;
 
 use common\models\Calf;
+use common\models\search\SuspensionSearch;
 use common\models\Suspension;
+use yii\data\ActiveDataProvider;
 use yii\data\Pagination;
 use yii\db\Query;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 
 /**
@@ -20,7 +21,41 @@ class SuspensionController extends BackendController
     /**
      * @return string
      */
-    public function actionList()
+    public function actionIndex()
+    {
+        /** @var SuspensionSearch $searchModel */
+        $searchModel = new SuspensionSearch([
+            "scenario" => Suspension::SCENARIO_FILTER
+        ]);
+
+        /** @var ActiveDataProvider $dataProvider */
+        $dataProvider = $searchModel->search(\Yii::$app->request->queryParams);
+
+        return $this->render('index', [
+            "searchModel"  => $searchModel,
+            "dataProvider" => $dataProvider,
+        ]);
+    }
+
+    /**
+     * Детальная карточка перевески
+     * @param $id
+     * @return string
+     */
+    public function actionView($id)
+    {
+        /** @var Suspension $suspension */
+        $suspension = Suspension::findOne($id);
+
+        return $this->render('detail', [
+            "suspension" => $suspension
+        ]);
+    }
+
+    /**
+     * @return string
+     */
+    /*public function actionIndex()
     {
         $query = Suspension::find()->innerJoinWith(['calfInfo']);
 
@@ -41,7 +76,7 @@ class SuspensionController extends BackendController
             'suspensions' => $suspensions,
             'pagination' => $pagination,
         ]);
-    }
+    }*/
 
     private function viewDataSuspensions(&$suspensions = null)
     {

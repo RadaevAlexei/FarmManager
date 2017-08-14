@@ -3,7 +3,10 @@
 namespace backend\controllers;
 
 use common\models\Employee;
+use common\models\Group;
 use common\models\Groups;
+use common\models\search\GroupSearch;
+use yii\data\ActiveDataProvider;
 use yii\data\Pagination;
 use yii\helpers\Url;
 use yii\web\Controller;
@@ -18,37 +21,34 @@ class GroupController extends BackendController
     /**
      * @return string
      */
-    public function actionList()
+    public function actionIndex()
     {
-        $query = Groups::find();
-
-        $pagination = new Pagination([
-            'defaultPageSize' => 10,
-            'totalCount' => $query->count(),
+        /** @var GroupSearch $searchModel */
+        $searchModel = new GroupSearch([
+            "scenario" => Group::SCENARIO_FILTER
         ]);
 
-        $groups = $query->orderBy('id')
-            ->offset($pagination->offset)
-            ->limit($pagination->limit)
-            ->asArray()
-            ->all();
+        /** @var ActiveDataProvider $dataProvider */
+        $dataProvider = $searchModel->search(\Yii::$app->request->queryParams);
 
-        return $this->render('groups', [
-            'groups' => $groups,
-            'pagination' => $pagination,
+        return $this->render('index', [
+            "searchModel"  => $searchModel,
+            "dataProvider" => $dataProvider,
         ]);
     }
 
     /**
-     * @param null $id
+     * Детальная карточка группы
+     * @param $id
      * @return string
      */
-    public function actionDetail($id = null)
+    public function actionView($id)
     {
-        $group = Groups::find()->where(['id' => $id])->one();
+        /** @var Group $group */
+        $group = Group::findOne($id);
 
         return $this->render('group-detail', [
-            'group' => $group
+            "group" => $group
         ]);
     }
 
