@@ -35,12 +35,12 @@ use \yii\helpers\Url;
         <?php if (!empty($transfers)) : ?>
             <?php foreach ($transfers as $index => $transfer): ?>
                 <tr data-id="<?=$transfer["id"]?>" style="cursor: pointer">
-                    <th><?=($index + 1)?></th>
-                    <th><?=ArrayHelper::getValue($transfer, "date")?></th>
-                    <th><?=ArrayHelper::getValue($transfer, "groupFrom.name")?></th>
-                    <th><?=ArrayHelper::getValue($transfer, "groupTo.name")?></th>
-                    <th><?=ArrayHelper::getValue($transfer, "name")?></th>
-                    <th>
+                    <td><?=($index + 1)?></td>
+                    <td><?=ArrayHelper::getValue($transfer, "date")?></td>
+                    <td><?=ArrayHelper::getValue($transfer, "groupFrom.name")?></td>
+                    <td><?=ArrayHelper::getValue($transfer, "groupTo.name")?></td>
+                    <td><?=ArrayHelper::getValue($transfer, "name")?></td>
+                    <td>
                         <div class="btn-group">
                             <button type="button" class="btn btn-warning btn-sm  dropdown-toggle" data-toggle="dropdown">Действие <span class="caret"></span></button>
                             <ul class="dropdown-menu" role="menu">
@@ -48,7 +48,7 @@ use \yii\helpers\Url;
                                 <li><a href="<?=Url::toRoute(['/transfer/delete/' . $transfer['id'] . '/'])?>">Удалить</a></li>
                             </ul>
                         </div>
-                    </th>
+                    </td>
                 </tr>
             <?php endforeach; ?>
         <?php else: ?>
@@ -62,5 +62,6 @@ use \yii\helpers\Url;
 <?= LinkPager::widget(['pagination' => $pagination]) ?>
 
 <div class="pull-right">
+    <button type="button" id="exportTransfer" data-url="<?=Url::toRoute(['/transfer/export/'])?>" class="btn btn-info">Export</button>
     <button type="button" data-url="<?=Url::toRoute(['/transfer/new/'])?>" class="btn btn-info addItem">Добавить</button>
 </div>

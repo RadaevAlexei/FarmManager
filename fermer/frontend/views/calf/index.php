@@ -43,16 +43,16 @@ use yii\helpers\ArrayHelper;
         <?php if (!empty($calfs)) : ?>
             <?php foreach ($calfs as $index => $calf): ?>
                 <tr data-id="<?=$calf["id"]?>" style="cursor: pointer">
-                    <th><?=($index + 1)?></th>
-                    <th><?=ArrayHelper::getValue($calf, "number", "")?></th>
-                    <th><?=ArrayHelper::getValue($calf, "nickname", "")?></th>
-                    <th><?=ArrayHelper::getValue($calf, "gender", "")?></th>
-                    <th><?=(!empty($calf["birthday"]) ? date("d/m/Y", strtotime($calf["birthday"])) : "")?></th>
-                    <th></th>
-                    <th></th>
-                    <th><?=ArrayHelper::getValue($calf->suit, "name", "")?></th>
-                    <th></th>
-                    <th></th>
+                    <td><?=($index + 1)?></td>
+                    <td><?=ArrayHelper::getValue($calf, "number", "")?></td>
+                    <td><?=ArrayHelper::getValue($calf, "nickname", "")?></td>
+                    <td><?=ArrayHelper::getValue($calf, "gender", "")?></td>
+                    <td><?=(!empty($calf["birthday"]) ? date("d/m/Y", strtotime($calf["birthday"])) : "")?></td>
+                    <td></td>
+                    <td></td>
+                    <td><?=ArrayHelper::getValue($calf->suit, "name", "")?></td>
+                    <td></td>
+                    <td></td>
                 </tr>
             <?php endforeach; ?>
         <?php else: ?>

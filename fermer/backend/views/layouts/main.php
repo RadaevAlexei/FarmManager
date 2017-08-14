@@ -1,109 +1,65 @@
 <?php
+use yii\helpers\Html;
 
 /* @var $this \yii\web\View */
 /* @var $content string */
 
-use backend\assets\AppAsset;
-use backend\assets\MainBackendAsset;
-use yii\helpers\Html;
-use yii\bootstrap\Nav;
-use yii\bootstrap\NavBar;
-use yii\widgets\Breadcrumbs;
-use common\widgets\Alert;
-use \yii\helpers\Url;
 
-AppAsset::register($this);
-MainBackendAsset::register($this);
+if (Yii::$app->controller->action->id === 'login') { 
+/**
+ * Do not use this code in your template. Remove it. 
+ * Instead, use the code  $this->layout = '//main-login'; in your controller.
+ */
+    echo $this->render(
+        'main-login',
+        ['content' => $content]
+    );
+} else {
 
-?>
-<?php $this->beginPage() ?>
-<!DOCTYPE html>
-<html lang="<?= Yii::$app->language ?>">
-<head>
-    <meta charset="<?= Yii::$app->charset ?>">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <?= Html::csrfMetaTags() ?>
-    <title><?= Html::encode($this->title) ?></title>
-    <?php $this->head() ?>
-</head>
-<body>
-<?php $this->beginBody() ?>
-
-<div class="wrap">
-    <?php
-    NavBar::begin([
-        'brandLabel' => 'My Company',
-        'brandUrl' => Yii::$app->homeUrl,
-        'options' => [
-            'class' => 'navbar-inverse navbar-fixed-top',
-        ],
-    ]);
-    $menuItems = [
-        ['label' => 'Home', 'url' => ['/site/index']],
-    ];
-    if (Yii::$app->user->isGuest) {
-        $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
+    if (class_exists('backend\assets\AppAsset')) {
+        backend\assets\AppAsset::register($this);
     } else {
-        $menuItems[] = '<li>'
-            . Html::beginForm(['/site/logout'], 'post')
-            . Html::submitButton(
-                'Logout (' . Yii::$app->user->identity->username . ')',
-                ['class' => 'btn btn-link']
-            )
-            . Html::endForm()
-            . '</li>';
+        app\assets\AppAsset::register($this);
     }
-    echo Nav::widget([
-        'options' => ['class' => 'navbar-nav navbar-right'],
-        'items' => $menuItems,
-    ]);
-    NavBar::end();
+
+    dmstr\web\AdminLteAsset::register($this);
+
+    $directoryAsset = Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed2010/adminlte/dist');
     ?>
+    <?php $this->beginPage() ?>
+    <!DOCTYPE html>
+    <html lang="<?= Yii::$app->language ?>">
+    <head>
+        <meta charset="<?= Yii::$app->charset ?>"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <?= Html::csrfMetaTags() ?>
+        <title><?= Html::encode($this->title) ?></title>
+        <?php $this->head() ?>
+    </head>
+    <body class="hold-transition skin-blue sidebar-mini">
+    <?php $this->beginBody() ?>
+    <div class="wrapper">
 
-    <div class="container">
+        <?= $this->render(
+            'header.php',
+            ['directoryAsset' => $directoryAsset]
+        ) ?>
 
-        <div class="btn-group">
-            <button type="button" class="btn btn-info">Администрирование</button>
-            <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">
-                <span class="caret"></span>
-                <span class="sr-only"></span>
-            </button>
-            <ul class="dropdown-menu" role="menu">
-                <li><a href="<?=Url::toRoute(['/functions'])?>">Должности</a></li>
-                <li><a href="<?=Url::toRoute(['/transfers'])?>">Переводы</a></li>
-                <li><a href="<?=Url::toRoute(['/employees'])?>">Сотрудники</a></li>
-                <li><a href="<?=Url::toRoute(['/groups'])?>">Группы</a></li>
-                <li><a href="<?=Url::toRoute(['/calfs'])?>">Телята</a></li>
-                <li><a href="<?=Url::toRoute(['/colors'])?>">Масти</a></li>
-                <li><a href="<?=Url::toRoute(['/suspensions'])?>">Перевески</a></li>
-                <li class="divider"></li>
-                <li><a href="<?=Url::toRoute(['/calf/new/'])?>">Добавить теленка</a></li>
-                <li><a href="<?=Url::toRoute(['/color/new/'])?>">Добавить масть</a></li>
-                <li><a href="<?=Url::toRoute(['/group/new/'])?>">Добавить группу</a></li>
-                <li><a href="<?=Url::toRoute(['/employee/new/'])?>">Добавить сотрудника</a></li>
-                <li><a href="<?=Url::toRoute(['/function/new/'])?>">Добавить должность</a></li>
-                <li><a href="<?=Url::toRoute(['/transfer/new/'])?>">Добавить перевод</a></li>
-                <li><a href="<?=Url::toRoute(['/suspension/new/'])?>">Добавить взвешивание</a></li>
-            </ul>
-        </div>
+        <?= $this->render(
+            'left.php',
+            ['directoryAsset' => $directoryAsset]
+        )
+        ?>
 
-        <?= Breadcrumbs::widget([
-            'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
-        ]) ?>
-        <?= Alert::widget() ?>
-        <?= $content ?>
+        <?= $this->render(
+            'content.php',
+            ['content' => $content, 'directoryAsset' => $directoryAsset]
+        ) ?>
+
     </div>
-</div>
 
-<footer class="footer">
-    <div class="container">
-        <p class="pull-left">&copy; Ферма <?= date('Y') ?></p>
-
-        <p class="pull-right"><?= Yii::powered() ?></p>
-    </div>
-</footer>
-
-<?php $this->endBody() ?>
-</body>
-</html>
-<?php $this->endPage() ?>
+    <?php $this->endBody() ?>
+    </body>
+    </html>
+    <?php $this->endPage() ?>
+<?php } ?>

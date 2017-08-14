@@ -48,53 +48,11 @@ return [
             'rules' => [
                 '/' => 'site/index',
 
-                'employees' => 'employees/list',
-                'employee/detail/<id:\d+>' => 'employees/detail',
-                'employee/<action:(new)>' => 'employees/actions',
-                'employee/<action:(new|edit|delete)>/<id:\d+>' => 'employees/actions',
-                'employee/<action:(save)>' => 'employees/save-update',
-                'employee/<action:(save|update)>/<id:\d+>' => 'employees/save-update',
-
-                'functions' => 'functions/list',
-                'function/<action:(new)>' => 'functions/actions',
-                'function/<action:(new|edit|delete)>/<id:\d+>' => 'functions/actions',
-                'function/<action:(save)>' => 'functions/save-update',
-                'function/<action:(save|update)>/<id:\d+>' => 'functions/save-update',
-
-                'transfers' => 'transfers/list',
-                'transfer/<action:(new)>' => 'transfers/actions',
-                'transfer/<action:(new|edit|delete)>/<id:\d+>' => 'transfers/actions',
-                'transfer/<action:(save)>' => 'transfers/save-update',
-                'transfer/<action:(save|update)>/<id:\d+>' => 'transfers/save-update',
-
-                'colors' => 'colors/list',
-                'color/<action:(new)>' => 'colors/actions',
-                'color/<action:(new|edit|delete)>/<id:\d+>' => 'colors/actions',
-                'color/<action:(save)>' => 'colors/save-update',
-                'color/<action:(save|update)>/<id:\d+>' => 'colors/save-update',
-
-                'groups' => 'groups/list',
-                'group/detail/<id:\d+>' => 'groups/detail',
-                'group/<action:(new)>' => 'groups/actions',
-                'group/<action:(new|edit|delete)>/<id:\d+>' => 'groups/actions',
-                'group/<action:(save)>' => 'groups/save-update',
-                'group/<action:(save|update)>/<id:\d+>' => 'groups/save-update',
-
-                'calfs' => 'calfs/list',
-                'calf/detail/<number:\d+>' => 'calfs/detail',
-                'calf/<action:(new)>' => 'calfs/actions',
-                'calf/<action:(new|edit|delete)>/<id:\d+>' => 'calfs/actions',
-                'calf/<action:(save)>' => 'calfs/save-update',
-                'calf/<action:(save|update)>/<id:\d+>' => 'calfs/save-update',
-
-                'suspensions' => 'suspensions/list',
-                'suspension/<action:(new)>' => 'suspensions/actions',
-                'suspension/<action:(new|edit|delete)>/<id:\d+>' => 'suspensions/actions',
-                'suspension/<action:(save)>' => 'suspensions/save-update',
-                'suspension/<action:(save|update)>/<id:\d+>' => 'suspensions/save-update',
-
+                '<controller:\w+>/<id:\d+>' => '<controller>/view',
+                '<controller:[-_0-9a-zA-Z]+>/<action:[-_0-9a-zA-Z]+>/<id:\d+>' => '<controller>/<action>',
                 '<controller:[-_0-9a-zA-Z]+>/<action:[-_0-9a-zA-Z]+>' => '<controller>/<action>',
-                '<module:[-_0-9a-zA-Z]+>/<controller:[-_0-9a-zA-Z]+>/<action:[-_0-9a-zA-Z]+>' => '<module>/<controller>/<action>'
+                '/<module:\w+>/<controller:[-_0-9a-zA-Z]+>/<action:[-_0-9a-zA-Z]+>/<id:\d+>' => '<module>/<controller>/<action>',
+                '/<module:\w+>/<controller:[-_0-9a-zA-Z]+>/<action:[-_0-9a-zA-Z]+>' => '<module>/<controller>/<action>',
             ]
         ],
 

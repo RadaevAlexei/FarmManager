@@ -2,35 +2,50 @@
 
 namespace backend\controllers;
 
-use common\models\Functions;
-use yii\data\Pagination;
+use common\models\Position;
+use common\models\PositionSearch;
+use yii\data\ActiveDataProvider;
 use yii\helpers\Url;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 
-
-class FunctionsController extends Controller
+/**
+ * Class PositionController
+ * @package backend\controllers
+ */
+class PositionController extends BackendController
 {
     /**
+     * Список должностей
      * @return string
      */
-    public function actionList()
+    public function actionIndex()
     {
-        $query = Functions::find();
-
-        $pagination = new Pagination([
-            'defaultPageSize' => 10,
-            'totalCount' => $query->count(),
+        /** @var PositionSearch $searchModel */
+        $searchModel = new PositionSearch([
+            "scenario" => Position::SCENARIO_FILTER
         ]);
 
-        $functions = $query->orderBy('id')
-            ->offset($pagination->offset)
-            ->limit($pagination->limit)
-            ->all();
+        /** @var ActiveDataProvider $dataProvider */
+        $dataProvider = $searchModel->search(\Yii::$app->request->queryParams);
 
-        return $this->render('functions', [
-            'functions' => $functions,
-            'pagination' => $pagination,
+        return $this->render('index', [
+            "searchModel"  => $searchModel,
+            "dataProvider" => $dataProvider,
+        ]);
+    }
+
+    /**
+     * Детальная карточка должности
+     * @param $id
+     * @return string
+     */
+    public function actionView($id)
+    {
+        /** @var Position $position */
+        $position = Position::findOne($id);
+
+        return $this->render('detail', [
+            "position" => $position
         ]);
     }
 

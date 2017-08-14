@@ -185,10 +185,12 @@ class DataHelper
      * @param $date
      * @return mixed
      */
-    public static function getInterval($date)
+    public static function getInterval($_from = null, $_date)
     {
-        $from = date_create(self::getDate(time()));
-        $to = date_create(self::getDate(strtotime($date)));
+        $_from = empty($_from) ? time() : $_from;
+
+        $from = date_create(self::getDate($_from));
+        $to = date_create(self::getDate($_date));
         $days = date_diff($from, $to)->days;
 
         if ($days > 0) {

@@ -124,4 +124,7 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app/back', "CALF_DETAIL_INF
 <script type="text/javascript">
     window.dates = <?=json_encode($dates)?>;
     window.weights = <?=json_encode($weights)?>;
+    window.norm = <?=json_encode($norm)?>;
+//    console.log(window.weights);
+    console.log(window.norm);
 </script>

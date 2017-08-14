@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use alexgx\phpexcel\PhpExcel;
 use common\helpers\DataHelper;
 use common\models\Calf;
 use common\models\Color;
@@ -18,6 +19,9 @@ use yii\web\NotFoundHttpException;
 
 class CalfsController extends Controller
 {
+
+    const NORM_VALUE_KOEF = 0.9;
+
     /**
      * @return string
      */
@@ -77,13 +81,46 @@ class CalfsController extends Controller
         $map = ArrayHelper::map($calfSuspension, 'date', 'weight');
         $dates = array_keys($map);
         $weights = array_values($map);
+        $norm = $this->calculcateNorm($dates, $weights, ArrayHelper::getValue($calf, "birthWeight"));
 
         return $this->render('detail', [
             "calf" => $calf,
             "suspensions" => $calfSuspension,
             "dates" => $dates,
-            "weights" => $weights
+            "weights" => $weights,
+            "norm" => $norm
         ]);
+    }
+
+    /**
+     * Расчет нормы роста теленка
+     * @param array $dates
+     * @param array $weights
+     * @param int $birthWeight
+     * @return array
+     */
+    private function calculcateNorm($dates = [], $weights = [], $birthWeight = 0)
+    {
+        if (empty($dates) || empty($weights)) {
+            return [];
+        }
+
+        $norm = [];
+
+        for ($index = 0; $index < (count($dates)); $index++) {
+            if ($index == 0) {
+                $norm[] = self::NORM_VALUE_KOEF + $birthWeight;
+                continue;
+            }
+
+            $birthDate = DataHelper::getTimeStamp($dates[0]);
+            $curDate = DataHelper::getTimeStamp($dates[$index]);
+            $countDays = DataHelper::getInterval($curDate, $birthDate);
+
+            $norm[] = $countDays * self::NORM_VALUE_KOEF + $birthWeight;
+        }
+
+        return $norm;
     }
 
     private function viewDataDetailCalf(&$calf = null)

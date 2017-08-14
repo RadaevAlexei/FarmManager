@@ -35,17 +35,17 @@ use yii\helpers\ArrayHelper;
         <?php if (!empty($employees)) : ?>
             <?php foreach ($employees as $index => $employee): ?>
                 <tr style="cursor: pointer">
-                    <th><?=($index + 1)?></th>
-                    <th>
+                    <td><?=($index + 1)?></td>
+                    <td>
                         <?php echo Html::a(
                             $employee["fio"],
                             Url::toRoute(['/employee/detail/' . $employee["id"] . '/'])
                         ); ?>
-                    </th>
-                    <th><?=ArrayHelper::getValue($employee, "birthday", "")?></th>
-                    <th><?=ArrayHelper::getValue($employee, "gender", "")?></th>
-                    <th><?=ArrayHelper::getValue($employee, "function.name", "")?></th>
-                    <th>
+                    </td>
+                    <td><?=ArrayHelper::getValue($employee, "birthday", "")?></td>
+                    <td><?=ArrayHelper::getValue($employee, "gender", "")?></td>
+                    <td><?=ArrayHelper::getValue($employee, "function.name", "")?></td>
+                    <td>
                         <div class="btn-group">
                             <button type="button" class="btn btn-warning btn-sm  dropdown-toggle" data-toggle="dropdown">Действие <span class="caret"></span></button>
                             <ul class="dropdown-menu" role="menu">
@@ -53,7 +53,7 @@ use yii\helpers\ArrayHelper;
                                 <li><a href="<?=Url::toRoute(['/employee/delete/' . $employee['id'] . '/'])?>">Удалить</a></li>
                             </ul>
                         </div>
-                    </th>
+                    </td>
                 </tr>
             <?php endforeach; ?>
         <?php else: ?>

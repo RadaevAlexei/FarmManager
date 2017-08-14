@@ -45,21 +45,21 @@ use \yii\helpers\Url;
         <?php if (!empty($calfs)) : ?>
             <?php foreach ($calfs as $index => $calf): ?>
                 <tr data-id="<?=$calf["id"]?>" style="cursor: pointer">
-                    <th><?=($index + 1)?></th>
-                    <th>
+                    <td><?=($index + 1)?></td>
+                    <td>
                         <a href="<?=Url::toRoute(['/calf/detail/' . ArrayHelper::getValue($calf, "number") . "/"])?>">
                             <?=ArrayHelper::getValue($calf, "number")?>
                         </a>
-                    </th>
-                    <th><?=ArrayHelper::getValue($calf, "nickname")?></th>
-                    <th><?=ArrayHelper::getValue($calf, "gender_short")?></th>
-                    <th><?=ArrayHelper::getValue($calf, "birthday")?></th>
-                    <th><?=ArrayHelper::getValue($calf, "birthWeight")?></th>
-                    <th><?=ArrayHelper::getValue($calf, "calfGroup.name")?></th>
-                    <th><?=ArrayHelper::getValue($calf, "suit.name")?></th>
-                    <th><?=ArrayHelper::getValue($calf, "previousWeighing")?></th>
-                    <th><?=ArrayHelper::getValue($calf, "currentWeighing")?></th>
-                    <th align="center">
+                    </td>
+                    <td><?=ArrayHelper::getValue($calf, "nickname")?></td>
+                    <td><?=ArrayHelper::getValue($calf, "gender_short")?></td>
+                    <td><?=ArrayHelper::getValue($calf, "birthday")?></td>
+                    <td><?=ArrayHelper::getValue($calf, "birthWeight")?></td>
+                    <td><?=ArrayHelper::getValue($calf, "calfGroup.name")?></td>
+                    <td><?=ArrayHelper::getValue($calf, "suit.name")?></td>
+                    <td><?=ArrayHelper::getValue($calf, "previousWeighing")?></td>
+                    <td><?=ArrayHelper::getValue($calf, "currentWeighing")?></td>
+                    <td align="center">
                         <div class="btn-group">
                             <button type="button" class="btn btn-warning btn-sm  dropdown-toggle" data-toggle="dropdown">Действие <span class="caret"></span></button>
                             <ul class="dropdown-menu" role="menu">
@@ -67,7 +67,7 @@ use \yii\helpers\Url;
                                 <li><a href="<?=Url::toRoute(['/calf/delete/' . $calf['id'] . '/'])?>">Удалить</a></li>
                             </ul>
                         </div>
-                    </th>
+                    </td>
                 </tr>
             <?php endforeach; ?>
         <?php else: ?>

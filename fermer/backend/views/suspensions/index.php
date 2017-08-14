@@ -24,11 +24,11 @@ use \yii\helpers\Url;
         <?php if (!empty($suspensions)) : ?>
             <?php foreach ($suspensions as $index => $suspension): ?>
                 <tr data-id="<?=$suspension["id"]?>" style="cursor: pointer">
-                    <th><?=($index + 1)?></th>
-                    <th><?=ArrayHelper::getValue($suspension, "date", "")?></th>
-                    <th><?=ArrayHelper::getValue($suspension, "calf", "")?></th>
-                    <th><?=ArrayHelper::getValue($suspension, "weight", "")?></th>
-                    <th align="center">
+                    <td><?=($index + 1)?></td>
+                    <td><?=ArrayHelper::getValue($suspension, "date", "")?></td>
+                    <td><?=ArrayHelper::getValue($suspension, "calf", "")?></td>
+                    <td><?=ArrayHelper::getValue($suspension, "weight", "")?></td>
+                    <td align="center">
                         <div class="btn-group">
                             <button type="button" class="btn btn-warning btn-sm  dropdown-toggle" data-toggle="dropdown">Действие <span class="caret"></span></button>
                             <ul class="dropdown-menu" role="menu">
@@ -36,7 +36,7 @@ use \yii\helpers\Url;
                                 <li><a href="<?=Url::toRoute(['/suspension/delete/' . $suspension['id'] . '/'])?>">Удалить</a></li>
                             </ul>
                         </div>
-                    </th>
+                    </td>
                 </tr>
             <?php endforeach; ?>
         <?php else: ?>

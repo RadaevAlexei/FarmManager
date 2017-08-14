@@ -5,6 +5,7 @@ use Yii;
 use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
+use yii\helpers\ArrayHelper;
 use yii\web\IdentityInterface;
 
 /**
@@ -20,12 +21,49 @@ use yii\web\IdentityInterface;
  * @property integer $created_at
  * @property integer $updated_at
  * @property string $password write-only password
+ *
+ * @property string $firstName
+ * @property string $lastName
+ * @property string $middleName
+ * @property integer $birthday
+ * @property integer $gender
+ * @property integer $position_id
  */
 class User extends ActiveRecord implements IdentityInterface
 {
+    /**
+     * Количество пользователей на странице
+     */
+    const PAGE_SIZE = 10;
+
+    /**
+     * Удаленный пользователь
+     */
     const STATUS_DELETED = 0;
+
+    /**
+     * Активный пользователь
+     */
     const STATUS_ACTIVE = 10;
 
+    /**
+     * Мужской пол
+     */
+    const GENDER_MALE = 0;
+    /**
+     * Женский пол
+     */
+    const GENDER_FEMALE = 1;
+
+    /**
+     * Сценарий при создании и редактировании пользователя
+     */
+    const SCENARIO_CREATE_EDIT = "create_edit";
+
+    /**
+     * Сценарий при фильтрации
+     */
+    const SCENARIO_FILTER = "filter";
 
     /**
      * @inheritdoc
@@ -33,6 +71,94 @@ class User extends ActiveRecord implements IdentityInterface
     public static function tableName()
     {
         return '{{%user}}';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function rules()
+    {
+        return [
+            ['status', 'default', 'value' => self::STATUS_ACTIVE],
+            ['status', 'in', 'range' => self::getUserStatuses()],
+
+            [['firstName', 'lastName', 'middleName'], 'string'],
+            [['firstName', 'lastName', 'middleName'], 'trim'],
+            ['gender', 'in', 'range' => [self::GENDER_MALE, self::GENDER_FEMALE]],
+            ['position_id', 'in', 'range' => Position::getAllPositions()],
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function attributeLabels()
+    {
+        return [
+            'username'   => 'Логин',
+            'email'      => 'Почта',
+            'status'     => 'Статус',
+            'gender'     => 'Пол',
+            'birthday'   => 'Дата Рождения',
+            'position_id'   => 'Должность',
+            'firstName'  => 'Имя',
+            'lastName'   => 'Фамилия',
+            'middleName' => 'Отчество',
+        ];
+    }
+
+    /**
+     * Получаем label пола пользователя
+     * @return string
+     */
+    public function getGenderLabel()
+    {
+        return ($this->gender == self::GENDER_MALE) ? "Мужской" : "Женский";
+    }
+
+    /**
+     * Список всех возможных статусов пользователя
+     * @return array
+     */
+    public static function getUserStatuses()
+    {
+        return [
+            self::STATUS_ACTIVE,
+            self::STATUS_DELETED
+        ];
+    }
+
+    /**
+     * Список полов
+     * @return array
+     */
+    public static function getGenderList()
+    {
+        return [
+            self::GENDER_MALE   => "Мужской",
+            self::GENDER_FEMALE => "Женский"
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function scenarios()
+    {
+        return [
+            self::SCENARIO_CREATE_EDIT => [
+                'username',
+                'password'
+            ],
+            self::SCENARIO_FILTER      => [
+                'username',
+                'email',
+                'fio',
+                'birthday',
+                'gender',
+                'position_id',
+            ],
+        ];
     }
 
     /**
@@ -46,14 +172,21 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @inheritdoc
+     * Получение должности
+     * @return \yii\db\ActiveQuery
      */
-    public function rules()
+    public function getPos()
     {
-        return [
-            ['status', 'default', 'value' => self::STATUS_ACTIVE],
-            ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DELETED]],
-        ];
+        return $this->hasOne(Position::className(), ['id' => 'position_id']);
+    }
+
+    /**
+     * Получение название должности по связи
+     * @return mixed
+     */
+    public function getPosName()
+    {
+        return $this->position_id->name;
     }
 
     /**
@@ -97,7 +230,7 @@ class User extends ActiveRecord implements IdentityInterface
 
         return static::findOne([
             'password_reset_token' => $token,
-            'status' => self::STATUS_ACTIVE,
+            'status'               => self::STATUS_ACTIVE,
         ]);
     }
 
@@ -113,7 +246,7 @@ class User extends ActiveRecord implements IdentityInterface
             return false;
         }
 
-        $timestamp = (int) substr($token, strrpos($token, '_') + 1);
+        $timestamp = (int)substr($token, strrpos($token, '_') + 1);
         $expire = Yii::$app->params['user.passwordResetTokenExpire'];
         return $timestamp + $expire >= time();
     }

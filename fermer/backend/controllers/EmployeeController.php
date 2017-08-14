@@ -9,13 +9,13 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 
 
-class EmployeesController extends Controller
+class EmployeeController extends Controller
 {
     /**
      * Список сотрудников
      * @return string
      */
-    public function actionList()
+    public function actionIndex()
     {
         $query = Employee::find();
 

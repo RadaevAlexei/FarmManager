@@ -9,16 +9,16 @@ SuspensionAsset::register($this);
 
 <div class="form-group clearfix" id="suspensionBlock">
     <div class="col-sm-2">
-        <select class="form-control" name="groups" id="groupsId">
-            <option value="">Выберите группу</option>
-            <?php if (!empty($groups)) : ?>
-                <?php foreach ($groups as $group) : ?>
-                    <option value="<?=$group->id?>"><?=$group->name?></option>
-                <?php endforeach; ?>
-            <?php endif; ?>
-        </select>
+<!--        <select class="form-control" name="groups" id="groupsId">-->
+<!--            <option value="">Выберите дату взвешивания</option>-->
+<!--            --><?php //if (!empty($groups)) : ?>
+<!--                --><?php //foreach ($groups as $group) : ?>
+<!--                    <option value="--><?//=$group->id?><!--">--><?//=$group->name?><!--</option>-->
+<!--                --><?php //endforeach; ?>
+<!--            --><?php //endif; ?>
+<!--        </select>-->
 
-        <div class="date-form" id="dateSuspensionBlock" hidden>
+        <div class="date-form" id="dateSuspensionBlock">
             <div class="form-horizontal">
                 <div class="control-group">
                     <label for="date-picker-2" class="control-label">Дата перевески</label>

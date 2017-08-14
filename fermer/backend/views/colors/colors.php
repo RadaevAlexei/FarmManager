@@ -29,10 +29,10 @@ use \yii\helpers\Url;
         <?php if (!empty($colors)) : ?>
             <?php foreach ($colors as $index => $color): ?>
                 <tr data-id="<?=$color["id"]?>" style="cursor: pointer">
-                    <th><?=($index + 1)?></th>
-                    <th><?=ArrayHelper::getValue($color, "name")?></th>
-                    <th><?=ArrayHelper::getValue($color, "short_name")?></th>
-                    <th>
+                    <td><?=($index + 1)?></td>
+                    <td><?=ArrayHelper::getValue($color, "name")?></td>
+                    <td><?=ArrayHelper::getValue($color, "short_name")?></td>
+                    <td>
                         <div class="btn-group">
                             <button type="button" class="btn btn-warning btn-sm  dropdown-toggle" data-toggle="dropdown">Действие <span class="caret"></span></button>
                             <ul class="dropdown-menu" role="menu">
@@ -40,7 +40,7 @@ use \yii\helpers\Url;
                                 <li><a href="<?=Url::toRoute(['/color/delete/' . $color['id'] . '/'])?>">Удалить</a></li>
                             </ul>
                         </div>
-                    </th>
+                    </td>
                 </tr>
             <?php endforeach; ?>
         <?php else: ?>

@@ -3,6 +3,7 @@
 namespace backend\controllers;
 
 use common\helpers\DataHelper;
+use common\helpers\TransfersAct;
 use common\models\Functions;
 use common\models\Groups;
 use common\models\Transfers;
@@ -46,6 +47,18 @@ class TransfersController extends Controller
             'transfers' => $transfers,
             'pagination' => $pagination,
         ]);
+    }
+
+    public function actionExport()
+    {
+        $data = Transfers::find()
+            ->with(['groupFrom', 'groupTo', 'calfInfo'])
+            ->where(["groupFromId" => 1])
+            ->andWhere(["groupToId" => 2])
+            ->asArray()
+            ->all();
+
+        TransfersAct::create($data);
     }
 
     /**

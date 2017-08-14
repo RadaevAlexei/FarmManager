@@ -32,20 +32,20 @@ use yii\helpers\ArrayHelper;
         <?php if (!empty($groups)) : ?>
             <?php foreach ($groups as $index => $group): ?>
                 <tr style="cursor: pointer">
-                    <th><?=($index + 1)?></th>
-                    <th>
+                    <td><?=($index + 1)?></td>
+                    <td>
                         <?php echo Html::a(
                             ArrayHelper::getValue($group, "name", ""),
                             Url::toRoute(['/group/detail/' . $group["id"] . '/'])
                         ); ?>
-                    </th>
-                    <th>
+                    </td>
+                    <td>
                         <?php echo Html::a(
                             ArrayHelper::getValue($group->employee, "fioEmployee", ""),
                             Url::toRoute(['/employee/detail/' . $group->employee["id"] . '/'])
                         ); ?>
-                    </th>
-                    <th>
+                    </td>
+                    <td>
                         <div class="btn-group">
                             <button type="button" class="btn btn-warning btn-sm  dropdown-toggle" data-toggle="dropdown">Действие <span class="caret"></span></button>
                             <ul class="dropdown-menu" role="menu">
@@ -53,7 +53,7 @@ use yii\helpers\ArrayHelper;
                                 <li><a href="<?=Url::toRoute(['/group/delete/' . $group['id'] . '/'])?>">Удалить</a></li>
                             </ul>
                         </div>
-                    </th>
+                    </td>
                 </tr>
             <?php endforeach; ?>
         <?php else: ?>

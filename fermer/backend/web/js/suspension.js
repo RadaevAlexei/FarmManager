@@ -83,7 +83,7 @@ function isEmpty(field)
     }
 }
 
-function drawChart(d, labels) {
+function drawChart(d, labels, norm) {
 
     var randomColorFactor = function() {
         return Math.round(Math.random() * 255);
@@ -99,11 +99,11 @@ function drawChart(d, labels) {
                 {
                     label: "График роста",
                     data: labels
-                }/*,
+                },
                 {
                     label: 'Норма',
-                    data: [130, 220, 410, 150, 670]
-                }*/
+                    data: norm
+                }
             ]
         },
         options: {
@@ -145,6 +145,7 @@ function drawChart(d, labels) {
 $(function() {
     drawChart(
         window.dates,
-        window.weights
+        window.weights,
+        window.norm
     );
 });
