@@ -8,8 +8,11 @@ use yii\helpers\Url;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 
-
-class EmployeeController extends Controller
+/**
+ * Class EmployeeController
+ * @package backend\controllers
+ */
+class EmployeeController extends BackendController
 {
     /**
      * Список сотрудников

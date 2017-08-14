@@ -15,10 +15,10 @@ use yii\web\NotFoundHttpException;
 
 
 /**
- * Class TransfersController
+ * Class TransferController
  * @package backend\controllers
  */
-class TransfersController extends Controller
+class TransferController extends BackendController
 {
     /**
      * Список переводов

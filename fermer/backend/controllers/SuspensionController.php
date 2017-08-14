@@ -11,8 +11,11 @@ use yii\helpers\Url;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 
-
-class SuspensionsController extends Controller
+/**
+ * Class SuspensionController
+ * @package backend\controllers
+ */
+class SuspensionController extends BackendController
 {
     /**
      * @return string

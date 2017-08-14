@@ -4,19 +4,55 @@ namespace common\models;
 
 
 use yii\db\ActiveRecord;
-use yii\helpers\ArrayHelper;
 
+/**
+ * Class Suspension
+ * @package common\models
+ *
+ * @property $calf integer
+ * @property $weight double
+ * @property $date integer
+ */
 class Suspension extends ActiveRecord
 {
+    /**
+     * Количество перевесок на странице
+     */
+    const PAGE_SIZE = 10;
+
+    /**
+     * Сценарий при создании и редактировании перевески
+     */
+    const SCENARIO_CREATE_EDIT = "create_edit";
+
+    /**
+     * Сценарий при фильтрации
+     */
+    const SCENARIO_FILTER = "filter";
+
+    /**
+     * @return array
+     */
     public function attributeLabels()
     {
         return [
-            'calf' => 'Теленок',
+            'calf'   => 'Теленок',
             'weight' => 'Вес',
-            'date' => 'Дата взвешивания'
+            'date'   => 'Дата взвешивания'
         ];
     }
 
+    /**
+     * @return string
+     */
+    public static function tableName()
+    {
+        return '{{%suspension}}';
+    }
+
+    /**
+     *
+     */
     public function afterFind()
     {
         parent::afterFind();
@@ -41,15 +77,21 @@ class Suspension extends ActiveRecord
         }
     }
 
+    /**
+     * @return array
+     */
     public function rules()
     {
         return [
             [['calf', 'weight'], 'trim'],
-            [['calf', 'weight', 'date'], 'required'],
-            ['weight', 'double'],
+            [['calf', 'weight', 'date'], 'required', 'on' => self::SCENARIO_CREATE_EDIT],
+            ['weight', 'double', 'on' => self::SCENARIO_CREATE_EDIT],
         ];
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getCalfInfo()
     {
         return $this->hasOne(Calf::className(), ['number' => 'calf']);

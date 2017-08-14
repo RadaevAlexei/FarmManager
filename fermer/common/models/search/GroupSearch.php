@@ -1,24 +1,26 @@
 <?php
-namespace common\models;
 
+namespace common\models\search;
+
+use common\models\Group;
 use yii\data\ActiveDataProvider;
 
 /**
- * Class PositionSearch
- * @package common\models
+ * Class GroupSearch
+ * @package common\models\search
  */
-class PositionSearch extends Position
+class GroupSearch extends Group
 {
     /**
-     * Фильтрация должностей
+     * Фильтрация групп
      * @param $params
      */
     public function search($params)
     {
-        $query = Position::find();
+        $query = Group::find();
 
         $dataProvider = new ActiveDataProvider([
-            'query' => $query,
+            'query'      => $query,
             'pagination' => [
                 'pageSize' => self::PAGE_SIZE,
             ],
@@ -31,7 +33,6 @@ class PositionSearch extends Position
         $dataProvider->setSort([
             'attributes' => [
                 'name',
-                'short_name'
             ]
         ]);
 
@@ -40,7 +41,6 @@ class PositionSearch extends Position
         }
 
         $query->andFilterWhere(['like', 'name', $this->name]);
-        $query->andFilterWhere(['like', 'short_name', $this->short_name]);
 
         return $dataProvider;
     }

@@ -7,8 +7,10 @@ use common\helpers\DataHelper;
 use common\models\Calf;
 use common\models\Color;
 use common\models\Groups;
+use common\models\search\CalfSearch;
 use common\models\Suspension;
 use frontend\assets\SuspensionAsset;
+use yii\data\ActiveDataProvider;
 use yii\data\Pagination;
 use yii\db\Query;
 use yii\helpers\ArrayHelper;
@@ -16,18 +18,36 @@ use yii\helpers\Url;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 
-
-class CalfsController extends Controller
+/**
+ * Class CalfController
+ * @package backend\controllers
+ */
+class CalfController extends BackendController
 {
-
+    /**
+     * Какой-то коефициент нормы, нужно дать название правильное
+     */
     const NORM_VALUE_KOEF = 0.9;
 
     /**
      * @return string
      */
-    public function actionList()
+    public function actionIndex()
     {
-        $query = Calf::find()->innerJoinWith(['suit', 'calfGroup']);
+        /** @var CalfSearch $searchModel */
+        $searchModel = new CalfSearch([
+            "scenario" => Calf::SCENARIO_FILTER
+        ]);
+
+        /** @var ActiveDataProvider $dataProvider */
+        $dataProvider = $searchModel->search(\Yii::$app->request->queryParams);
+
+        return $this->render('index', [
+            "searchModel"  => $searchModel,
+            "dataProvider" => $dataProvider,
+        ]);
+
+        /*$query = Calf::find()->innerJoinWith(['suit', 'calfGroup']);
 
         $pagination = new Pagination([
             'defaultPageSize' => 10,
@@ -45,7 +65,7 @@ class CalfsController extends Controller
         return $this->render('index', [
             'calfs' => $calfs,
             'pagination' => $pagination,
-        ]);
+        ]);*/
     }
 
     private function viewDataCalfs(&$calfs = null)

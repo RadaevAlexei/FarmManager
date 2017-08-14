@@ -3,36 +3,61 @@
 namespace backend\controllers;
 
 use common\models\Color;
+use common\models\search\ColorSearch;
+use yii\data\ActiveDataProvider;
 use yii\data\Pagination;
 use yii\helpers\Url;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 
-
-class ColorsController extends Controller
+/**
+ * Class ColorController
+ * @package backend\controllers
+ */
+class ColorController extends BackendController
 {
     /**
      * @return string
      */
-    public function actionList()
+    public function actionIndex()
     {
-        $query = Color::find();
-
-        $pagination = new Pagination([
-            'defaultPageSize' => 10,
-            'totalCount' => $query->count(),
+        /** @var ColorSearch $searchModel */
+        $searchModel = new ColorSearch([
+            "scenario" => Color::SCENARIO_FILTER
         ]);
 
-        $colors = $query->orderBy('id')
-            ->offset($pagination->offset)
-            ->limit($pagination->limit)
-            ->all();
+        /** @var ActiveDataProvider $dataProvider */
+        $dataProvider = $searchModel->search(\Yii::$app->request->queryParams);
 
-        return $this->render('colors', [
-            'colors' => $colors,
-            'pagination' => $pagination,
+        return $this->render('index', [
+            "searchModel"  => $searchModel,
+            "dataProvider" => $dataProvider,
         ]);
     }
+
+    /**
+     * Детальная карточка масти
+     * @param $id
+     * @return string
+     */
+    public function actionView($id)
+    {
+        /** @var Color $color */
+        $color = Color::findOne($id);
+
+        return $this->render('detail', [
+            "color" => $color
+        ]);
+    }
+
+
+
+
+
+
+
+
+
 
 
     public function actionActions($action = null, $id = null)
@@ -58,8 +83,8 @@ class ColorsController extends Controller
 
         return $this->render('color-add', [
             "action" => $action,
-            "url" => $url,
-            "model" => $model
+            "url"    => $url,
+            "model"  => $model
         ]);
     }
 

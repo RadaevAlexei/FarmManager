@@ -2,13 +2,9 @@
 
 namespace backend\controllers;
 
-use common\models\Employee;
 use common\models\User;
-use common\models\UserSearch;
+use common\models\search\UserSearch;
 use yii\data\ActiveDataProvider;
-use yii\data\Pagination;
-use yii\helpers\Url;
-use yii\web\NotFoundHttpException;
 
 /**
  * Class UserController

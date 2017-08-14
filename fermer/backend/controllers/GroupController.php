@@ -9,8 +9,11 @@ use yii\helpers\Url;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 
-
-class GroupsController extends Controller
+/**
+ * Class GroupController
+ * @package backend\controllers
+ */
+class GroupController extends BackendController
 {
     /**
      * @return string

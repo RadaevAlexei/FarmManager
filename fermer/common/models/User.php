@@ -5,7 +5,6 @@ use Yii;
 use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
-use yii\helpers\ArrayHelper;
 use yii\web\IdentityInterface;
 
 /**
@@ -95,15 +94,15 @@ class User extends ActiveRecord implements IdentityInterface
     public function attributeLabels()
     {
         return [
-            'username'   => 'Логин',
-            'email'      => 'Почта',
-            'status'     => 'Статус',
-            'gender'     => 'Пол',
-            'birthday'   => 'Дата Рождения',
-            'position_id'   => 'Должность',
-            'firstName'  => 'Имя',
-            'lastName'   => 'Фамилия',
-            'middleName' => 'Отчество',
+            'username'    => 'Логин',
+            'email'       => 'Почта',
+            'status'      => 'Статус',
+            'gender'      => 'Пол',
+            'birthday'    => 'Дата Рождения',
+            'position_id' => 'Должность',
+            'firstName'   => 'Имя',
+            'lastName'    => 'Фамилия',
+            'middleName'  => 'Отчество',
         ];
     }
 

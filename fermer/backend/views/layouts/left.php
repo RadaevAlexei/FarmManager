@@ -51,6 +51,18 @@ use \yii\helpers\Url;
                         'url' => Url::toRoute(['/position/index'])
                     ],
 
+                    ['label' => 'Стадо', 'options' => ['class' => 'header']],
+                    [
+                        'label' => 'Общий список скота',
+                        'icon' => 'users',
+                        'url' => Url::toRoute(['/calf/index'])
+                    ],
+                    [
+                        'label' => 'Масти',
+                        'icon' => 'users',
+                        'url' => Url::toRoute(['/color/index'])
+                    ],
+
 
                     ['label' => 'Gii', 'icon' => 'file-code-o', 'url' => ['/gii']],
                     ['label' => 'Menu Yii2', 'options' => ['class' => 'header']],

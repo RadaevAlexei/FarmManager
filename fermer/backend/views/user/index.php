@@ -2,8 +2,8 @@
 
 use \yii\grid\GridView;
 use \common\models\User;
-use \common\models\UserSearch;
 use \yii\bootstrap\Html;
+use \common\models\search\UserSearch;
 
 $this->title = 'Список сотрудников';
 $this->params['breadcrumbs'][] = $this->title;

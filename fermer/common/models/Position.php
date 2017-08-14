@@ -33,7 +33,7 @@ class Position extends ActiveRecord
      */
     public static function tableName()
     {
-        return 'position';
+        return '{{%position}}';
     }
 
     /**

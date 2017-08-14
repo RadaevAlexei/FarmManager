@@ -1,12 +1,8 @@
 <?php
-namespace common\models;
+namespace common\models\search;
 
-use Yii;
-use yii\base\NotSupportedException;
-use yii\behaviors\TimestampBehavior;
+use common\models\User;
 use yii\data\ActiveDataProvider;
-use yii\db\ActiveQuery;
-use yii\db\Query;
 
 /**
  * Class UserSearch
