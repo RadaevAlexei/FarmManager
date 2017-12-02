@@ -2,6 +2,7 @@
 
 namespace common\models;
 
+use Yii;
 use yii\db\ActiveRecord;
 
 /**
@@ -43,8 +44,8 @@ class Position extends ActiveRecord
     {
         //TODO:: Сделать переводами
         return [
-            'name'       => 'Название должности',
-            'short_name' => 'Сокращенное название'
+            'name'       => Yii::t('app/position', 'POSITION_NAME'),
+            'short_name' => Yii::t('app/position', 'POSITION_SHORT_NAME')
         ];
     }
 
