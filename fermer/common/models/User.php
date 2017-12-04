@@ -12,10 +12,10 @@ use yii\web\IdentityInterface;
  *
  * @property integer $id
  * @property string $username
+ * @property string $auth_key
  * @property string $password_hash
  * @property string $password_reset_token
  * @property string $email
- * @property string $auth_key
  * @property integer $status
  * @property integer $created_at
  * @property integer $updated_at
@@ -36,19 +36,20 @@ class User extends ActiveRecord implements IdentityInterface
     const PAGE_SIZE = 10;
 
     /**
-     * Удаленный пользователь
-     */
-    const STATUS_DELETED = 0;
-
-    /**
      * Активный пользователь
      */
     const STATUS_ACTIVE = 10;
 
     /**
+     * Удаленный пользователь
+     */
+    const STATUS_DELETED = 0;
+
+    /**
      * Мужской пол
      */
     const GENDER_MALE = 0;
+
     /**
      * Женский пол
      */
@@ -94,29 +95,22 @@ class User extends ActiveRecord implements IdentityInterface
     public function attributeLabels()
     {
         return [
-            'username'    => 'Логин',
-            'email'       => 'Почта',
-            'status'      => 'Статус',
-            'gender'      => 'Пол',
-            'birthday'    => 'Дата Рождения',
-            'position_id' => 'Должность',
-            'firstName'   => 'Имя',
-            'lastName'    => 'Фамилия',
-            'middleName'  => 'Отчество',
+            'username'    => Yii::t('app/user', 'USER_NAME'),
+            'email'       => Yii::t('app/user', 'USER_EMAIL'),
+            'status'      => Yii::t('app/user', 'USER_STATUS'),
+            'gender'      => Yii::t('app/user', 'USER_GENDER'),
+            'birthday'    => Yii::t('app/user', 'USER_BIRTHDAY'),
+            'position_id' => Yii::t('app/position', 'POSITION'),
+            'firstName'   => Yii::t('app/user', 'USER_FIRSTNAME'),
+            'lastName'    => Yii::t('app/user', 'USER_LASTNAME'),
+            'middleName'  => Yii::t('app/user', 'USER_MIDDLENAME'),
+            'posName'     => Yii::t('app/position', 'POSITION_NAME'),
         ];
     }
 
     /**
-     * Получаем label пола пользователя
-     * @return string
-     */
-    public function getGenderLabel()
-    {
-        return ($this->gender == self::GENDER_MALE) ? "Мужской" : "Женский";
-    }
-
-    /**
      * Список всех возможных статусов пользователя
+     *
      * @return array
      */
     public static function getUserStatuses()
@@ -134,8 +128,8 @@ class User extends ActiveRecord implements IdentityInterface
     public static function getGenderList()
     {
         return [
-            self::GENDER_MALE   => "Мужской",
-            self::GENDER_FEMALE => "Женский"
+            self::GENDER_MALE   => Yii::t('app/user', 'USER_GENDER_' . self::GENDER_MALE),
+            self::GENDER_FEMALE => Yii::t('app/user', 'USER_GENDER_' . self::GENDER_FEMALE)
         ];
     }
 
@@ -150,12 +144,16 @@ class User extends ActiveRecord implements IdentityInterface
                 'password'
             ],
             self::SCENARIO_FILTER      => [
+                'firstName',
+                'lastName',
+                'middleName',
                 'username',
                 'email',
                 'fio',
                 'birthday',
                 'gender',
                 'position_id',
+                'posName',
             ],
         ];
     }
@@ -185,7 +183,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getPosName()
     {
-        return $this->position_id->name;
+        return $this->pos->name;
     }
 
     /**

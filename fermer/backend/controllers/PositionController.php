@@ -46,9 +46,9 @@ class PositionController extends BackendController
         /** @var Position $model */
         $model = Position::findOne($id);
 
-        return $this->render('detail', [
-            "model" => $model
-        ]);
+        return $this->render('detail',
+            compact('model')
+        );
     }
 
     /**
@@ -87,9 +87,9 @@ class PositionController extends BackendController
             return $this->redirect(["position/index"]);
         } else {
             \Yii::$app->session->setFlash('error', Yii::t('app/position', 'POSITION_CREATE_ERROR'));
-            return $this->render('new', [
-                'model' => $model,
-            ]);
+            return $this->render('new',
+                compact("model")
+            );
         }
     }
 
@@ -100,11 +100,7 @@ class PositionController extends BackendController
      */
     public function actionEdit($id)
     {
-        $model = Position::find()
-            ->where([
-                'id' => $id
-            ])
-            ->one();
+        $model = Position::findOne($id);
 
         return $this->render('edit',
             compact("model")
@@ -119,11 +115,7 @@ class PositionController extends BackendController
     public function actionUpdate($id)
     {
         /** @var Position $model */
-        $model = Position::find()
-            ->where([
-                'id' => $id
-            ])
-            ->one();
+        $model = Position::findOne($id);
 
         $model->setScenario(Position::SCENARIO_CREATE_EDIT);
 
@@ -135,9 +127,9 @@ class PositionController extends BackendController
             return $this->redirect(["position/index"]);
         } else {
             \Yii::$app->session->setFlash('error', Yii::t('app/position', 'POSITION_EDIT_ERROR'));
-            return $this->render('edit', [
-                'model' => $model,
-            ]);
+            return $this->render('edit',
+                compact('model')
+            );
         }
     }
 

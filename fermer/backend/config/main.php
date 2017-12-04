@@ -65,6 +65,7 @@ return [
                     'fileMap'          => [
                         'app/back'     => 'backend.php',
                         'app/position' => 'position.php',
+                        'app/user'     => 'user.php',
                     ],
                 ]
             ]

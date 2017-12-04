@@ -13,15 +13,15 @@ $this->params['breadcrumbs'][] = $this->title;
 
 ?>
 
-    <div class="form-group">
-        <?= Html::a(
-            Yii::t('app/position', 'POSITION_ADD'),
-            Url::toRoute(['position/new']),
-            [
-                'class' => 'btn btn-primary'
-            ]
-        ) ?>
-    </div>
+<div class="form-group">
+    <?= Html::a(
+        Yii::t('app/position', 'POSITION_ADD'),
+        Url::toRoute(['position/new']),
+        [
+            'class' => 'btn btn-primary'
+        ]
+    ) ?>
+</div>
 
 <?php echo GridView::widget([
     "dataProvider" => $dataProvider,
@@ -33,9 +33,9 @@ $this->params['breadcrumbs'][] = $this->title;
         [
             'class'    => 'yii\grid\ActionColumn',
             'header'   => Yii::t('app/position', 'ACTIONS'),
-            'template' => '<div class="btn-group"> {view} {update} {delete} </div>',
+            'template' => '<div class="btn-group"> {detail} {update} {delete} </div>',
             'buttons'  => [
-                'view'   => function ($url, $model) {
+                'detail'   => function ($url, $model) {
                     return Html::a(
                         '<span class="glyphicon glyphicon-eye-open"></span>',
                         Url::toRoute(['position/detail', 'id' => $model->id]),

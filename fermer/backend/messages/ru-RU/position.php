@@ -4,8 +4,10 @@
 
 return [
 
+    "POSITION"                => "Должность",
     "POSITION_LIST"           => "Список должностей",
     "POSITION_ADD"            => "Добавить должность",
+    "POSITION_CHOOSE"         => "Выберите должность",
     "POSITIONS_NOT_FOUND"     => "Должностей нет",
     "POSITION_NEW"            => "Добавление должности",
     "POSITION_EDIT"           => "Редактирование должности",

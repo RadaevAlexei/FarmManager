@@ -80,12 +80,13 @@ class Position extends ActiveRecord
     }
 
     /**
-     * Полу
+     * Получение всех должностей
+     *
      * @return array
      */
     public static function getAllPositions()
     {
-        $positions = Position::find()->select('id')->asArray()->column();
+        $positions = Position::find()->select(['name', 'id'])->indexBy('id')->column();
         return $positions;
     }
 }

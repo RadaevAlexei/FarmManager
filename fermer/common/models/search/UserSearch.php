@@ -14,7 +14,17 @@ class UserSearch extends User
      * Название должности
      * @var
      */
-    public $positionName;
+    public $posName;
+
+    /**
+     * @return array
+     */
+    public function rules()
+    {
+        return [
+            [['countryName'], 'safe']
+        ];
+    }
 
     /**
      * Фильтрация пользователей
@@ -37,21 +47,26 @@ class UserSearch extends User
          */
         $dataProvider->setSort([
             'attributes' => [
+                'firstName',
+                'lastName',
+                'middleName',
                 'username',
                 'gender',
                 'posName' => [
-                    'asc'   => ['position.name' => SORT_ASC],
-                    'desc'  => ['position.name' => SORT_DESC],
-                    'label' => 'adfgadfg'
+                    'asc'  => ['position.name' => SORT_ASC],
+                    'desc' => ['position.name' => SORT_DESC],
                 ]
             ]
         ]);
 
         if (!($this->load($params) && $this->validate())) {
-            $query->joinWith(['position']);
+            $query->joinWith(['pos']);
             return $dataProvider;
         }
 
+        $query->andFilterWhere(['like', 'firstName', $this->firstName]);
+        $query->andFilterWhere(['like', 'lastName', $this->lastName]);
+        $query->andFilterWhere(['like', 'middleName', $this->middleName]);
         $query->andFilterWhere(['like', 'username', $this->username]);
 
         $query->andFilterWhere([
@@ -59,8 +74,8 @@ class UserSearch extends User
         ]);
 
         $query->joinWith([
-            'posName' => function ($q) {
-                $q->where('position.name LIKE "%' . $this->positionName . '%"');
+            'pos' => function ($q) {
+                $q->where('position.name LIKE "%' . $this->posName . '%"');
             }
         ]);
 
