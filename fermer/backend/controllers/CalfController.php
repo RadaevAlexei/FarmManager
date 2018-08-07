@@ -34,6 +34,7 @@ class CalfController extends BackendController
      */
     public function actionIndex()
     {
+        // Тест
         /** @var CalfSearch $searchModel */
         $searchModel = new CalfSearch([
             "scenario" => Calf::SCENARIO_FILTER
