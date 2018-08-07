@@ -2,14 +2,14 @@
 
 namespace common\models\search;
 
-use common\models\Calf;
+use common\models\Cow;
 use yii\data\ActiveDataProvider;
 
 /**
  * Class CalfSearch
  * @package common\models\search
  */
-class CalfSearch extends Calf
+class CowSearch extends Cow
 {
     /**
      * Фильтрация поголовья
@@ -17,7 +17,7 @@ class CalfSearch extends Calf
      */
     public function search($params)
     {
-        $query = Calf::find();
+        $query = Cow::find();
 
         $dataProvider = new ActiveDataProvider([
             'query'      => $query,

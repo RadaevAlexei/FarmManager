@@ -63,9 +63,14 @@ return [
                     'forceTranslation' => true,
                     'basePath'         => '@backend/messages',
                     'fileMap'          => [
-                        'app/back'     => 'backend.php',
-                        'app/position' => 'position.php',
-                        'app/user'     => 'user.php',
+                        'app/back'       => 'backend.php',
+                        'app/position'   => 'position.php',
+                        'app/color'      => 'color.php',
+                        'app/user'       => 'user.php',
+                        'app/animal'     => 'animal.php',
+                        'app/cowshed'    => 'cowshed.php',
+                        'app/farm'       => 'farm.php',
+                        'app/suspension' => 'suspension.php',
                     ],
                 ]
             ]

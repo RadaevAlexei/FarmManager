@@ -42,7 +42,6 @@ class Position extends ActiveRecord
      */
     public function attributeLabels()
     {
-        //TODO:: Сделать переводами
         return [
             'name'       => Yii::t('app/position', 'POSITION_NAME'),
             'short_name' => Yii::t('app/position', 'POSITION_SHORT_NAME')
@@ -86,7 +85,17 @@ class Position extends ActiveRecord
      */
     public static function getAllPositions()
     {
-        $positions = Position::find()->select(['name', 'id'])->indexBy('id')->column();
+        $positions = self::find()->select(['name', 'id'])->indexBy('id')->column();
+        return $positions;
+    }
+
+    /**
+     * Получаем массив всех ID-шников существующих должностей
+     * @return array
+     */
+    public static function getAllPositionsIDs()
+    {
+        $positions = self::find()->select('id')->column();
         return $positions;
     }
 }

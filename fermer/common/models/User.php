@@ -1,6 +1,7 @@
 <?php
 namespace common\models;
 
+use common\behaviors\DateToTimeBehavior;
 use Yii;
 use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
@@ -65,6 +66,8 @@ class User extends ActiveRecord implements IdentityInterface
      */
     const SCENARIO_FILTER = "filter";
 
+//    public $birthday_formatted;
+
     /**
      * @inheritdoc
      */
@@ -82,10 +85,14 @@ class User extends ActiveRecord implements IdentityInterface
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
             ['status', 'in', 'range' => self::getUserStatuses()],
 
+            [['email'], 'email'],
             [['firstName', 'lastName', 'middleName'], 'string'],
+            [['username', 'lastName', 'email'], 'required', 'on' => self::SCENARIO_CREATE_EDIT],
             [['firstName', 'lastName', 'middleName'], 'trim'],
             ['gender', 'in', 'range' => [self::GENDER_MALE, self::GENDER_FEMALE]],
-            ['position_id', 'in', 'range' => Position::getAllPositions()],
+            ['position_id', 'in', 'range' => Position::getAllPositionsIDs()],
+            [['birthday'], 'date', 'format' => 'php:Y-m-d'],
+//            ['birthday_formatted', 'date', 'format' => 'php:d.m.Y']
         ];
     }
 
@@ -105,6 +112,25 @@ class User extends ActiveRecord implements IdentityInterface
             'lastName'    => Yii::t('app/user', 'USER_LASTNAME'),
             'middleName'  => Yii::t('app/user', 'USER_MIDDLENAME'),
             'posName'     => Yii::t('app/position', 'POSITION_NAME'),
+//            'birthday_formatted'     => 'форматируемая дата',
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return [
+            TimestampBehavior::className(),
+            /*[
+                'class'         => DateToTimeBehavior::className(),
+                'attributes'    => [
+                    ActiveRecord::EVENT_BEFORE_VALIDATE => 'birthday_formatted',
+                    ActiveRecord::EVENT_AFTER_FIND      => 'birthday_formatted',
+                ],
+                'timeAttribute' => 'birthday'
+            ]*/
         ];
     }
 
@@ -141,7 +167,15 @@ class User extends ActiveRecord implements IdentityInterface
         return [
             self::SCENARIO_CREATE_EDIT => [
                 'username',
-                'password'
+                'password',
+                'lastName',
+                'firstName',
+                'middleName',
+                'email',
+                'birthday',
+//                'birthday_formatted',
+                'gender',
+                'position_id',
             ],
             self::SCENARIO_FILTER      => [
                 'firstName',
@@ -155,16 +189,6 @@ class User extends ActiveRecord implements IdentityInterface
                 'position_id',
                 'posName',
             ],
-        ];
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function behaviors()
-    {
-        return [
-            TimestampBehavior::className(),
         ];
     }
 

@@ -12,7 +12,7 @@ use yii\data\ActiveDataProvider;
 class ColorSearch extends Color
 {
     /**
-     * Фильтрация мастей
+     * Фильтрация должностей
      * @param $params
      */
     public function search($params)
@@ -20,7 +20,7 @@ class ColorSearch extends Color
         $query = Color::find();
 
         $dataProvider = new ActiveDataProvider([
-            'query'      => $query,
+            'query' => $query,
             'pagination' => [
                 'pageSize' => self::PAGE_SIZE,
             ],

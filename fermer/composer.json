@@ -21,7 +21,10 @@
         "alexgx/yii2-phpexcel": "*",
         "dmstr/yii2-adminlte-asset": "2.*",
         "cornernote/yii2-softdelete": "*",
-        "yiisoft/yii2-jui": "^2.0"
+        "yiisoft/yii2-jui": "^2.0",
+        "phpoffice/phpexcel": "^1.8",
+        "phpoffice/phpspreadsheet": "^1.0",
+        "yii2tech/ar-softdelete": "^1.0"
 
     },
     "require-dev": {
@@ -31,13 +34,13 @@
         "yiisoft/yii2-faker": "*"
     },
     "config": {
+        "fxp-asset": {
+            "installer-paths": {
+                "npm-asset-library": "vendor/npm",
+                "bower-asset-library": "vendor/bower"
+            }
+        },
         "process-timeout": 1800
-    },
-    "extra": {
-        "asset-installer-paths": {
-            "npm-asset-library": "vendor/npm",
-            "bower-asset-library": "vendor/bower"
-        }
     },
     "scripts": {
         "post-install-cmd": "php init --env=Development --overwrite=n"

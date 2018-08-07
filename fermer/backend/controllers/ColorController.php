@@ -2,21 +2,23 @@
 
 namespace backend\controllers;
 
+use common\helpers\ExcelHelper;
+use Yii;
 use common\models\Color;
 use common\models\search\ColorSearch;
 use yii\data\ActiveDataProvider;
-use yii\data\Pagination;
-use yii\helpers\Url;
-use yii\web\Controller;
-use yii\web\NotFoundHttpException;
 
 /**
+ * Масти коров
+ *
  * Class ColorController
  * @package backend\controllers
  */
 class ColorController extends BackendController
 {
     /**
+     * Список мастей
+     *
      * @return string
      */
     public function actionIndex()
@@ -37,84 +39,114 @@ class ColorController extends BackendController
 
     /**
      * Детальная карточка масти
+     *
      * @param $id
      * @return string
      */
-    public function actionView($id)
+    public function actionDetail($id)
     {
-        /** @var Color $color */
-        $color = Color::findOne($id);
+        /** @var Color $model */
+        $model = Color::findOne($id);
 
-        return $this->render('detail', [
-            "color" => $color
-        ]);
-    }
-
-
-
-
-
-
-
-
-
-
-
-    public function actionActions($action = null, $id = null)
-    {
-        $url = null;
-        $model = null;
-
-        if (empty($action)) {
-            return $this->redirect(["colors/list"]);
-        } else {
-            if ($action == "new") {
-                $model = new Color();
-                $url = Url::toRoute(['/color/save/']);
-            } else if ($action == "edit") {
-                $model = Color::find()->where(['id' => $id])->one();
-                $url = Url::toRoute(['/color/update/' . $id . '/']);
-            } else if ($action == "delete") {
-                $model = Color::find()->where(['id' => $id])->one();
-                $model->delete();
-                return $this->redirect(['colors/list']);
-            }
-        }
-
-        return $this->render('color-add', [
-            "action" => $action,
-            "url"    => $url,
-            "model"  => $model
-        ]);
+        return $this->render('detail',
+            compact('model')
+        );
     }
 
     /**
+     * Страничка добавления новой масти
+     *
+     * @return string
+     */
+    public function actionNew()
+    {
+        $model = new Color([
+            'scenario' => Color::SCENARIO_CREATE_EDIT
+        ]);
+
+        return $this->render('new',
+            compact("model")
+        );
+    }
+
+    /**
+     * Создание масти
+     *
      * @return string|\yii\web\Response
      */
-    public function actionSaveUpdate($action = null, $id = null)
+    public function actionCreate()
     {
-        if (empty($action)) {
-            return $this->redirect(["/colors"]);
-        } else {
-            if ($action == "save") {
-                $model = new Color();
-            } else if ($action == "update") {
-                $model = Color::find()->where(['id' => $id])->one();
-            } else {
-                throw new NotFoundHttpException("Такого действия нет");
-            }
-        }
+        /** @var Color $model */
+        $model = new Color([
+            'scenario' => Color::SCENARIO_CREATE_EDIT
+        ]);
 
         $isLoading = $model->load(\Yii::$app->request->post());
 
         if ($isLoading && $model->validate()) {
             $model->save();
-            \Yii::$app->session->setFlash('success', \Yii::t('app/back', 'COLOR_' . strtoupper($action) . '_SUCCESS'));
-            return $this->redirect(["/colors"]);
+            \Yii::$app->session->setFlash('success', Yii::t('app/color', 'COLOR_CREATE_SUCCESS'));
+            return $this->redirect(["color/index"]);
         } else {
-            return $this->render('color-add', [
-                'model' => $model,
-            ]);
+            \Yii::$app->session->setFlash('error', Yii::t('app/color', 'COLOR_CREATE_ERROR'));
+            return $this->render('new',
+                compact("model")
+            );
         }
+    }
+
+    /**
+     * Страничка редактирования масти
+     *
+     * @return string
+     */
+    public function actionEdit($id)
+    {
+        $model = Color::findOne($id);
+
+        return $this->render('edit',
+            compact("model")
+        );
+    }
+
+    /**
+     * Обновление масти
+     *
+     * @return string|\yii\web\Response
+     */
+    public function actionUpdate($id)
+    {
+        /** @var Color $model */
+        $model = Color::findOne($id);
+
+        $model->setScenario(Color::SCENARIO_CREATE_EDIT);
+
+        $isLoading = $model->load(\Yii::$app->request->post());
+
+        if ($isLoading && $model->validate()) {
+            $model->save();
+            \Yii::$app->session->setFlash('success', Yii::t('app/color', 'COLOR_EDIT_SUCCESS'));
+            return $this->redirect(["color/index"]);
+        } else {
+            \Yii::$app->session->setFlash('error', Yii::t('app/color', 'COLOR_EDIT_ERROR'));
+            return $this->render('edit',
+                compact('model')
+            );
+        }
+    }
+
+    /**
+     * Удаление масти
+     *
+     * @return string|\yii\web\Response
+     */
+    public function actionDelete($id)
+    {
+        /** @var Color $model */
+        $model = Color::findOne($id);
+        $model->delete();
+        \Yii::$app->session->setFlash('success', Yii::t('app/color', 'COLOR_DELETE_SUCCESS'));
+
+        return $this->redirect(['color/index']);
     }
 }

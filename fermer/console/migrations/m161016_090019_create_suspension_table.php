@@ -1,6 +1,7 @@
 <?php
 
 use yii\db\Migration;
+use \common\models\Suspension;
 
 /**
  * Handles the creation for table `suspension`.
@@ -8,16 +9,15 @@ use yii\db\Migration;
 class m161016_090019_create_suspension_table extends Migration
 {
     /**
-     * Перевески(взвешивания)
-     * @inheritdoc
+     *
      */
     public function up()
     {
-        $this->createTable('suspension', [
-            'id' => $this->primaryKey(),             // Идентификатор
-            'date' => $this->integer()->notNull(),   // Дата взвешивания
-            'calf' => $this->integer()->notNull(),   // Теленок
-            'weight' => $this->float()->notNull()    // Вес
+        $this->createTable(Suspension::tableName(), [
+            'id'     => $this->primaryKey(),             // Идентификатор
+            'animal' => $this->integer()->notNull(),     // Животное
+            'date'   => $this->dateTime()->notNull(),    // Дата взвешивания
+            'weight' => $this->float()->notNull()        // Вес
         ]);
     }
 
@@ -26,6 +26,6 @@ class m161016_090019_create_suspension_table extends Migration
      */
     public function down()
     {
-        $this->dropTable('suspension');
+        $this->dropTable(Suspension::tableName());
     }
 }

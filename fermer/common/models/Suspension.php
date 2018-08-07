@@ -6,12 +6,14 @@ namespace common\models;
 use yii\db\ActiveRecord;
 
 /**
+ * Перевеска
+ *
  * Class Suspension
  * @package common\models
  *
- * @property $calf integer
+ * @property \DateTime $date
+ * @property $animal integer
  * @property $weight double
- * @property $date integer
  */
 class Suspension extends ActiveRecord
 {
@@ -36,9 +38,9 @@ class Suspension extends ActiveRecord
     public function attributeLabels()
     {
         return [
-            'calf'   => 'Теленок',
+            'date'   => 'Дата взвешивания',
+            'animal' => 'Животное',
             'weight' => 'Вес',
-            'date'   => 'Дата взвешивания'
         ];
     }
 
@@ -47,34 +49,7 @@ class Suspension extends ActiveRecord
      */
     public static function tableName()
     {
-        return '{{%suspension}}';
-    }
-
-    /**
-     *
-     */
-    public function afterFind()
-    {
-        parent::afterFind();
-        /*$this->calf = [
-            'nickname' => ArrayHelper::getValue($this, 'calfInfo.nickname'),
-            'birthday' => ArrayHelper::getValue($this, 'calfInfo.birthday')
-        ];*/
-    }
-
-
-    /**
-     * @param bool $insert
-     * @return bool
-     */
-    public function beforeSave($insert)
-    {
-        $this->date = strtotime($this->date);
-        if (parent::beforeSave($insert)) {
-            return true;
-        } else {
-            return false;
-        }
+        return '{{%suspensions}}';
     }
 
     /**
@@ -83,8 +58,8 @@ class Suspension extends ActiveRecord
     public function rules()
     {
         return [
-            [['calf', 'weight'], 'trim'],
-            [['calf', 'weight', 'date'], 'required', 'on' => self::SCENARIO_CREATE_EDIT],
+            [['animal', 'weight'], 'trim'],
+            [['animal', 'weight', 'date'], 'required', 'on' => self::SCENARIO_CREATE_EDIT],
             ['weight', 'double', 'on' => self::SCENARIO_CREATE_EDIT],
         ];
     }
@@ -92,8 +67,8 @@ class Suspension extends ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getCalfInfo()
+    public function getAnimalInfo()
     {
-        return $this->hasOne(Calf::className(), ['number' => 'calf']);
+        return $this->hasOne(Animal::className(), ['id' => 'animal']);
     }
 }

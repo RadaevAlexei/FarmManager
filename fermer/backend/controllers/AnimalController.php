@@ -2,12 +2,14 @@
 
 namespace backend\controllers;
 
+use common\helpers\Excel\ExcelHelper;
+use Yii;
 use alexgx\phpexcel\PhpExcel;
 use common\helpers\DataHelper;
-use common\models\Calf;
+use common\models\Animal;
+use common\models\Cow;
 use common\models\Color;
-use common\models\Groups;
-use common\models\search\CalfSearch;
+use common\models\search\CowSearch;
 use common\models\Suspension;
 use frontend\assets\SuspensionAsset;
 use yii\data\ActiveDataProvider;
@@ -19,10 +21,10 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 
 /**
- * Class CalfController
+ * Class AnimalController
  * @package backend\controllers
  */
-class CalfController extends BackendController
+class AnimalController extends BackendController
 {
     /**
      * Какой-то коефициент нормы, нужно дать название правильное
@@ -34,13 +36,23 @@ class CalfController extends BackendController
      */
     public function actionIndex()
     {
-        /** @var CalfSearch $searchModel */
-        $searchModel = new CalfSearch([
-            "scenario" => Calf::SCENARIO_FILTER
-        ]);
+//        ExcelHelper::import('1.xlsx');
+
+        /** @var CowSearch $searchModel */
+        /*$searchModel = new CowSearch([
+            "scenario" => Cow::SCENARIO_FILTER
+        ]);*/
 
         /** @var ActiveDataProvider $dataProvider */
-        $dataProvider = $searchModel->search(\Yii::$app->request->queryParams);
+//        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        /** @var ActiveDataProvider $provider */
+        $dataProvider = new ActiveDataProvider([
+            'query'      => Animal::find(),
+            'pagination' => [
+                'pageSize' => 20,
+            ],
+        ]);
 
         return $this->render('index', [
             "searchModel"  => $searchModel,
@@ -68,6 +80,128 @@ class CalfController extends BackendController
         ]);*/
     }
 
+    /**
+     * Добавление нового животного
+     */
+    public function actionCreate()
+    {
+        /** @var Animal $model */
+        $model = new Animal([
+            'scenario' => Animal::SCENARIO_CREATE_EDIT
+        ]);
+
+        $isLoading = $model->load(Yii::$app->request->post());
+
+        if ($isLoading && $model->validate()) {
+            $model->save();
+            Yii::$app->session->setFlash('success', Yii::t('app/animal', 'ANIMAL_CREATE_SUCCESS'));
+            return $this->redirect(["animal/index"]);
+        } else {
+            Yii::$app->session->setFlash('error', Yii::t('app/animal', 'ANIMAL_CREATE_ERROR'));
+            return $this->render('new',
+                compact("model")
+            );
+        }
+    }
+
+    /**
+     * Страничка добавления нового животного
+     *
+     * @return string
+     */
+    public function actionNew()
+    {
+        $model = new Animal([
+            'scenario' => Animal::SCENARIO_CREATE_EDIT
+        ]);
+
+        return $this->render('new',
+            compact("model")
+        );
+    }
+
+    /**
+     * Страничка редактирования животного
+     *
+     * @return string
+     */
+    public function actionEdit($id)
+    {
+        $model = Animal::findOne($id);
+
+        return $this->render('edit',
+            compact("model")
+        );
+    }
+
+    /**
+     * Обновление животного
+     *
+     * @return string|\yii\web\Response
+     */
+    public function actionUpdate($id)
+    {
+        /** @var Animal $model */
+        $model = Animal::findOne($id);
+
+        $model->setScenario(Animal::SCENARIO_CREATE_EDIT);
+
+        $isLoading = $model->load(\Yii::$app->request->post());
+
+        if ($isLoading && $model->validate()) {
+            $model->save();
+            \Yii::$app->session->setFlash('success', Yii::t('app/animal', 'ANIMAL_EDIT_SUCCESS'));
+            return $this->redirect(["animal/index"]);
+        } else {
+            \Yii::$app->session->setFlash('error', Yii::t('app/animal', 'ANIMAL_EDIT_ERROR'));
+            return $this->render('edit',
+                compact('model')
+            );
+        }
+    }
+
+    /**
+     * Удаление животного
+     *
+     * @return string|\yii\web\Response
+     */
+    public function actionDelete($id)
+    {
+        /** @var Animal $model */
+        $model = Animal::findOne($id);
+        $model->delete();
+        \Yii::$app->session->setFlash('success', Yii::t('app/animal', 'ANIMAL_DELETE_SUCCESS'));
+
+        return $this->redirect(['animal/index']);
+    }
+
+    /**
+     * Детальная карточка животного
+     *
+     * @param $id
+     * @return string
+     */
+    public function actionDetail($id)
+    {
+        /** @var Animal $model */
+        $model = Animal::findOne($id);
+
+        return $this->render('new-detail',
+            compact('model')
+        );
+    }
+
+
+
+
+
+
+
+
+
+
+
+
     private function viewDataCalfs(&$calfs = null)
     {
         if (empty($calfs)) {
@@ -83,9 +217,9 @@ class CalfController extends BackendController
      * @param null $id
      * @return string
      */
-    public function actionDetail($number = null)
+    /*public function actionDetail($number = null)
     {
-        $calf = Calf::find()
+        $calf = Cow::find()
             ->where(['number' => $number])
             ->innerJoinWith(['suit', 'calfGroup'])
             ->one();
@@ -104,13 +238,13 @@ class CalfController extends BackendController
         $norm = $this->calculcateNorm($dates, $weights, ArrayHelper::getValue($calf, "birthWeight"));
 
         return $this->render('detail', [
-            "calf" => $calf,
+            "calf"        => $calf,
             "suspensions" => $calfSuspension,
-            "dates" => $dates,
-            "weights" => $weights,
-            "norm" => $norm
+            "dates"       => $dates,
+            "weights"     => $weights,
+            "norm"        => $norm
         ]);
-    }
+    }*/
 
     /**
      * Расчет нормы роста теленка
@@ -208,7 +342,7 @@ class CalfController extends BackendController
     /**
      * @param null $action
      * @param null $id
-     * @return string|\yii\web\Response
+     * @return string|Yii\web\Response
      * @throws \Exception
      */
     public function actionActions($action = null, $id = null)
@@ -217,14 +351,14 @@ class CalfController extends BackendController
             return $this->redirect(["/calfs"]);
         } else {
             if ($action == "new") {
-                $model = new Calf();
+                $model = new Cow();
                 $url = Url::toRoute(['/calf/save/']);
             } else if ($action == "edit") {
-                $model = Calf::find()->where(['id' => $id])->one();
+                $model = Cow::find()->where(['id' => $id])->one();
                 $model["birthday"] = DataHelper::getDate($model["birthday"], "Y-m-d");
                 $url = Url::toRoute(['/calf/update/' . $id . '/']);
             } else if ($action == "delete") {
-                $model = Calf::find()->where(['id' => $id])->one();
+                $model = Cow::find()->where(['id' => $id])->one();
                 $model->delete();
                 return $this->redirect(['/calfs']);
             }
@@ -235,12 +369,12 @@ class CalfController extends BackendController
         $mothers = [];
         $fathers = [];
 
-        return $this->render('calf-add', [
-            "action" => $action,
-            "url" => $url,
-            "model" => $model,
-            "groups" => $groups,
-            "colors" => $colors,
+        return $this->render('animal-add', [
+            "action"  => $action,
+            "url"     => $url,
+            "model"   => $model,
+            "groups"  => $groups,
+            "colors"  => $colors,
             "mothers" => $mothers,
             "fathers" => $fathers,
         ]);
@@ -249,7 +383,7 @@ class CalfController extends BackendController
     /**
      * @param null $action
      * @param null $id
-     * @return string|\yii\web\Response
+     * @return string|Yii\web\Response
      * @throws NotFoundHttpException
      */
     public function actionSaveUpdate($action = null, $id = null)
@@ -258,20 +392,20 @@ class CalfController extends BackendController
             return $this->redirect(["/calfs"]);
         } else {
             if ($action == "save") {
-                $model = new Calf();
+                $model = new Cow();
             } else if ($action == "update") {
-                $model = Calf::find()->where(['id' => $id])->one();
+                $model = Cow::find()->where(['id' => $id])->one();
             } else {
                 throw new NotFoundHttpException("Такого действия нет");
             }
         }
 
-        $isLoading = $model->load(\Yii::$app->request->post());
+        $isLoading = $model->load(Yii::$app->request->post());
 
         if ($isLoading && $model->validate()) {
             $model->save();
 
-            \Yii::$app->session->setFlash('success', \Yii::t('app/back', 'CALF_' . strtoupper($action) . '_SUCCESS'));
+            Yii::$app->session->setFlash('success', Yii::t('app/back', 'CALF_' . strtoupper($action) . '_SUCCESS'));
             return $this->redirect(['/calfs']);
         } else {
             return $this->render('calf-add', [

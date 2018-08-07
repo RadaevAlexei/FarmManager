@@ -2,20 +2,20 @@
 
 namespace common\models;
 
-use yii\behaviors\TimestampBehavior;
+use Yii;
 use yii\db\ActiveRecord;
 
 /**
  * Class Color
  * @package common\models
  *
- * @property string @name
- * @property string @short_name
+ * @property string $name
+ * @property string $short_name
  */
 class Color extends ActiveRecord
 {
     /**
-     * Количество мастей на странице
+     * Какое количество мастей будем выводить на странице
      */
     const PAGE_SIZE = 10;
 
@@ -42,10 +42,9 @@ class Color extends ActiveRecord
      */
     public function attributeLabels()
     {
-        //TODO:: Сделать переводами
         return [
-            'name'       => 'Название масти',
-            'short_name' => 'Сокращенное название'
+            'name'       => Yii::t('app/color', 'COLOR_NAME'),
+            'short_name' => Yii::t('app/color', 'COLOR_SHORT_NAME')
         ];
     }
 
@@ -58,7 +57,7 @@ class Color extends ActiveRecord
             [['name', 'short_name'], 'unique'],
             [['name', 'short_name'], 'trim'],
             [['name', 'short_name'], 'required', 'on' => self::SCENARIO_CREATE_EDIT],
-            [['name', 'short_name'], 'string'],
+            [['name', 'short_name'], 'string', 'min' => 4, 'max' => 50, 'on' => self::SCENARIO_CREATE_EDIT]
         ];
     }
 
@@ -80,12 +79,23 @@ class Color extends ActiveRecord
     }
 
     /**
-     * @inheritdoc
+     * Получение всех мастей
+     *
+     * @return array
      */
-    public function behaviors()
+    public static function getAllColors()
     {
-        return [
-            TimestampBehavior::className(),
-        ];
+        $colors = self::find()->select(['name', 'id'])->indexBy('id')->column();
+        return $colors;
+    }
+
+    /**
+     * Получаем массив всех ID-шников существующих мастей
+     * @return array
+     */
+    public static function getAllColorsIDs()
+    {
+        $colors = Color::find()->select('id')->column();
+        return $colors;
     }
 }

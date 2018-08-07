@@ -70,7 +70,7 @@ class Transfer extends ActiveRecord
      */
     public function getCalfInfo()
     {
-        return $this->hasOne(Calf::className(), ['number' => 'calf']);
+        return $this->hasOne(Cow::className(), ['number' => 'calf']);
     }
 
     /**

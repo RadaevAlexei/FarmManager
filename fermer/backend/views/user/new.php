@@ -5,6 +5,7 @@ use \yii\helpers\Html;
 use \yii\helpers\Url;
 use \common\models\User;
 use \common\models\Position;
+use \yii\jui\DatePicker;
 
 /** @var User $model */
 
@@ -14,7 +15,7 @@ $this->title = Yii::t('app/user', 'USER_NEW');
 
 <div class="box box-info">
 
-    <?php $form = ActiveForm::begin(['action' => Url::toRoute(['user/create']), 'id' => 'contact-form', 'class' => 'form-horizontal']); ?>
+    <?php $form = ActiveForm::begin(['action' => Url::toRoute(['user/create']), 'id' => 'user-form', 'class' => 'form-horizontal']); ?>
     <div class="box-body">
 
         <div class="form-group">
@@ -23,6 +24,16 @@ $this->title = Yii::t('app/user', 'USER_NEW');
                     'autofocus' => true,
                     'class'     => 'form-control'
                 ]) ?>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-12">
+                <?= $form->field($model, 'email')->input(
+                    'email',
+                    [
+                        'class' => 'form-control'
+                    ]
+                ) ?>
             </div>
         </div>
         <div class="form-group">
@@ -48,8 +59,9 @@ $this->title = Yii::t('app/user', 'USER_NEW');
         </div>
         <div class="form-group">
             <div class="col-sm-12">
-                <?= $form->field($model, 'birthday')->input('date', [
-                    'class' => 'form-control'
+                <?= $form->field($model, 'birthday')->widget(DatePicker::className(), [
+                    'language'   => 'ru',
+                    'dateFormat' => 'yyyy-MM-dd',
                 ]) ?>
             </div>
         </div>

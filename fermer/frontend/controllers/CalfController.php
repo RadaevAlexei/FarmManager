@@ -3,7 +3,7 @@
 namespace frontend\controllers;
 
 
-use common\models\Calf;
+use common\models\Cow;
 use common\models\Suspension;
 use yii\data\Pagination;
 use yii\helpers\ArrayHelper;
@@ -13,7 +13,7 @@ class CalfController extends Controller
 {
     public function actionIndex()
     {
-        $query = Calf::find();
+        $query = Cow::find();
 
         $pagination = new Pagination([
             'defaultPageSize' => 10,
@@ -37,7 +37,7 @@ class CalfController extends Controller
      */
     public function actionDetail($number = null)
     {
-        $calf = Calf::find()
+        $calf = Cow::find()
             ->where(['number' => $number])
             ->one();
 

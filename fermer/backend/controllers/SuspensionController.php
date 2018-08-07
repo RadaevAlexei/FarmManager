@@ -2,15 +2,13 @@
 
 namespace backend\controllers;
 
-use common\models\Calf;
-use common\models\search\SuspensionSearch;
+use common\models\Animal;
 use common\models\Suspension;
+use Yii;
+use common\models\Cow;
+use common\models\search\SuspensionSearch;
 use yii\data\ActiveDataProvider;
-use yii\data\Pagination;
-use yii\db\Query;
-use yii\helpers\ArrayHelper;
-use yii\helpers\Url;
-use yii\web\NotFoundHttpException;
+
 
 /**
  * Class SuspensionController
@@ -19,17 +17,19 @@ use yii\web\NotFoundHttpException;
 class SuspensionController extends BackendController
 {
     /**
+     * Список перевесок
+     *
      * @return string
      */
     public function actionIndex()
     {
         /** @var SuspensionSearch $searchModel */
         $searchModel = new SuspensionSearch([
-            "scenario" => Suspension::SCENARIO_FILTER
+            "scenario" => Cow::SCENARIO_FILTER
         ]);
 
         /** @var ActiveDataProvider $dataProvider */
-        $dataProvider = $searchModel->search(\Yii::$app->request->queryParams);
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
             "searchModel"  => $searchModel,
@@ -38,129 +38,107 @@ class SuspensionController extends BackendController
     }
 
     /**
-     * Детальная карточка перевески
-     * @param $id
+     * Добавление новой перевески
+     */
+    public function actionCreate()
+    {
+        /** @var Suspension $model */
+        $model = new Suspension([
+            'scenario' => Suspension::SCENARIO_CREATE_EDIT
+        ]);
+
+        $isLoading = $model->load(Yii::$app->request->post());
+
+        if ($isLoading && $model->validate()) {
+            $model->save();
+            Yii::$app->session->setFlash('success', Yii::t('app/suspension', 'SUSPENSION_CREATE_SUCCESS'));
+            return $this->redirect(["suspension/index"]);
+        } else {
+            Yii::$app->session->setFlash('error', Yii::t('app/suspension', 'SUSPENSION_CREATE_ERROR'));
+            return $this->render('new',
+                compact("model")
+            );
+        }
+    }
+
+    /**
+     * Страничка добавления новой перевески
+     *
      * @return string
      */
-    public function actionView($id)
+    public function actionNew()
     {
-        /** @var Suspension $suspension */
-        $suspension = Suspension::findOne($id);
-
-        return $this->render('detail', [
-            "suspension" => $suspension
+        $model = new Suspension([
+            'scenario' => Suspension::SCENARIO_CREATE_EDIT
         ]);
+
+        $animals = Animal::getAllListAnimals();
+
+        return $this->render('new',
+            compact(
+                "model",
+                "animals"
+            )
+        );
     }
 
     /**
+     * Страничка редактирования перевески
+     *
      * @return string
      */
-    /*public function actionIndex()
+    public function actionEdit($id)
     {
-        $query = Suspension::find()->innerJoinWith(['calfInfo']);
+        $model = Suspension::findOne($id);
 
-        $pagination = new Pagination([
-            'defaultPageSize' => 10,
-            'totalCount' => $query->count(),
-        ]);
+        $animals = Animal::getAllListAnimals();
 
-        $suspensions = $query->orderBy('id')
-            ->offset($pagination->offset)
-            ->limit($pagination->limit)
-            ->asArray()
-            ->all();
-
-        $this->viewDataSuspensions($suspensions);
-
-        return $this->render('index', [
-            'suspensions' => $suspensions,
-            'pagination' => $pagination,
-        ]);
-    }*/
-
-    private function viewDataSuspensions(&$suspensions = null)
-    {
-        if (empty($suspensions)) {
-            return;
-        }
-
-        foreach ($suspensions as &$suspension) {
-            $this->viewDataSuspension($suspension);
-        }
-    }
-
-    private function viewDataSuspension(&$suspension = null)
-    {
-        if (empty($suspension)) {
-            return;
-        }
-
-        $suspension["date"] = date("d.m.Y", ArrayHelper::getValue($suspension, "date", null));
+        return $this->render('edit',
+            compact(
+                "model",
+                "animals"
+            )
+        );
     }
 
     /**
-     * @param null $action
-     * @param null $id
+     * Обновление перевески
+     *
      * @return string|\yii\web\Response
-     * @throws \Exception
      */
-    public function actionActions($action = null, $id = null)
+    public function actionUpdate($id)
     {
-        if (empty($action)) {
-            return $this->redirect(["/suspensions"]);
-        } else {
-            if ($action == "new") {
-                $model = new Suspension();
-                $url = Url::toRoute(['/suspension/save/']);
-            } else if ($action == "edit") {
-                $model = Suspension::find()->where(['id' => $id])->one();
-                $model["date"] = date("Y-m-d", $model["date"]);
-                $url = Url::toRoute(['/suspension/update/' . $id . '/']);
-            } else if ($action == "delete") {
-                $model = Suspension::find()->where(['id' => $id])->one();
-                $model->delete();
-                return $this->redirect(['/suspensions']);
-            }
-        }
+        /** @var Suspension $model */
+        $model = Suspension::findOne($id);
 
-        return $this->render('suspension-add', [
-            "action" => $action,
-            "url" => $url,
-            "model" => $model
-        ]);
-    }
-
-    /**
-     * @param null $action
-     * @param null $id
-     * @return string|\yii\web\Response
-     * @throws NotFoundHttpException
-     */
-    public function actionSaveUpdate($action = null, $id = null)
-    {
-        if (empty($action)) {
-            return $this->redirect(["/suspensions"]);
-        } else {
-            if ($action == "save") {
-                $model = new Suspension();
-            } else if ($action == "update") {
-                $model = Suspension::find()->where(['id' => $id])->one();
-            } else {
-                throw new NotFoundHttpException("Такого действия нет");
-            }
-        }
+        $model->setScenario(Suspension::SCENARIO_CREATE_EDIT);
 
         $isLoading = $model->load(\Yii::$app->request->post());
 
         if ($isLoading && $model->validate()) {
             $model->save();
-
-            \Yii::$app->session->setFlash('success', \Yii::t('app/back', 'SUSPENSION_' . strtoupper($action) . '_SUCCESS'));
-            return $this->redirect(['/suspensions']);
+            \Yii::$app->session->setFlash('success', Yii::t('app/suspension', 'SUSPENSION_EDIT_SUCCESS'));
+            return $this->redirect(["suspension/index"]);
         } else {
-            return $this->render('suspension-add', [
-                'model' => $model,
-            ]);
+            \Yii::$app->session->setFlash('error', Yii::t('app/suspension', 'SUSPENSION_EDIT_ERROR'));
+            return $this->render('edit',
+                compact('model')
+            );
         }
+    }
+
+    /**
+     * Удаление перевески
+     *
+     * @return string|\yii\web\Response
+     */
+    public function actionDelete($id)
+    {
+        /** @var Suspension $model */
+        $model = Suspension::findOne($id);
+        $model->delete();
+        \Yii::$app->session->setFlash('success', Yii::t('app/suspension', 'SUSPENSION_DELETE_SUCCESS'));
+
+        return $this->redirect(['suspension/index']);
     }
 }

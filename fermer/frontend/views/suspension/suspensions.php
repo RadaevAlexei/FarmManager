@@ -7,7 +7,7 @@ use \frontend\widgets\Suspension;
 
 ?>
 
-<?=Suspension::widget([
-    'data' => $suspensions,
+<?= Suspension::widget([
+    'data'   => $suspensions,
     "result" => $result
-]);?>
+]); ?>

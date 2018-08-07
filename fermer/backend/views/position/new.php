@@ -17,7 +17,7 @@ $this->title = Yii::t('app/position', 'POSITION_NEW');
         <h3 class="box-title"><? /*= Yii::t('app/position', 'POSITION_NEW') */ ?></h3>
     </div>-->
 
-    <?php $form = ActiveForm::begin(['action' => Url::toRoute(['position/create']), 'id' => 'contact-form', 'class' => 'form-horizontal']); ?>
+    <?php $form = ActiveForm::begin(['action' => Url::toRoute(['position/create']), 'id' => 'position-form', 'class' => 'form-horizontal']); ?>
         <div class="box-body">
 
             <div class="form-group">

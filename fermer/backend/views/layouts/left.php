@@ -37,47 +37,56 @@ use \yii\helpers\Url;
         <?= dmstr\widgets\Menu::widget(
             [
                 'options' => ['class' => 'sidebar-menu'],
-                'items' => [
+                'items'   => [
 
                     ['label' => 'Пользователи', 'options' => ['class' => 'header']],
                     [
                         'label' => 'Сотрудники',
-                        'icon' => 'users',
-                        'url' => Url::toRoute(['/user/index'])
+                        'icon'  => 'users',
+                        'url'   => Url::toRoute(['/user/index'])
                     ],
                     [
                         'label' => 'Должности',
-                        'icon' => 'users',
-                        'url' => Url::toRoute(['/position/index'])
+                        'icon'  => 'users',
+                        'url'   => Url::toRoute(['/position/index'])
                     ],
 
                     ['label' => 'Стадо', 'options' => ['class' => 'header']],
                     [
                         'label' => 'Общий список скота',
-                        'icon' => 'users',
-                        'url' => Url::toRoute(['/calf/index'])
+                        'icon'  => 'users',
+                        'url'   => Url::toRoute(['/animal/index'])
                     ],
                     [
                         'label' => 'Масти',
-                        'icon' => 'users',
-                        'url' => Url::toRoute(['/color/index'])
+                        'icon'  => 'users',
+                        'url'   => Url::toRoute(['/color/index'])
+                    ],
+                    [
+                        'label' => 'Коровники',
+                        'icon'  => 'users',
+                        'url'   => Url::toRoute(['/cowshed/index'])
+                    ],
+                    [
+                        'label' => 'Фермы',
+                        'icon'  => 'users',
+                        'url'   => Url::toRoute(['/farm/index'])
                     ],
                     [
                         'label' => 'Группы',
-                        'icon' => 'users',
-                        'url' => Url::toRoute(['/group/index'])
+                        'icon'  => 'users',
+                        'url'   => Url::toRoute(['/group/index'])
                     ],
                     [
                         'label' => 'Переводы',
-                        'icon' => 'users',
-                        'url' => Url::toRoute(['/transfer/index'])
+                        'icon'  => 'users',
+                        'url'   => Url::toRoute(['/transfer/index'])
                     ],
                     [
                         'label' => 'Перевески',
-                        'icon' => 'users',
-                        'url' => Url::toRoute(['/suspension/index'])
+                        'icon'  => 'users',
+                        'url'   => Url::toRoute(['/suspension/index'])
                     ],
-
 
 
                     ['label' => 'Gii', 'icon' => 'file-code-o', 'url' => ['/gii']],
@@ -86,21 +95,21 @@ use \yii\helpers\Url;
                     ['label' => 'Login', 'url' => ['site/login'], 'visible' => Yii::$app->user->isGuest],
                     [
                         'label' => 'Same tools',
-                        'icon' => 'share',
-                        'url' => '#',
+                        'icon'  => 'share',
+                        'url'   => '#',
                         'items' => [
                             ['label' => 'Gii', 'icon' => 'file-code-o', 'url' => ['/gii'],],
                             ['label' => 'Debug', 'icon' => 'dashboard', 'url' => ['/debug'],],
                             [
                                 'label' => 'Level One',
-                                'icon' => 'circle-o',
-                                'url' => '#',
+                                'icon'  => 'circle-o',
+                                'url'   => '#',
                                 'items' => [
                                     ['label' => 'Level Two', 'icon' => 'circle-o', 'url' => '#',],
                                     [
                                         'label' => 'Level Two',
-                                        'icon' => 'circle-o',
-                                        'url' => '#',
+                                        'icon'  => 'circle-o',
+                                        'url'   => '#',
                                         'items' => [
                                             ['label' => 'Level Three', 'icon' => 'circle-o', 'url' => '#',],
                                             ['label' => 'Level Three', 'icon' => 'circle-o', 'url' => '#',],

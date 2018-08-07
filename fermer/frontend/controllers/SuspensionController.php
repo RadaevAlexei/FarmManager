@@ -2,7 +2,7 @@
 
 namespace frontend\controllers;
 
-use common\models\Calf;
+use common\models\Cow;
 use common\models\Groups;
 use common\models\Suspension;
 use yii\data\Pagination;
