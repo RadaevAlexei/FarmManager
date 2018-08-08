@@ -35,3 +35,6 @@ phpunit.phar
 /.vagrant
 
 /*.xlsx
+
+/bin
+/cgi-bin
