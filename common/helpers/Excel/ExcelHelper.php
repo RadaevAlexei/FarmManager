@@ -26,11 +26,12 @@ class ExcelHelper
      */
     public static function import($filename = '')
     {
-        $result_import = false;
+        $result_import = true;
 
         $filter_subset = new WorksheetReadFilter();
 
         $input_file_type = IOFactory::identify($filename);
+        
         $sheet_name = "worksheet";
         $reader = IOFactory::createReader($input_file_type);
         $reader->setLoadSheetsOnly($sheet_name);
