@@ -186,6 +186,8 @@ class AnimalController extends BackendController
         /** @var Animal $model */
         $model = Animal::findOne($id);
 
+//        echo "<pre>" . PHP_EOL; print_r($model); echo "</pre>" . PHP_EOL; die("Debug end" . PHP_EOL);
+
         return $this->render('new-detail',
             compact('model')
         );

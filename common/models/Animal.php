@@ -346,7 +346,7 @@ class Animal extends ActiveRecord
      */
     public function getAnimalGroup()
     {
-        return $this->hasOne(Group::className(), ['id' => 'group_id']);
+        return $this->hasOne(Group::class, ['id' => 'group_id']);
     }
 
     /**
@@ -356,7 +356,7 @@ class Animal extends ActiveRecord
      */
     public function getColor()
     {
-        return $this->hasOne(Color::className(), ['id' => 'color_id']);
+        return $this->hasOne(Color::class, ['id' => 'color_id']);
     }
 
     /**
@@ -366,7 +366,7 @@ class Animal extends ActiveRecord
      */
     public function getCowshed()
     {
-        return $this->hasOne(Cowshed::className(), ['id' => 'cowshed_id']);
+        return $this->hasOne(Cowshed::class, ['id' => 'cowshed_id']);
     }
 
     /**
@@ -376,6 +376,6 @@ class Animal extends ActiveRecord
      */
     public function getFarm()
     {
-        return $this->hasOne(Farm::className(), ['id' => 'farm_id']);
+        return $this->hasOne(Farm::class, ['id' => 'farm_id']);
     }
 }

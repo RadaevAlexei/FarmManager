@@ -1,55 +1,58 @@
 <?php
 
+use \yii\bootstrap\ActiveForm;
+use \yii\helpers\Url;
+use \yii\helpers\Html;
+
 ?>
 
-<form class="form-horizontal">
-    <div class="form-group">
-        <label for="inputName" class="col-sm-2 control-label">Name</label>
+<?php $form = ActiveForm::begin([
+    'action' => Url::toRoute(['animal/update']),
+    'id'     => 'animal-form',
+    'layout' => 'horizontal',
+]); ?>
 
-        <div class="col-sm-10">
-            <input type="email" class="form-control" id="inputName" placeholder="Name">
-        </div>
-    </div>
-    <div class="form-group">
-        <label for="inputEmail" class="col-sm-2 control-label">Email</label>
+<div class="form-group">
+    <label for="inputEmail" class="col-sm-2 control-label">Email</label>
 
-        <div class="col-sm-10">
-            <input type="email" class="form-control" id="inputEmail" placeholder="Email">
-        </div>
+    <div class="col-sm-10">
+        <input type="email" class="form-control" id="inputEmail" placeholder="Email">
     </div>
-    <div class="form-group">
-        <label for="inputName" class="col-sm-2 control-label">Name</label>
+</div>
+<div class="form-group">
+    <label for="inputName" class="col-sm-2 control-label">Name</label>
 
-        <div class="col-sm-10">
-            <input type="text" class="form-control" id="inputName" placeholder="Name">
-        </div>
+    <div class="col-sm-10">
+        <input type="text" class="form-control" id="inputName" placeholder="Name">
     </div>
-    <div class="form-group">
-        <label for="inputExperience" class="col-sm-2 control-label">Experience</label>
+</div>
+<div class="form-group">
+    <label for="inputExperience" class="col-sm-2 control-label">Experience</label>
 
-        <div class="col-sm-10">
-            <textarea class="form-control" id="inputExperience" placeholder="Experience"></textarea>
-        </div>
+    <div class="col-sm-10">
+        <textarea class="form-control" id="inputExperience" placeholder="Experience"></textarea>
     </div>
-    <div class="form-group">
-        <label for="inputSkills" class="col-sm-2 control-label">Skills</label>
+</div>
+<div class="form-group">
+    <label for="inputSkills" class="col-sm-2 control-label">Skills</label>
 
-        <div class="col-sm-10">
-            <input type="text" class="form-control" id="inputSkills" placeholder="Skills">
+    <div class="col-sm-10">
+        <input type="text" class="form-control" id="inputSkills" placeholder="Skills">
+    </div>
+</div>
+<div class="form-group">
+    <div class="col-sm-offset-2 col-sm-10">
+        <div class="checkbox">
+            <label>
+                <input type="checkbox"> I agree to the <a href="#">terms and conditions</a>
+            </label>
         </div>
     </div>
-    <div class="form-group">
-        <div class="col-sm-offset-2 col-sm-10">
-            <div class="checkbox">
-                <label>
-                    <input type="checkbox"> I agree to the <a href="#">terms and conditions</a>
-                </label>
-            </div>
-        </div>
+</div>
+<div class="form-group">
+    <div class="col-sm-offset-2 col-sm-10">
+        <?= Html::submitButton('Обновить', ['class' => 'btn btn-danger pull-right']) ?>
     </div>
-    <div class="form-group">
-        <div class="col-sm-offset-2 col-sm-10">
-            <button type="submit" class="btn btn-danger">Submit</button>
-        </div>
-    </div>
-</form>
+</div>
+
+<?php ActiveForm::end(); ?>

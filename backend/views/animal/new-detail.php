@@ -24,21 +24,31 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app/animal', "ANIMAL_DETAIL
         <!-- Profile Image -->
         <div class="box box-primary">
             <div class="box-body box-profile">
-                <img class="profile-user-img img-responsive img-circle" src="<?=Yii::getAlias('@web') . '/images/1.png'?>" alt="User profile picture">
+                <img class="profile-user-img img-responsive img-circle"
+                     src="<?= Yii::getAlias('@web') . '/images/1.png' ?>" alt="User profile picture">
 
-                <h3 class="profile-username text-center">Nina Mcintire</h3>
+                <h3 class="profile-username text-center"><?= ArrayHelper::getValue($model, "nickname") ?></h3>
 
-                <p class="text-muted text-center">Software Engineer</p>
+                <p class="text-muted text-center"><?= ArrayHelper::getValue($model, "birthday") ?></p>
 
                 <ul class="list-group list-group-unbordered">
                     <li class="list-group-item">
-                        <b>Followers</b> <a class="pull-right">1,322</a>
+                        <b>Происхождение</b> <a class="pull-right"><?= ArrayHelper::getValue($model, "farm.name") ?></a>
                     </li>
                     <li class="list-group-item">
-                        <b>Following</b> <a class="pull-right">543</a>
+                        <b>Коровник</b> <a class="pull-right"><?= ArrayHelper::getValue($model, "cowshed.name") ?></a>
                     </li>
                     <li class="list-group-item">
-                        <b>Friends</b> <a class="pull-right">13,287</a>
+                        <b>Бирка</b> <a class="pull-right"><?= ArrayHelper::getValue($model, "label") ?></a>
+                    </li>
+                    <li class="list-group-item">
+                        <b>Возраст</b> <a class="pull-right">1 год 2 месяца 6 дней</a>
+                    </li>
+                    <li class="list-group-item">
+                        <b>Физ состояние</b><span class="pull-right label label-danger"><?=Animal::getPhysicalState($model->physical_state)?></span>
+                    </li>
+                    <li class="list-group-item">
+                        <b>Рект. иссл-е</b><span class="pull-right label label-primary"><?=Animal::getPhysicalState($model->rectal_examination)?></span>
                     </li>
                 </ul>
 
@@ -91,15 +101,30 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app/animal', "ANIMAL_DETAIL
     <div class="col-md-9">
         <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
-                <li class="active"><a href="#info" data-toggle="tab" aria-expanded="true">Info</a></li>
+                <li class="active"><a href="#info" data-toggle="tab" aria-expanded="true">Основная информация</a></li>
+                <li class=""><a href="#calvings" data-toggle="tab" aria-expanded="true">Отёлы</a></li>
+                <li class=""><a href="#inseminations" data-toggle="tab" aria-expanded="true">Осеменения</a></li>
             </ul>
             <div class="tab-content">
 
                 <div class="active tab-pane" id="info">
-                    <?=$this->render('/animal/tabs/info', [
-
-                    ])?>
+                    <?= $this->render('/animal/tabs/info', [
+                        "model" => $model
+                    ]) ?>
                 </div>
+
+                <div class="tab-pane" id="calvings">
+                    <?= $this->render('/animal/tabs/calvings', [
+
+                    ]) ?>
+                </div>
+
+                <div class="tab-pane" id="inseminations">
+                    <?= $this->render('/animal/tabs/inseminations', [
+
+                    ]) ?>
+                </div>
+
             </div>
         </div>
     </div>
