@@ -14,20 +14,24 @@ $this->params['breadcrumbs'][] = $this->title;
 
 ?>
 
-<div class="form-group">
-    <?= Html::a(
-        Yii::t('app/animal', 'ANIMAL_ADD'),
-        Url::toRoute(['animal/new']),
-        [
-            'class' => 'btn btn-primary'
-        ]
-    ) ?>
-</div>
+    <div class="form-group">
+        <?= Html::a(
+            Yii::t('app/animal', 'ANIMAL_ADD'),
+            Url::toRoute(['animal/new']),
+            [
+                'class' => 'btn btn-primary'
+            ]
+        ) ?>
+    </div>
 
 <?php
 echo GridView::widget([
     "dataProvider" => $dataProvider,
 //    "filterModel"  => $searchModel,
+    'tableOptions' => [
+        'style' => 'display:block; width:100%; overflow-x:auto',
+        'class' => 'table table-striped',
+    ],
     'columns'      => [
         ['class' => 'yii\grid\SerialColumn'],
         [
@@ -96,7 +100,10 @@ echo GridView::widget([
                     return Html::a(
                         '<span class="glyphicon glyphicon-trash"></span>',
                         Url::toRoute(['animal/delete', 'id' => $model->id]),
-                        ['class' => 'btn btn-danger']
+                        [
+                            'class' => 'btn btn-danger',
+                            'data'  => ['confirm' => 'Вы уверены, что хотите удалить этот элемент?']
+                        ]
                     );
                 },
             ],
