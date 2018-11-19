@@ -80,9 +80,17 @@ class UserController extends BackendController
 
         $isLoading = $model->load(Yii::$app->request->post());
 
+        // TODO:: Сделать генерацию пароля
+        $model->setPassword('123123123');
+        $model->generateAuthKey();
+
         if ($isLoading && $model->validate()) {
-            $model->save();
-            Yii::$app->session->setFlash('success', Yii::t('app/user', 'USER_CREATE_SUCCESS'));
+            try {
+                $model->save();
+                Yii::$app->session->setFlash('success', Yii::t('app/user', 'USER_CREATE_SUCCESS'));
+            } catch (\yii\db\Exception $exception) {
+                Yii::$app->session->setFlash('error', Yii::t('app/user', 'USER_CREATE_ERROR'));
+            }
             return $this->redirect(["user/index"]);
         } else {
             Yii::$app->session->setFlash('error', Yii::t('app/user', 'USER_CREATE_ERROR'));

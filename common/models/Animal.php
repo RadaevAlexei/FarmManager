@@ -24,6 +24,9 @@ class Animal extends ActiveRecord
      */
     const SCENARIO_FILTER = "filter";
 
+    const SEX_TYPE_MAN = 0;                 // Мужской пол
+    const SEX_TYPE_WOMAN = 1;               // Женский пол
+
     /**
      * Физиологические состояния
      */
@@ -45,7 +48,7 @@ class Animal extends ActiveRecord
     /**
      *
      */
-    const AVAILABLE_RECTAL_EXAMINATION_STATUSES = [
+    public static $AVAILABLE_RECTAL_EXAMINATION_STATUSES = [
         self::RECTAL_EXAMINATION_NOT_STERILE,
         self::RECTAL_EXAMINATION_STERILE,
         self::RECTAL_EXAMINATION_DUBIOUS

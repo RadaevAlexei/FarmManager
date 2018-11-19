@@ -5,6 +5,7 @@ use \common\models\search\CowSearch;
 use \yii\helpers\Html;
 use \yii\helpers\Url;
 use \common\models\Animal;
+use \common\models\Bull;
 
 $this->title = Yii::t('app/animal', 'ANIMAL_LIST');
 $this->params['breadcrumbs'][] = $this->title;
@@ -14,15 +15,15 @@ $this->params['breadcrumbs'][] = $this->title;
 
 ?>
 
-    <div class="form-group">
-        <?= Html::a(
-            Yii::t('app/animal', 'ANIMAL_ADD'),
-            Url::toRoute(['animal/new']),
-            [
-                'class' => 'btn btn-primary'
-            ]
-        ) ?>
-    </div>
+<div class="form-group">
+    <?= Html::a(
+        Yii::t('app/animal', 'ANIMAL_ADD'),
+        Url::toRoute(['animal/new']),
+        [
+            'class' => 'btn btn-primary'
+        ]
+    ) ?>
+</div>
 
 <?php
 echo GridView::widget([
@@ -63,7 +64,8 @@ echo GridView::widget([
         [
             'attribute' => 'sex',
             'content'   => function ($model) {
-                return '<span class="label label-success">' . Animal::getSexType($model->sex) . '</span>';
+                $class = ($model->sex == Bull::ANIMAL_SEX_TYPE) ? "primary" : "success";
+                return "<span class='label label-$class'>" . Animal::getSexType($model->sex) . "</span>";
             }
         ],
         [
