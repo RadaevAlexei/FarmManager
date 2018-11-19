@@ -34,94 +34,121 @@ use \yii\helpers\Url;
         </form>
         <!-- /.search form -->
 
-        <?= dmstr\widgets\Menu::widget(
-            [
-                'options' => ['class' => 'sidebar-menu'],
-                'items'   => [
+		<?= dmstr\widgets\Menu::widget(
+			[
+				'options' => ['class' => 'sidebar-menu'],
+				'items'   => [
 
-                    ['label' => 'Пользователи', 'options' => ['class' => 'header']],
-                    [
-                        'label' => 'Сотрудники',
-                        'icon'  => 'users',
-                        'url'   => Url::toRoute(['/user/index'])
-                    ],
-                    [
-                        'label' => 'Должности',
-                        'icon'  => 'users',
-                        'url'   => Url::toRoute(['/position/index'])
-                    ],
+					['label' => 'Пользователи', 'options' => ['class' => 'header']],
+					[
+						'label' => 'Сотрудники',
+						'icon'  => 'users',
+						'url'   => Url::toRoute(['/user/index'])
+					],
+					[
+						'label' => 'Должности',
+						'icon'  => 'users',
+						'url'   => Url::toRoute(['/position/index'])
+					],
 
-                    ['label' => 'Стадо', 'options' => ['class' => 'header']],
-                    [
-                        'label' => 'Общий список скота',
-                        'icon'  => 'users',
-                        'url'   => Url::toRoute(['/animal/index'])
-                    ],
-                    [
-                        'label' => 'Масти',
-                        'icon'  => 'users',
-                        'url'   => Url::toRoute(['/color/index'])
-                    ],
-                    [
-                        'label' => 'Коровники',
-                        'icon'  => 'users',
-                        'url'   => Url::toRoute(['/cowshed/index'])
-                    ],
-                    [
-                        'label' => 'Фермы',
-                        'icon'  => 'users',
-                        'url'   => Url::toRoute(['/farm/index'])
-                    ],
-                    [
-                        'label' => 'Группы',
-                        'icon'  => 'users',
-                        'url'   => Url::toRoute(['/group/index'])
-                    ],
-                    [
-                        'label' => 'Переводы',
-                        'icon'  => 'users',
-                        'url'   => Url::toRoute(['/transfer/index'])
-                    ],
-                    [
-                        'label' => 'Перевески',
-                        'icon'  => 'users',
-                        'url'   => Url::toRoute(['/suspension/index'])
-                    ],
+					['label' => 'Стадо', 'options' => ['class' => 'header']],
+					[
+						'label' => 'Общий список скота',
+						'icon'  => 'users',
+						'url'   => Url::toRoute(['/animal/index'])
+					],
+					[
+						'label' => 'Масти',
+						'icon'  => 'users',
+						'url'   => Url::toRoute(['/color/index'])
+					],
+					[
+						'label' => 'Коровники',
+						'icon'  => 'users',
+						'url'   => Url::toRoute(['/cowshed/index'])
+					],
+					[
+						'label' => 'Фермы',
+						'icon'  => 'users',
+						'url'   => Url::toRoute(['/farm/index'])
+					],
+					[
+						'label' => 'Группы',
+						'icon'  => 'users',
+						'url'   => Url::toRoute(['/group/index'])
+					],
+					[
+						'label' => 'Переводы',
+						'icon'  => 'users',
+						'url'   => Url::toRoute(['/transfer/index'])
+					],
+					[
+						'label' => 'Перевески',
+						'icon'  => 'users',
+						'url'   => Url::toRoute(['/suspension/index'])
+					],
+
+					['label' => 'Амбулаторный журнал', 'options' => ['class' => 'header']],
+					[
+						'label' => 'Управление',
+						'icon'  => 'users',
+						'url'   => Url::toRoute(['/scheme/setting/index'])
+					],
+					[
+						'label' => 'Диагнозы',
+						'icon'  => 'users',
+						'url'   => Url::toRoute(['/scheme/diagnosis/index'])
+					],
+					[
+						'label' => 'Аптека',
+						'icon'  => 'users',
+						'url'   => Url::toRoute(['/scheme/pharmacy/index'])
+					],
+					[
+						'label' => 'Схемы лечения',
+						'icon'  => 'users',
+						'url'   => Url::toRoute(['/scheme/scheme/index'])
+					],
+					[
+						'label' => 'Календарь',
+						'icon'  => 'users',
+						'url'   => Url::toRoute(['/scheme/calendar/index'])
+					],
 
 
-                    ['label' => 'Gii', 'icon' => 'file-code-o', 'url' => ['/gii']],
-                    ['label' => 'Menu Yii2', 'options' => ['class' => 'header']],
-                    ['label' => 'Debug', 'icon' => 'dashboard', 'url' => ['/debug']],
-                    ['label' => 'Login', 'url' => ['site/login'], 'visible' => Yii::$app->user->isGuest],
-                    [
-                        'label' => 'Same tools',
-                        'icon'  => 'share',
-                        'url'   => '#',
-                        'items' => [
-                            ['label' => 'Gii', 'icon' => 'file-code-o', 'url' => ['/gii'],],
-                            ['label' => 'Debug', 'icon' => 'dashboard', 'url' => ['/debug'],],
-                            [
-                                'label' => 'Level One',
-                                'icon'  => 'circle-o',
-                                'url'   => '#',
-                                'items' => [
-                                    ['label' => 'Level Two', 'icon' => 'circle-o', 'url' => '#',],
-                                    [
-                                        'label' => 'Level Two',
-                                        'icon'  => 'circle-o',
-                                        'url'   => '#',
-                                        'items' => [
-                                            ['label' => 'Level Three', 'icon' => 'circle-o', 'url' => '#',],
-                                            ['label' => 'Level Three', 'icon' => 'circle-o', 'url' => '#',],
-                                        ],
-                                    ],
-                                ],
-                            ],
-                        ],
-                    ],
-                ],
-            ]
-        ) ?>
+//					['label' => 'Gii', 'icon' => 'file-code-o', 'url' => ['/gii']],
+					['label' => 'Menu Yii2', 'options' => ['class' => 'header']],
+					['label' => 'Debug', 'icon' => 'dashboard', 'url' => ['/debug']],
+					['label' => 'Login', 'url' => ['site/login'], 'visible' => Yii::$app->user->isGuest],
+					[
+						'label' => 'Same tools',
+						'icon'  => 'share',
+						'url'   => '#',
+						'items' => [
+							['label' => 'Gii', 'icon' => 'file-code-o', 'url' => ['/gii'],],
+							['label' => 'Debug', 'icon' => 'dashboard', 'url' => ['/debug'],],
+							[
+								'label' => 'Level One',
+								'icon'  => 'circle-o',
+								'url'   => '#',
+								'items' => [
+									['label' => 'Level Two', 'icon' => 'circle-o', 'url' => '#',],
+									[
+										'label' => 'Level Two',
+										'icon'  => 'circle-o',
+										'url'   => '#',
+										'items' => [
+											['label' => 'Level Three', 'icon' => 'circle-o', 'url' => '#',],
+											['label' => 'Level Three', 'icon' => 'circle-o', 'url' => '#',],
+										],
+									],
+								],
+							],
+						],
+					],
+				],
+			]
+		) ?>
 
     </section>
 
