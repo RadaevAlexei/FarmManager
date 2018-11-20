@@ -70,6 +70,7 @@ return [
 						'app/cowshed'    => 'cowshed.php',
 						'app/farm'       => 'farm.php',
 						'app/suspension' => 'suspension.php',
+						'app/diagnosis'  => 'diagnosis.php',
 					],
 				]
 			]
