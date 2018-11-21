@@ -71,6 +71,7 @@ return [
 						'app/farm'       => 'farm.php',
 						'app/suspension' => 'suspension.php',
 						'app/diagnosis'  => 'diagnosis.php',
+						'app/scheme'     => 'scheme.php',
 					],
 				]
 			]

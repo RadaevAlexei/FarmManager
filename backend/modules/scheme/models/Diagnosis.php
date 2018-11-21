@@ -49,4 +49,12 @@ class Diagnosis extends ActiveRecord
 			[['name'], 'string', 'max' => 255]
 		];
 	}
+
+	/**
+	 * @return array|ActiveRecord[]
+	 */
+	public static function getAllList()
+	{
+		return Diagnosis::find()->all();
+	}
 }

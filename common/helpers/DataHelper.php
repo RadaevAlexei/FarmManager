@@ -67,12 +67,14 @@ class DataHelper
         return null;
     }
 
-    /**
-     * @param $array
-     * @param $needId
-     * @param $field
-     * @return mixed|null
-     */
+	/**
+	 * @param $array
+	 * @param $searchField
+	 * @param $searchValue
+	 * @param $returnValue
+	 *
+	 * @return array|mixed|null
+	 */
     public static function getField($array, $searchField, $searchValue, $returnValue)
     {
         if (empty($array)) {
@@ -129,11 +131,12 @@ class DataHelper
         return date($format, $timestamp);
     }
 
-    /**
-     * Получение timastamp даты
-     * @param null $date
-     * @return int|null
-     */
+	/**
+	 * @param null $date
+	 * @param bool $isReplace
+	 * Получение timastamp даты
+	 * @return false|int|null
+	 */
     public static function getTimeStamp($date = null, $isReplace = false)
     {
         if (empty($date)) {
