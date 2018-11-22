@@ -102,7 +102,7 @@ use \yii\helpers\Url;
 					[
 						'label' => 'Аптека',
 						'icon'  => 'users',
-						'url'   => Url::toRoute(['/scheme/pharmacy/index'])
+						'url'   => Url::toRoute(['/scheme/preparation/index'])
 					],
 					[
 						'label' => 'Схемы лечения',
