@@ -77,6 +77,8 @@ return [
                         'app/groups-action' => 'groups-action.php',
                         'app/action'        => 'action.php',
                         'app/type-field'    => 'type-field.php',
+                        'app/type-list'     => 'type-list.php',
+                        'app/action-list'   => 'action-list.php',
                     ],
                 ]
             ]

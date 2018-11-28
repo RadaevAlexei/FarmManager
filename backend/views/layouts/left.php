@@ -104,6 +104,11 @@ use \yii\helpers\Url;
                                 'icon'  => 'users',
                                 'url'   => Url::toRoute(['/scheme/action/index']),
                             ],
+                            [
+                                'label' => 'Списки',
+                                'icon'  => 'users',
+                                'url'   => Url::toRoute(['/scheme/action-list/index']),
+                            ],
                         ],
                     ],
                     [
