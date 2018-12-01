@@ -11,6 +11,7 @@ use yii\db\ActiveRecord;
  *
  * @property string $name
  * @property integer $type
+ * @property integer $action_list_id
  */
 class Action extends ActiveRecord
 {
@@ -33,8 +34,9 @@ class Action extends ActiveRecord
     public function attributeLabels()
     {
         return [
-            'name' => Yii::t('app/action', 'ACTION_NAME'),
-            'type' => Yii::t('app/action', 'ACTION_TYPE')
+            'name'           => Yii::t('app/action', 'ACTION_NAME'),
+            'type'           => Yii::t('app/action', 'ACTION_TYPE'),
+            'action_list_id' => Yii::t('app/action', 'ACTION_LIST'),
         ];
     }
 
@@ -47,7 +49,7 @@ class Action extends ActiveRecord
             ['name', 'trim'],
             [['name', 'type'], 'required'],
             ['name', 'string', 'max' => 255],
-            ['type', 'integer']
+            [['type', 'action_list_id'], 'integer']
         ];
     }
 }
