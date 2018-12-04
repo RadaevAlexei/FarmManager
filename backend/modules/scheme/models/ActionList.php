@@ -13,6 +13,7 @@ use yii\db\ActiveRecord;
  *
  * @property string $name
  * @property integer $type
+ * @property ActionListItem $items
  */
 class ActionList extends ActiveRecord
 {
@@ -49,7 +50,13 @@ class ActionList extends ActiveRecord
             ['name', 'trim'],
             [['name', 'type'], 'required'],
             ['name', 'string', 'max' => 255],
-            ['type', 'integer']
+            ['type', 'integer'],
+            ['items', 'safe'],
         ];
+    }
+
+    public function getItems()
+    {
+        return $this->hasMany(ActionListItem::class, ['action_list_id' => 'id'])->orderBy(['sort' => SORT_ASC]);
     }
 }

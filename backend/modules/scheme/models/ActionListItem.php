@@ -3,6 +3,7 @@
 namespace backend\modules\scheme\models;
 
 use Yii;
+use yii\behaviors\SluggableBehavior;
 use yii\db\ActiveRecord;
 
 /**
@@ -24,6 +25,20 @@ class ActionListItem extends ActiveRecord
     public static function tableName()
     {
         return '{{%action_list_item}}';
+    }
+
+    /**
+     * @return array
+     */
+    public function behaviors()
+    {
+        return [
+            [
+                'class'         => SluggableBehavior::class,
+                'attribute'     => 'value',
+                'slugAttribute' => 'name',
+            ],
+        ];
     }
 
     /**

@@ -5,8 +5,11 @@ use \yii\helpers\Html;
 use \yii\helpers\Url;
 use \yii\data\ActiveDataProvider;
 use backend\modules\scheme\models\search\ActionListSearch;
-use \backend\modules\scheme\models\ActionList;
 use \common\models\TypeList;
+use \backend\modules\scheme\models\ActionList;
+use \backend\modules\scheme\assets\ActionListAsset;
+
+ActionListAsset::register($this);
 
 $this->title = Yii::t('app/action-list', 'ACTION_LIST');
 $this->params['breadcrumbs'][] = $this->title;
