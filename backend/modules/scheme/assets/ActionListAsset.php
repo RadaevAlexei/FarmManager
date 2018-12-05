@@ -13,7 +13,9 @@ class ActionListAsset extends AssetBundle
     public $basePath = '@webroot';
     public $baseUrl = '@web';
 
-    public $css = [];
+    public $css = [
+        'css/scheme/action-list.css'
+    ];
 
     public $js = [
         'js/scheme/action-list.js'

@@ -202,4 +202,25 @@ class DataHelper
         return 0;
     }
 
+    public static function getArrayString($array)
+    {
+        if (empty($array)) {
+            return "";
+        }
+
+        $result = "";
+
+        foreach ($array as $key => $data) {
+            if (is_string($data)) {
+                $result .= $data . PHP_EOL;
+            } else if (is_array($data)) {
+                foreach ($data as $sub_data) {
+                    $result .= $sub_data . PHP_EOL;
+                }
+            }
+        }
+
+        return $result;
+    }
+
 }

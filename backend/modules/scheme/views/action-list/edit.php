@@ -50,18 +50,35 @@ $this->params['breadcrumbs'][] = $this->title;
                 <label>Пункты меню:</label>
                 <div class="input-group">
                     <div class="input-group-btn">
-                        <button data-url="<?= Url::to(['add-new-item']) ?>" id="add-action-item" type="button"
-                                class="btn btn-danger" disabled="true">Добавить
+                        <button data-action-list-id="<?= $model->id ?>"
+                                data-add-item-url="<?= Url::to(['add-new-item']) ?>"
+                                id="add-action-item"
+                                type="button"
+                                class="btn btn-danger"
+                                disabled="true">Добавить
                         </button>
                     </div>
                     <input id="new-item" type="text" class="form-control">
                 </div>
                 <div class="box box-solid">
                     <div class="box-body">
-                        <ul id="list_block_item" style="list-style-type: none; padding-left: 15px;">
+                        <ul id="list_block_item" style="list-style-type: none; padding-left: 0">
                             <?php foreach ($model->items as $item) : ?>
-                                <li>
-                                    <?= ArrayHelper::getValue($item, "name") ?> <i remove-action-item class='fa fa-minus-circle'></i>
+                                <li data-remove-url="<?= Url::to([
+                                    'remove-item',
+                                    'action_list_id' => $model->id,
+                                    'item_id'        => $item->id
+                                ]) ?>" class="action-list-item">
+                                    <div class="input-group input-group-sm">
+                                        <?= Html::textInput(
+                                            'items',
+                                            ArrayHelper::getValue($item, "name"),
+                                            ["class" => "form-control"]
+                                        ) ?>
+                                        <span class="input-group-btn">
+                                            <button remove-action-item type="button" class="btn btn-danger btn-flat">Удалить</button>
+                                        </span>
+                                    </div>
                                 </li>
                             <?php endforeach; ?>
                         </ul>

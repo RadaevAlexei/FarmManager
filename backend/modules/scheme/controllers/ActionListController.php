@@ -3,6 +3,7 @@
 namespace backend\modules\scheme\controllers;
 
 use backend\modules\scheme\models\ActionListItem;
+use common\helpers\DataHelper;
 use Yii;
 use backend\modules\scheme\models\ActionList;
 use common\models\TypeList;
@@ -11,6 +12,7 @@ use backend\controllers\BackendController;
 use yii\data\ActiveDataProvider;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Inflector;
+use yii\web\BadRequestHttpException;
 use yii\web\Response;
 
 /**
@@ -140,42 +142,85 @@ class ActionListController extends BackendController
 
     public function actionAddNewItem()
     {
-        $post = Yii::$app->request->post();
+        $request = Yii::$app->request;
+        $response = Yii::$app->response;
 
-        $model = new ActionListItem();
-        $model->name = $post["name"];
-        $model->load($post);
-echo "<pre>"; print_r($model); echo "</pre>"; die("Debug");
-        if ($model->validate()) {
-            echo "<pre>"; print_r($model); echo "</pre>"; die("Debug");
-            return $this->renderAjax('templates/action-list-items', [
+        $transaction = Yii::$app->db->beginTransaction();
 
+        try {
+            if (!$request->isAjax) {
+                throw new BadRequestHttpException();
+            }
+
+            $name = $request->post("name");
+            $action_list_id = $request->post("action_list_id");
+
+            /** @var ActionListItem $newItem */
+            $newItem = new ActionListItem();
+            $newItem->name = $name;
+            $newItem->action_list_id = $action_list_id;
+            $newItem->value = Inflector::slug($name);
+            $newItem->sort = 100;
+
+            if ($newItem->validate()) {
+                $newItem->save();
+            } else {
+                $message = DataHelper::getArrayString($newItem->getErrors());
+                throw new \Exception($message, 400);
+            }
+
+            $response->setStatusCode(200);
+            $response->data["render"] = $this->renderAjax("new-item", [
+                "model"        => $newItem,
+                "actionListId" => $action_list_id,
             ]);
+            $response->data["message"] = "Успешное добавление нового элемента списка";
+            $transaction->commit();
+        } catch (\Exception $exception) {
+            $response->setStatusCode(400);
+            $response->data["message"] = "Ошибка при добавлении элемента списка";
+            $transaction->rollBack();
         }
+
+        $response->format = Response::FORMAT_JSON;
+
+        return $response;
     }
 
     /**
      * @param $action_list_id
      * @param $item_id
      *
-     * @return Response
+     * @return \yii\console\Response|Response
      */
     public function actionRemoveItem($action_list_id, $item_id)
     {
-        try {
-            ActionListItem::find()
-                ->where([
-                    "action_list_id" => $action_list_id,
-                    "id"             => $item_id,
-                ])
-                ->one()
-                ->delete();
+        $request = Yii::$app->request;
+        $response = Yii::$app->response;
 
-            Yii::$app->session->setFlash('success', Yii::t('app/action-list', 'ACTION_LIST_DELETE_ITEM_SUCCESS'));
+        $transaction = Yii::$app->db->beginTransaction();
+
+        try {
+            if (!$request->isAjax) {
+                throw new BadRequestHttpException();
+            }
+
+            ActionListItem::deleteAll([
+                "action_list_id" => $action_list_id,
+                "id"             => $item_id,
+            ]);
+
+            $response->setStatusCode(200);
+            $response->data["message"] = "Элемент списка был успешно удалён";
+            $transaction->commit();
         } catch (\Exception $exception) {
-            Yii::$app->session->setFlash('success', Yii::t('app/action-list', 'ACTION_LIST_DELETE_ITEM_ERROR'));
+            $response->setStatusCode(404);
+            $response->data["message"] = "Ошибка при удалении элемента списка";
+            $transaction->rollBack();
         }
 
-        return $this->redirect(['edit', 'id' => $action_list_id]);
+        $response->format = Response::FORMAT_JSON;
+
+        return $response;
     }
 }

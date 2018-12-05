@@ -61,9 +61,10 @@ class ActionListItem extends ActiveRecord
     {
         return [
             ['name', 'trim'],
+            ['name', 'unique'],
             [['action_list_id', 'name', 'value', 'sort'], 'required'],
             [['name', 'value'], 'string'],
-            [['action_list', 'sort'], 'integer']
+            [['action_list_id', 'sort'], 'integer']
         ];
     }
 }
