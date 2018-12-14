@@ -16,11 +16,8 @@ class TypeField
     // Число
     const TYPE_NUMBER = 1;
 
-    // Дата
-    const TYPE_DATE = 2;
-
     // Список
-    const TYPE_LIST = 3;
+    const TYPE_LIST = 2;
 
     /**
      * @return array
@@ -30,7 +27,6 @@ class TypeField
         return [
             self::TYPE_TEXT   => Yii::t('app/type-field', 'TYPE_FIELD_TEXT'),
             self::TYPE_NUMBER => Yii::t('app/type-field', 'TYPE_FIELD_NUMBER'),
-            self::TYPE_DATE   => Yii::t('app/type-field', 'TYPE_FIELD_DATE'),
             self::TYPE_LIST   => Yii::t('app/type-field', 'TYPE_FIELD_LIST'),
         ];
     }

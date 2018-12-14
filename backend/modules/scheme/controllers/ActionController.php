@@ -3,6 +3,7 @@
 namespace backend\modules\scheme\controllers;
 
 use backend\modules\scheme\models\Action;
+use backend\modules\scheme\models\ActionList;
 use backend\modules\scheme\models\search\ActionSearch;
 use common\models\TypeField;
 use Yii;
@@ -46,8 +47,11 @@ class ActionController extends BackendController
 
         $typeFieldList = TypeField::getList();
 
+        $actionList =  ArrayHelper::map(ActionList::find()->all(), "id", "name");
+        $typeList = TypeField::TYPE_LIST;
+
         return $this->render('new',
-            compact('model', 'typeFieldList')
+            compact('model', 'typeFieldList', 'actionList', 'typeList')
         );
     }
 
@@ -88,8 +92,11 @@ class ActionController extends BackendController
 
         $typeFieldList = TypeField::getList();
 
+        $actionList =  ArrayHelper::map(ActionList::find()->all(), "id", "name");
+        $typeList = TypeField::TYPE_LIST;
+
         return $this->render('edit',
-            compact('model', 'typeFieldList')
+            compact('model', 'typeFieldList', 'actionList', 'typeList')
         );
     }
 

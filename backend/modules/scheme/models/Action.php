@@ -12,6 +12,7 @@ use yii\db\ActiveRecord;
  * @property string $name
  * @property integer $type
  * @property integer $action_list_id
+ * @property ActionList actionList
  */
 class Action extends ActiveRecord
 {
@@ -51,5 +52,10 @@ class Action extends ActiveRecord
             ['name', 'string', 'max' => 255],
             [['type', 'action_list_id'], 'integer']
         ];
+    }
+
+    public function getActionList()
+    {
+        return $this->hasOne(ActionList::class, ['id' => 'action_list_id']);
     }
 }

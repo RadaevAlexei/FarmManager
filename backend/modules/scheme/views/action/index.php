@@ -7,6 +7,7 @@ use \yii\data\ActiveDataProvider;
 use backend\modules\scheme\models\search\ActionSearch;
 use backend\modules\scheme\models\Action;
 use \common\models\TypeField;
+use \yii\helpers\ArrayHelper;
 
 $this->title = Yii::t('app/action', 'ACTION_LIST');
 $this->params['breadcrumbs'][] = $this->title;
@@ -31,13 +32,22 @@ $this->params['breadcrumbs'][] = $this->title;
 <?php echo GridView::widget([
     "dataProvider" => $dataProvider,
     "filterModel"  => $searchModel,
+    'formatter'    => ['class' => 'yii\i18n\Formatter', 'nullDisplay' => ''],
     'columns'      => [
         ['class' => 'yii\grid\SerialColumn'],
         'name',
         [
             'attribute' => 'type',
-            'value' => function(Action $model) {
+            'value'     => function (Action $model) {
                 return TypeField::getType($model->type);
+            }
+        ],
+        [
+            'attribute' => 'action_list_id',
+            'format'    => 'raw',
+            'value'     => function (Action $model) {
+                return Html::a(ArrayHelper::getValue($model, "actionList.name"),
+                    Url::to(['action-list/edit', 'id' => $model->action_list_id]));
             }
         ],
         [
