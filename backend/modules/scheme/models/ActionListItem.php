@@ -14,7 +14,6 @@ use yii\db\ActiveRecord;
  *
  * @property integer $action_list_id
  * @property string $name
- * @property string $value
  * @property integer $sort
  */
 class ActionListItem extends ActiveRecord
@@ -30,26 +29,11 @@ class ActionListItem extends ActiveRecord
     /**
      * @return array
      */
-    public function behaviors()
-    {
-        return [
-            [
-                'class'         => SluggableBehavior::class,
-                'attribute'     => 'value',
-                'slugAttribute' => 'name',
-            ],
-        ];
-    }
-
-    /**
-     * @return array
-     */
     public function attributeLabels()
     {
         return [
             'action_list_id' => Yii::t('app/action-list-item', 'ACTION_LIST_ITEM_LIST'),
             'name'           => Yii::t('app/action-list-item', 'ACTION_LIST_ITEM_NAME'),
-            'value'          => Yii::t('app/action-list-item', 'ACTION_LIST_ITEM_VALUE'),
             'sort'           => Yii::t('app/action-list-item', 'ACTION_LIST_ITEM_SORT'),
         ];
     }
@@ -62,8 +46,8 @@ class ActionListItem extends ActiveRecord
         return [
             ['name', 'trim'],
             ['name', 'unique'],
-            [['action_list_id', 'name', 'value', 'sort'], 'required'],
-            [['name', 'value'], 'string'],
+            [['action_list_id', 'name', 'sort'], 'required'],
+            [['name'], 'string'],
             [['action_list_id', 'sort'], 'integer']
         ];
     }

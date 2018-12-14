@@ -46,23 +46,6 @@ $this->title = Yii::t('app/action-list', 'ACTION_LIST_NEW');
             </div>
         </div>
 
-        <div class="form-group" id="list_block">
-            <div class="col-sm-12">
-                <label>Пункты меню:</label>
-                <div class="input-group">
-                    <div class="input-group-btn">
-                        <button id="add-action-item" type="button" class="btn btn-danger">Добавить</button>
-                    </div>
-                    <input id="new-item" type="text" class="form-control">
-                </div>
-                <div class="box box-solid">
-                    <div class="box-body">
-                        <ul id="list_block_item" style="list-style-type: none; padding-left: 15px; "></ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-
     </div>
 
     <div class="box-footer">

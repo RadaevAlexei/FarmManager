@@ -11,6 +11,7 @@ use yii\db\ActiveRecord;
  *
  * СПИСКИ
  *
+ * @property integer $id
  * @property string $name
  * @property integer $type
  * @property ActionListItem $items

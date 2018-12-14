@@ -39,8 +39,19 @@ $this->params['breadcrumbs'][] = $this->title;
         'name',
         [
             'attribute' => 'type',
-            'value' => function(ActionList $model) {
+            'value'     => function (ActionList $model) {
                 return TypeList::getType($model->type);
+            }
+        ],
+        [
+            'label'  => 'Элементы списка',
+            'format' => 'raw',
+            'value'  => function (ActionList $model) {
+                $items = "";
+                foreach ($model->items as $item) {
+                    $items .= Html::tag("li", $item->name);
+                }
+                return Html::tag('ul', $items);
             }
         ],
         [
@@ -56,11 +67,12 @@ $this->params['breadcrumbs'][] = $this->title;
                     );
                 },
                 'delete' => function ($url, $model) {
-                    return Html::a(
-                        '<span class="glyphicon glyphicon-trash"></span>',
-                        Url::toRoute(['action-list/delete', 'id' => $model->id]),
-                        ['class' => 'btn btn-danger']
-                    );
+                    return Html::button('<span class="glyphicon glyphicon-trash"></span>', [
+                        "class" => "btn btn-danger remove-action-list",
+                        'data'  => [
+                            'url' => Url::toRoute(['action-list/delete', 'id' => $model->id]),
+                        ]
+                    ]);
                 },
             ],
         ],

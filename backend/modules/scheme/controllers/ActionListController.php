@@ -68,7 +68,7 @@ class ActionListController extends BackendController
             $model->save();
             Yii::$app->session->setFlash('success', Yii::t('app/action-list', 'ACTION_LIST_CREATE_SUCCESS'));
 
-            return $this->redirect(["index"]);
+            return $this->redirect(["edit", "id" => $model->id]);
         } else {
             Yii::$app->session->setFlash('error', Yii::t('app/action-list', 'ACTION_LIST_CREATE_ERROR'));
 
@@ -132,12 +132,35 @@ class ActionListController extends BackendController
      */
     public function actionDelete($id)
     {
-        /** @var ActionList $model */
-        $model = ActionList::findOne($id);
-        $model->delete();
-        Yii::$app->session->setFlash('success', Yii::t('app/action-list', 'ACTION_LIST_DELETE_SUCCESS'));
+        $request = Yii::$app->request;
+        $response = Yii::$app->response;
 
-        return $this->redirect(['index']);
+        $transaction = Yii::$app->db->beginTransaction();
+
+        try {
+            if (!$request->isAjax) {
+                throw new BadRequestHttpException();
+            }
+
+            $model = ActionList::findOne($id);
+            $model->delete();
+
+            ActionListItem::deleteAll([
+                "action_list_id" => $id,
+            ]);
+
+            $response->setStatusCode(200);
+            $response->data["message"] = Yii::t('app/action-list', 'ACTION_LIST_DELETE_SUCCESS');
+            $transaction->commit();
+        } catch (\Exception $exception) {
+            $response->setStatusCode(404);
+            $response->data["message"] = Yii::t('app/action-list', 'ACTION_LIST_DELETE_ERROR');
+            $transaction->rollBack();
+        }
+
+        $response->format = Response::FORMAT_JSON;
+
+        return $response;
     }
 
     public function actionAddNewItem()
@@ -159,7 +182,6 @@ class ActionListController extends BackendController
             $newItem = new ActionListItem();
             $newItem->name = $name;
             $newItem->action_list_id = $action_list_id;
-            $newItem->value = Inflector::slug($name);
             $newItem->sort = 100;
 
             if ($newItem->validate()) {
@@ -177,6 +199,7 @@ class ActionListController extends BackendController
             $response->data["message"] = "Успешное добавление нового элемента списка";
             $transaction->commit();
         } catch (\Exception $exception) {
+            echo "<pre>"; print_r($exception->getMessage()); echo "</pre>"; die("Debug");
             $response->setStatusCode(400);
             $response->data["message"] = "Ошибка при добавлении элемента списка";
             $transaction->rollBack();
