@@ -1,7 +1,9 @@
 <?php
 
-namespace backend\modules\scheme\models;
+namespace backend\modules\scheme\models\links;
 
+use backend\modules\scheme\models\Action;
+use backend\modules\scheme\models\GroupsAction;
 use Yii;
 use yii\db\ActiveRecord;
 

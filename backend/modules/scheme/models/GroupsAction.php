@@ -3,6 +3,7 @@
 namespace backend\modules\scheme\models;
 
 use Yii;
+use backend\modules\scheme\models\links\GroupsActionLink;
 use yii\db\ActiveRecord;
 
 /**
@@ -10,6 +11,8 @@ use yii\db\ActiveRecord;
  * @package backend\modules\scheme\models
  *
  * @property string $name
+ * @property integer $id
+ * @property Action[] $actions
  */
 class GroupsAction extends ActiveRecord
 {
@@ -46,5 +49,14 @@ class GroupsAction extends ActiveRecord
             ['name', 'required'],
             ['name', 'string', 'max' => 255]
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getActions()
+    {
+        return $this->hasMany(Action::class, ['id' => 'action_id'])
+            ->viaTable(GroupsActionLink::tableName(), ['groups_action_id' => 'id']);
     }
 }

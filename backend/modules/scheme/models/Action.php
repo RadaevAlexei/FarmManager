@@ -9,6 +9,7 @@ use yii\db\ActiveRecord;
  * Class Action
  * @package backend\modules\scheme\models
  *
+ * @property integer $id
  * @property string $name
  * @property integer $type
  * @property integer $action_list_id

@@ -199,7 +199,6 @@ class ActionListController extends BackendController
             $response->data["message"] = "Успешное добавление нового элемента списка";
             $transaction->commit();
         } catch (\Exception $exception) {
-            echo "<pre>"; print_r($exception->getMessage()); echo "</pre>"; die("Debug");
             $response->setStatusCode(400);
             $response->data["message"] = "Ошибка при добавлении элемента списка";
             $transaction->rollBack();

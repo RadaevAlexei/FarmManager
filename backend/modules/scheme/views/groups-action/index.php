@@ -5,7 +5,10 @@ use \yii\helpers\Html;
 use \yii\helpers\Url;
 use \yii\data\ActiveDataProvider;
 use \backend\modules\scheme\models\search\GroupsActionSearch;
+use \backend\modules\scheme\assets\GroupsActionAsset;
+use \backend\modules\scheme\models\GroupsAction;
 
+GroupsActionAsset::register($this);
 $this->title = Yii::t('app/groups-action', 'GROUPS_ACTION_LIST');
 $this->params['breadcrumbs'][] = $this->title;
 
@@ -33,6 +36,17 @@ $this->params['breadcrumbs'][] = $this->title;
         ['class' => 'yii\grid\SerialColumn'],
         'name',
         [
+            'label'  => 'Действия',
+            'format' => 'raw',
+            'value'  => function (GroupsAction $model) {
+                $actions = "";
+                foreach ($model->actions as $action) {
+                    $actions .= Html::tag("li", $action->name);
+                }
+                return Html::tag('ul', $actions);
+            }
+        ],
+        [
             'class'    => 'yii\grid\ActionColumn',
             'header'   => Yii::t('app/groups-action', 'ACTIONS'),
             'template' => '<div class="btn-group">{update} {delete} </div>',
@@ -45,11 +59,12 @@ $this->params['breadcrumbs'][] = $this->title;
                     );
                 },
                 'delete' => function ($url, $model) {
-                    return Html::a(
-                        '<span class="glyphicon glyphicon-trash"></span>',
-                        Url::toRoute(['groups-action/delete', 'id' => $model->id]),
-                        ['class' => 'btn btn-danger']
-                    );
+                    return Html::button('<span class="glyphicon glyphicon-trash"></span>', [
+                        "class" => "btn btn-danger remove-groups-action",
+                        'data'  => [
+                            'url' => Url::toRoute(['groups-action/delete', 'id' => $model->id]),
+                        ]
+                    ]);
                 },
             ],
         ],

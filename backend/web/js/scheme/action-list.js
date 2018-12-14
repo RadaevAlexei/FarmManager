@@ -4,7 +4,7 @@ $(function () {
     var buttonAddItem = $("#add-action-item");
     var buttonRemoveItem = $("[remove-action-item]");
     var inputNewItem = $("#new-item");
-    var buttonRemoveActionList = $(".remove-action-list");
+    var buttonRemoveActionList = $(".remove-groups-action");
 
     function removeItem(event) {
         var $li = $(event.target).closest("li");
