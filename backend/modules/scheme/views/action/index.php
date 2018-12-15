@@ -33,6 +33,10 @@ $this->params['breadcrumbs'][] = $this->title;
     "dataProvider" => $dataProvider,
     "filterModel"  => $searchModel,
     'formatter'    => ['class' => 'yii\i18n\Formatter', 'nullDisplay' => ''],
+    'tableOptions' => [
+        'style' => 'display:block; width:100%; overflow-x:auto',
+        'class' => 'table table-striped',
+    ],
     'columns'      => [
         ['class' => 'yii\grid\SerialColumn'],
         'name',
