@@ -72,21 +72,6 @@ class Animal extends ActiveRecord
     /**
      * @return array
      */
-    /*public function behaviors()
-    {
-        return [
-            'softDeleteBehavior' => [
-                'class'                     => SoftDeleteBehavior::className(),
-                'softDeleteAttributeValues' => [
-                    'isDeleted' => true
-                ],
-            ],
-        ];
-    }*/
-
-    /**
-     * @return array
-     */
     public function attributeLabels()
     {
         return [

@@ -59,7 +59,7 @@ $this->title = Yii::t('app/user', 'USER_EDIT');
         </div>
         <div class="form-group">
             <div class="col-sm-12">
-                <?= $form->field($model, 'birthday')->widget(DatePicker::className(), [
+                <?= $form->field($model, 'birthday')->widget(DatePicker::class, [
                     'language'   => 'ru',
                     'dateFormat' => 'yyyy-MM-dd',
                 ]) ?>

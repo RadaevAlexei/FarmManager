@@ -5,12 +5,18 @@ use \yii\helpers\Html;
 use \yii\helpers\Url;
 use \backend\modules\scheme\models\Diagnosis;
 use backend\modules\scheme\models\Scheme;
+use \backend\modules\scheme\models\SchemeDay;
+use \backend\modules\scheme\models\GroupsAction;
+use \backend\modules\scheme\assets\SchemeAsset;
 
 /**
  * @var Scheme $model
  * @var Diagnosis[] $diagnosisList
+ * @var SchemeDay[] $schemeDayList
+ * @var GroupsAction[] $groupsActionList
  */
 
+SchemeAsset::register($this);
 $this->title = Yii::t('app/scheme', 'SCHEME_EDIT');
 $this->params['breadcrumbs'][] = $this->title;
 
@@ -18,41 +24,73 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <div class="box box-info">
 
-	<?php $form = ActiveForm::begin(['action' => Url::toRoute(['scheme/update', 'id' => $model->id]), 'id' => 'scheme-form', 'class' => 'form-horizontal']); ?>
+    <?php $form = ActiveForm::begin([
+        'action' => Url::toRoute(['scheme/update', 'id' => $model->id]),
+        'id'     => 'scheme-form',
+        'class'  => 'form-horizontal'
+    ]); ?>
     <div class="box-body">
 
         <div class="form-group">
             <div class="col-sm-12">
-				<?= $form->field($model, 'name')->textInput([
-					'autofocus' => true,
-					'class'     => 'form-control'
-				]) ?>
+                <?= $form->field($model, 'name')->textInput([
+                    'autofocus' => true,
+                    'class'     => 'form-control'
+                ]) ?>
             </div>
         </div>
 
         <div class="form-group">
             <div class="col-sm-12">
-				<?= $form->field($model, 'diagnosis_id')->dropDownList(
-					$diagnosisList,
-					['class' => 'form-control', 'prompt' => 'Выберите диагноз'])
-				?>
+                <?= $form->field($model, 'diagnosis_id')->dropDownList(
+                    $diagnosisList,
+                    ['class' => 'form-control', 'prompt' => 'Выберите диагноз'])
+                ?>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-sm-12">
+                <label>Дни: </label>
+                <div class="input-group">
+                    <div class="input-group-btn">
+                        <button data-scheme-id="<?= $model->id ?>"
+                                data-add-day-url="<?= Url::to(['add-new-day']) ?>"
+                                id="add-day"
+                                type="button"
+                                class="btn btn-danger"
+                                disabled="true">Добавить
+                        </button>
+                    </div>
+                    <input id="new-day" type="text" class="form-control">
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group" id="scheme_days_block">
+            <div class="col-sm-12">
+                <?= $this->render('days', [
+                    'model'            => $model,
+                    'groupsActionList' => $groupsActionList
+                ]) ?>
             </div>
         </div>
 
         <div class="hidden">
-	        <?= $form->field($model, 'created_by')->hiddenInput(
-		        ['value' => $model->created_by, 'class' => 'hidden'])
-	        ?>
-			<?= $form->field($model, 'created_at')->hiddenInput(
-				['value' => $model->created_at, 'class' => 'hidden'])
-			?>
+            <?= $form->field($model, 'created_by')->hiddenInput(
+                ['value' => $model->created_by, 'class' => 'hidden'])
+            ?>
+            <?= $form->field($model, 'created_at')->hiddenInput(
+                ['value' => $model->created_at, 'class' => 'hidden'])
+            ?>
         </div>
 
     </div>
 
     <div class="box-footer">
-		<?= Html::submitButton(Yii::t('app/scheme', 'EDIT'), ['class' => 'btn btn-info pull-right', 'name' => 'contact-button']) ?>
+        <?= Html::submitButton(Yii::t('app/scheme', 'EDIT'),
+            ['class' => 'btn btn-info pull-right', 'name' => 'contact-button']) ?>
     </div>
-	<?php ActiveForm::end(); ?>
+    <?php ActiveForm::end(); ?>
 
 </div>

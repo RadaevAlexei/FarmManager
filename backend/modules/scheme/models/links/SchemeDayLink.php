@@ -1,6 +1,6 @@
 <?php
 
-namespace backend\modules\scheme\models;
+namespace backend\modules\scheme\models\links;
 
 use Yii;
 use yii\db\ActiveRecord;

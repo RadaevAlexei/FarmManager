@@ -1,8 +1,10 @@
 <?php
 
-namespace backend\modules\scheme\models;
+namespace backend\modules\scheme\models\links;
 
 use Yii;
+use backend\modules\scheme\models\GroupsAction;
+use backend\modules\scheme\models\SchemeDay;
 use yii\db\ActiveRecord;
 
 /**

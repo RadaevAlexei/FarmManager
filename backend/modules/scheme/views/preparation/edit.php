@@ -34,7 +34,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <!--Дата поступления-->
         <div class="form-group">
             <div class="col-sm-12">
-				<?= $form->field($model, 'receipt_date')->widget(DatePicker::className(), [
+				<?= $form->field($model, 'receipt_date')->widget(DatePicker::class, [
 					'language'   => 'ru',
 					'dateFormat' => 'yyyy-MM-dd',
 				]) ?>
