@@ -4,6 +4,7 @@ namespace backend\modules\scheme\controllers;
 
 use backend\modules\scheme\models\GroupsAction;
 use backend\modules\scheme\models\links\SchemeDayGroupsActionLink;
+use backend\modules\scheme\models\links\SchemeDayLink;
 use backend\modules\scheme\models\SchemeDay;
 use common\helpers\DataHelper;
 use Yii;
@@ -232,5 +233,80 @@ class SchemeController extends BackendController
         $response->format = Response::FORMAT_JSON;
 
         return $response;
+    }
+
+    /**
+     * @param $scheme_id
+     * @param $scheme_day_id
+     * Удаление дня из схемы
+     *
+     * @return Response
+     */
+    public function actionRemoveDay($scheme_id, $scheme_day_id)
+    {
+        $transaction = Yii::$app->db->beginTransaction();
+
+        try {
+            SchemeDayLink::deleteAll([
+                'scheme_id'     => $scheme_id,
+                'scheme_day_id' => $scheme_day_id,
+            ]);
+
+            SchemeDayGroupsActionLink::deleteAll([
+                'scheme_day_id' => $scheme_day_id,
+            ]);
+
+            SchemeDay::deleteAll(['id' => $scheme_day_id]);
+
+            Yii::$app->session->setFlash('success', 'День был успешно удалён из схемы');
+            $transaction->commit();
+        } catch (\Exception $exception) {
+            Yii::$app->session->setFlash('error', 'Ошибка при удалении дня из схемы');
+            $transaction->rollBack();
+        }
+
+        return $this->redirect(['edit', 'id' => $scheme_id]);
+    }
+
+    /**
+     * @param $scheme_id
+     * Добавление нового дня в схему лечения
+     * @return Response
+     */
+    public function actionAddNewDay($scheme_id)
+    {
+        $transaction = Yii::$app->db->beginTransaction();
+
+        try {
+            $numberDay = Yii::$app->request->post('number_day');
+
+            $existNumberDay = Scheme::find()
+                ->alias('s')
+                ->innerJoin(['sd' => SchemeDayLink::tableName()], 'sd.scheme_id = s.id')
+                ->innerJoin(['d' => SchemeDay::tableName()], 'd.id = scheme_day_id')
+                ->andWhere(['s.id' => $scheme_id])
+                ->andWhere(['d.number' => $numberDay])
+                ->exists();
+
+            if (!$existNumberDay) {
+                $newSchemeDay = new SchemeDay();
+                $newSchemeDay->number = $numberDay;
+                if ($newSchemeDay->save()) {
+                    $link = new SchemeDayLink();
+                    $link->scheme_id = $scheme_id;
+                    $link->scheme_day_id = $newSchemeDay->id;
+                    $link->save();
+                }
+            } else {
+                throw  new \Exception("Такой день уже существует");
+            }
+
+            $transaction->commit();
+        } catch (\Exception $exception) {
+            Yii::$app->session->setFlash('error', $exception->getMessage());
+            $transaction->rollBack();
+        }
+
+        return $this->redirect(['edit', 'id' => $scheme_id]);
     }
 }

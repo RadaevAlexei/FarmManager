@@ -23,6 +23,7 @@ if (!empty($schemeDays)) :
         $items[] = [
             'label'   => '<i class="fa fa-user"></i>&nbsp;' . $dayName,
             'content' => $this->render('groups-action', [
+                'scheme'           => $model,
                 'day'              => $day,
                 'groupsActionList' => $groupsActionList,
             ]),

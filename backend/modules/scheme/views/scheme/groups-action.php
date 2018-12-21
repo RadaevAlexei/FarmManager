@@ -4,8 +4,10 @@ use \backend\modules\scheme\models\SchemeDay;
 use \backend\modules\scheme\models\GroupsAction;
 use \yii\helpers\Html;
 use \yii\helpers\Url;
+use \backend\modules\scheme\models\Scheme;
 
 /**
+ * @var Scheme $scheme
  * @var SchemeDay $day
  * @var GroupsAction[] $groupsAction
  * @var GroupsAction[] $groupsActionList
@@ -19,6 +21,13 @@ $groupsAction = $day->groupsAction;
         <div class="box box-info">
             <div class="box-header">
                 <h3 class="box-title">Что нужно выполнить в этот день</h3>
+                <?= Html::a('<i class="fa fa-trash-o"></i>',
+                    Url::to(['remove-day', 'scheme_id' => $scheme->id, 'scheme_day_id' => $day->id]),
+                    [
+                        "class" => "text-red pull-right",
+                        "data"  => ["confirm" => "Вы действительно хотите удалить этот день?"]
+                    ]
+                ) ?>
             </div>
 
             <div class="box-body table-responsive no-padding">

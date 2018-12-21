@@ -12,7 +12,6 @@ use yii\db\ActiveRecord;
  *
  * @property integer $id
  * @property integer $number
- * @property \DateTime $date
  * @property GroupsAction[] $groupsAction
  */
 class SchemeDay extends ActiveRecord
@@ -32,7 +31,6 @@ class SchemeDay extends ActiveRecord
     {
         return [
             'number' => Yii::t('app/scheme-day', 'SCHEME_DAY_NUMBER'),
-            'date'   => Yii::t('app/scheme-day', 'SCHEME_DAY_DATE')
         ];
     }
 
@@ -42,9 +40,8 @@ class SchemeDay extends ActiveRecord
     public function rules()
     {
         return [
-            [['number', 'date'], 'required'],
-            ['number', 'integer'],
-            ['date', 'datetime'],
+            [['number'], 'required'],
+            ['number', 'integer']
         ];
     }
 

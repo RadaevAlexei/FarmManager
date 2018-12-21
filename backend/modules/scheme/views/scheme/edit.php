@@ -55,14 +55,14 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="input-group">
                     <div class="input-group-btn">
                         <button data-scheme-id="<?= $model->id ?>"
-                                data-add-day-url="<?= Url::to(['add-new-day']) ?>"
+                                data-add-day-url="<?= Url::to(['add-new-day', 'scheme_id' => $model->id]) ?>"
                                 id="add-day"
                                 type="button"
                                 class="btn btn-danger"
                                 disabled="true">Добавить
                         </button>
                     </div>
-                    <input id="new-day" type="text" class="form-control">
+                    <input id="new-day" type="number" class="form-control">
                 </div>
             </div>
         </div>

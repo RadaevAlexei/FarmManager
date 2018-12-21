@@ -3,6 +3,42 @@ $(function () {
     var $groupsActionList = $("[name='groups-action-list']");
     var $buttonAddGroupAction = $('[add-groups-action]');
     var $buttonRemoveGroupsAction = $("[remove-groups-action]");
+    var $buttonAddNewDay = $("#add-day");
+    var $newDay = $("#new-day");
+
+    $newDay.change(function (event) {
+        var value = $(event.target).val();
+        if (value && value > 0) {
+            $buttonAddNewDay.attr("disabled", false);
+        } else {
+            $(event.target).val(0);
+            $buttonAddNewDay.attr("disabled", true);
+        }
+    });
+
+    $buttonAddNewDay.click(function (event) {
+        var $this = $(event.target);
+        var $newDay = $this.closest(".input-group").find("#new-day");
+
+        $.ajax({
+            type: "post",
+            data: {
+                number_day: $newDay.val()
+            },
+            url: $this.data("add-day-url"),
+            success: function (data, status, response) {
+                // var type = "success";
+                if (response.status == 200) {
+                    console.log(1);
+                    // $this.closest(".day_block").find("table tbody").append(data.render);
+                    // $('[remove-action]').on("click", removeAction);
+                } else {
+                    // type = "danger";
+                }
+                // notify(data.message, type);
+            }
+        });
+    });
 
     $groupsActionList.change(function (event) {
         if ($(event.target).val()) {
