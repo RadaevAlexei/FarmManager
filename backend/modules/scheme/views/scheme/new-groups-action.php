@@ -2,13 +2,15 @@
 
 use \backend\modules\scheme\models\SchemeDay;
 use \backend\modules\scheme\models\GroupsAction;
-use \yii\helpers\Html;
+use \backend\modules\scheme\models\Scheme;
 use \yii\helpers\Url;
+use \yii\helpers\Html;
 
 /**
  * @var integer $index
  * @var SchemeDay $day
  * @var GroupsAction $model
+ * @var Scheme $scheme
  */
 
 ?>
@@ -26,8 +28,10 @@ use \yii\helpers\Url;
         <?php endforeach; ?>
     </td>
     <td style="text-align: center">
-        <button remove-groups-action type="button" class="btn btn-danger">
-            <span class="glyphicon glyphicon-trash"></span>
-        </button>
+        <?php if (!$scheme->approve) : ?>
+            <button remove-groups-action type="button" class="btn btn-danger">
+                <span class="glyphicon glyphicon-trash"></span>
+            </button>
+        <?php endif; ?>
     </td>
 </tr>

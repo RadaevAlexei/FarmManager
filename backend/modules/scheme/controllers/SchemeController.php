@@ -97,8 +97,10 @@ class SchemeController extends BackendController
 
         $groupsActionList = ArrayHelper::map(GroupsAction::find()->all(), "id", "name");
 
+        $canApprove = $model->canApproveButton();
+
         return $this->render('edit',
-            compact('model', 'diagnosisList', 'groupsActionList')
+            compact('model', 'diagnosisList', 'groupsActionList', 'canApprove')
         );
     }
 
@@ -271,6 +273,7 @@ class SchemeController extends BackendController
     /**
      * @param $scheme_id
      * Добавление нового дня в схему лечения
+     *
      * @return Response
      */
     public function actionAddNewDay($scheme_id)
@@ -282,9 +285,10 @@ class SchemeController extends BackendController
 
             $existNumberDay = Scheme::find()
                 ->alias('s')
-                ->innerJoin(['sd' => SchemeDayLink::tableName()], 'sd.scheme_id = s.id')
+                ->innerJoin(['sd' => SchemeDayLink::tableName()], 'sd.scheme_id = :scheme_id', [
+                    ":scheme_id" => $scheme_id
+                ])
                 ->innerJoin(['d' => SchemeDay::tableName()], 'd.id = scheme_day_id')
-                ->andWhere(['s.id' => $scheme_id])
                 ->andWhere(['d.number' => $numberDay])
                 ->exists();
 
@@ -308,5 +312,29 @@ class SchemeController extends BackendController
         }
 
         return $this->redirect(['edit', 'id' => $scheme_id]);
+    }
+
+    /**
+     * @param $id
+     *
+     * @return Response
+     */
+    public function actionApprove($id)
+    {
+        $transaction = Yii::$app->db->beginTransaction();
+
+        try {
+            $model = Scheme::findOne($id);
+            $model->approve = true;
+            $model->updateAttributes(['approve']);
+
+            Yii::$app->session->setFlash('success', 'Схема была успешно утверждена');
+            $transaction->commit();
+        } catch (\Exception $exception) {
+            Yii::$app->session->setFlash('error', 'Ошибка при утверждении схемы');
+            $transaction->rollBack();
+        }
+
+        return $this->redirect(['edit', 'id' => $id]);
     }
 }

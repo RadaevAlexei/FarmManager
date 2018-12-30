@@ -22,6 +22,7 @@ use yii\db\ActiveRecord;
  * @property Diagnosis $diagnosis
  * @property User $createdBy
  * @property Scheme $schemeDays
+ * @property bool $approve
  */
 class Scheme extends ActiveRecord
 {
@@ -48,6 +49,7 @@ class Scheme extends ActiveRecord
             'created_by'   => Yii::t('app/scheme', 'SCHEME_CREATED_BY'),
             'created_at'   => Yii::t('app/scheme', 'SCHEME_CREATED_AT'),
             'diagnosis_id' => Yii::t('app/scheme', 'SCHEME_DIAGNOSIS'),
+            'approve'      => Yii::t('app/scheme', 'SCHEME_APPROVE'),
         ];
     }
 
@@ -77,7 +79,8 @@ class Scheme extends ActiveRecord
             [['created_by', 'diagnosis_id'], 'integer'],
             [['name', 'diagnosis_id'], 'required'],
             [['name'], 'string', 'max' => 255],
-            [['created_at'], 'safe']
+            [['created_at'], 'safe'],
+            [['approve'], 'boolean'],
         ];
     }
 
@@ -105,5 +108,32 @@ class Scheme extends ActiveRecord
     {
         return $this->hasMany(SchemeDay::class, ['id' => 'scheme_day_id'])
             ->viaTable(SchemeDayLink::tableName(), ['scheme_id' => 'id'])->orderBy(['number' => SORT_ASC]);
+    }
+
+    /**
+     * @return bool
+     */
+    public function canApproveButton()
+    {
+        if ($this->approve) {
+            return false;
+        }
+
+        /** @var SchemeDay[] $days */
+        $days = $this->schemeDays;
+
+        foreach ($days as $day) {
+            /** @var GroupsAction[] $groupsAction */
+            $groupsAction = $day->groupsAction;
+            foreach ($groupsAction as $group) {
+                /** @var Action[] $actions */
+                $actions = $group->actions;
+                if ($actions) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }

@@ -21,13 +21,16 @@ $groupsAction = $day->groupsAction;
         <div class="box box-info">
             <div class="box-header">
                 <h3 class="box-title">Что нужно выполнить в этот день</h3>
-                <?= Html::a('<i class="fa fa-trash-o"></i>',
-                    Url::to(['remove-day', 'scheme_id' => $scheme->id, 'scheme_day_id' => $day->id]),
-                    [
-                        "class" => "text-red pull-right",
-                        "data"  => ["confirm" => "Вы действительно хотите удалить этот день?"]
-                    ]
-                ) ?>
+                <?php
+                if (!$scheme->approve) :
+                    echo Html::a('<i class="fa fa-trash-o"></i>',
+                        Url::to(['remove-day', 'scheme_id' => $scheme->id, 'scheme_day_id' => $day->id]),
+                        [
+                            "class" => "text-red pull-right",
+                            "data"  => ["confirm" => "Вы действительно хотите удалить этот день?"],
+                        ]
+                    );
+                endif; ?>
             </div>
 
             <div class="box-body table-responsive no-padding">
@@ -44,9 +47,10 @@ $groupsAction = $day->groupsAction;
                     <?php if (!empty($groupsAction)) :
                         foreach ($groupsAction as $index => $group) :
                             echo $this->render('new-groups-action', [
-                                'index' => $index,
-                                'day'   => $day,
-                                'model' => $group,
+                                'index'  => $index,
+                                'day'    => $day,
+                                'model'  => $group,
+                                'scheme' => $scheme,
                             ]); ?>
                         <?php endforeach;
                     endif; ?>
@@ -66,8 +70,9 @@ $groupsAction = $day->groupsAction;
                         </button>
                     </div>
                     <?= Html::dropDownList('groups-action-list', null, $groupsActionList, [
-                        'class'  => 'form-control',
-                        'prompt' => 'Выберите группу',
+                        'class'    => 'form-control',
+                        'prompt'   => 'Выберите группу',
+                        'disabled' => $scheme->approve ? true : false
                     ]) ?>
                 </div>
             </div>

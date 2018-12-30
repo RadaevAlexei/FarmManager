@@ -14,6 +14,7 @@ use \backend\modules\scheme\assets\SchemeAsset;
  * @var Diagnosis[] $diagnosisList
  * @var SchemeDay[] $schemeDayList
  * @var GroupsAction[] $groupsActionList
+ * @var bool $canApprove
  */
 
 SchemeAsset::register($this);
@@ -35,7 +36,8 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="col-sm-12">
                 <?= $form->field($model, 'name')->textInput([
                     'autofocus' => true,
-                    'class'     => 'form-control'
+                    'class'     => 'form-control',
+                    'disabled'  => $model->approve ? true : false
                 ]) ?>
             </div>
         </div>
@@ -44,7 +46,11 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="col-sm-12">
                 <?= $form->field($model, 'diagnosis_id')->dropDownList(
                     $diagnosisList,
-                    ['class' => 'form-control', 'prompt' => 'Выберите диагноз'])
+                    [
+                        'class'    => 'form-control',
+                        'prompt'   => 'Выберите диагноз',
+                        'disabled' => $model->approve ? true : false
+                    ])
                 ?>
             </div>
         </div>
@@ -62,7 +68,11 @@ $this->params['breadcrumbs'][] = $this->title;
                                 disabled="true">Добавить
                         </button>
                     </div>
-                    <input id="new-day" type="number" class="form-control">
+                    <?= Html::input('number', 'day', null, [
+                        'id'       => 'new-day',
+                        'class'    => 'form-control',
+                        'disabled' => $model->approve ? true : false
+                    ]) ?>
                 </div>
             </div>
         </div>
@@ -88,8 +98,16 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
 
     <div class="box-footer">
-        <?= Html::submitButton(Yii::t('app/scheme', 'EDIT'),
-            ['class' => 'btn btn-info pull-right', 'name' => 'contact-button']) ?>
+        <?php
+        if (!$model->approve) :
+            if ($canApprove) :
+                echo Html::a('Утвердить', Url::to(['approve', 'id' => $model->id]),
+                    ['class' => 'btn btn-success', 'name' => 'approve-button']);
+            endif;
+
+            echo Html::submitButton(Yii::t('app/scheme', 'EDIT'),
+                ['class' => 'btn btn-info pull-right', 'name' => 'contact-button']);
+        endif; ?>
     </div>
     <?php ActiveForm::end(); ?>
 

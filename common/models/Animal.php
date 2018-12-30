@@ -11,6 +11,7 @@ use yii\db\ActiveRecord;
  * Class Animal
  * @package common\models
  *
+ * @property integer $id
  */
 class Animal extends ActiveRecord
 {

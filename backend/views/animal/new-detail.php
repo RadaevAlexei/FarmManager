@@ -5,10 +5,14 @@ use \backend\assets\ChartAsset;
 use \yii\helpers\Url;
 use \yii\helpers\Html;
 use common\models\Animal;
+use \backend\modules\scheme\models\Scheme;
 
 //ChartAsset::register($this);
 
-/** @var Animal $model */
+/**
+ * @var Animal $model
+ * @var Scheme[] $schemeList
+ */
 
 $this->params['breadcrumbs'][] = [
     'label' => Yii::t('app/animal', "ANIMAL_LIST"),
@@ -45,10 +49,12 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app/animal', "ANIMAL_DETAIL
                         <b>Возраст</b> <a class="pull-right">1 год 2 месяца 6 дней</a>
                     </li>
                     <li class="list-group-item">
-                        <b>Физ состояние</b><span class="pull-right label label-danger"><?=Animal::getPhysicalState($model->physical_state)?></span>
+                        <b>Физ состояние</b><span
+                                class="pull-right label label-danger"><?= Animal::getPhysicalState($model->physical_state) ?></span>
                     </li>
                     <li class="list-group-item">
-                        <b>Рект. иссл-е</b><span class="pull-right label label-primary"><?=Animal::getPhysicalState($model->rectal_examination)?></span>
+                        <b>Рект. иссл-е</b><span
+                                class="pull-right label label-primary"><?= Animal::getPhysicalState($model->rectal_examination) ?></span>
                     </li>
                 </ul>
 
@@ -104,6 +110,7 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app/animal', "ANIMAL_DETAIL
                 <li class="active"><a href="#info" data-toggle="tab" aria-expanded="true">Основная информация</a></li>
                 <li class=""><a href="#calvings" data-toggle="tab" aria-expanded="true">Отёлы</a></li>
                 <li class=""><a href="#inseminations" data-toggle="tab" aria-expanded="true">Осеменения</a></li>
+                <li class=""><a href="#scheme" data-toggle="tab" aria-expanded="true">Схема лечения</a></li>
             </ul>
             <div class="tab-content">
 
@@ -121,7 +128,13 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app/animal', "ANIMAL_DETAIL
 
                 <div class="tab-pane" id="inseminations">
                     <?= $this->render('/animal/tabs/inseminations', [
+                    ]) ?>
+                </div>
 
+                <div class="tab-pane" id="scheme">
+                    <?= $this->render('/animal/tabs/scheme', [
+                        'animal'     => $model,
+                        'schemeList' => $schemeList,
                     ]) ?>
                 </div>
 

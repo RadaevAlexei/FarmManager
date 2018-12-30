@@ -7,9 +7,6 @@ use \backend\modules\scheme\models\GroupsAction;
 
 /**
  * @var Scheme $model
- */
-
-/**
  * @var SchemeDay[] $schemeDays
  * @var GroupsAction[] $groupsActionList
  */
