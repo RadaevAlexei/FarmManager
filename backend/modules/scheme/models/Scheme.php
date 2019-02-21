@@ -7,6 +7,7 @@ use backend\modules\scheme\models\links\SchemeDayLink;
 use common\models\User;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
+use yii\helpers\ArrayHelper;
 
 /**
  * Class Scheme
@@ -135,5 +136,14 @@ class Scheme extends ActiveRecord
         }
 
         return false;
+    }
+
+    /**
+     * @return array
+     */
+    public static function getAllList()
+    {
+        $list = Scheme::find()->where(['approve' => 1])->all();
+        return ArrayHelper::map($list, "id", "name");
     }
 }

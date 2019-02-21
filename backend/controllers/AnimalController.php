@@ -2,6 +2,8 @@
 
 namespace backend\controllers;
 
+use backend\modules\scheme\models\AppropriationScheme;
+use backend\modules\scheme\models\Scheme;
 use common\helpers\Excel\ExcelHelper;
 use Yii;
 use alexgx\phpexcel\PhpExcel;
@@ -186,14 +188,63 @@ class AnimalController extends BackendController
         /** @var Animal $model */
         $model = Animal::findOne($id);
 
-//        echo "<pre>" . PHP_EOL; print_r($model); echo "</pre>" . PHP_EOL; die("Debug end" . PHP_EOL);
+        $schemeList = Scheme::getAllList();
 
+        $animalOnScheme = $model->onScheme();
+
+        $appropriationScheme = new AppropriationScheme([
+            'animal_id' => $id,
+            'status' => AppropriationScheme::STATUS_IN_PROGRESS,
+        ]);
+        
         return $this->render('new-detail',
-            compact('model')
+            compact('model', 'schemeList', 'appropriationScheme', 'animalOnScheme')
         );
     }
 
+    /**
+     * @return \yii\web\Response
+     */
+    public function actionAppropriationScheme()
+    {
+        /** @var AppropriationScheme $model */
+        $model = new AppropriationScheme();
 
+        $isLoading = $model->load(Yii::$app->request->post());
+
+        if ($isLoading && $model->validate()) {
+            $model->save();
+            Yii::$app->session->setFlash('success', 'Успешное назначение схемы на животного');
+
+            return $this->redirect(["detail", "id" => $model->animal_id]);
+        } else {
+            Yii::$app->session->setFlash('error', 'Ошибка при назначении животного на схему');
+            return $this->redirect(["detail", "id" => $model->animal_id]);
+        }
+    }
+
+    /**
+     * @param $id
+     *
+     * @return \yii\web\Response
+     */
+    public function actionRemoveFromScheme($id)
+    {
+        $transaction = Yii::$app->db->beginTransaction();
+
+        $appropriation = AppropriationScheme::findOne($id);
+        try {
+            $appropriation->removeFromScheme();
+            $transaction->commit();
+
+            \Yii::$app->session->setFlash('success', 'Животное было удалено со схемы лечения');
+            return $this->redirect(["detail", "id" => $appropriation->animal_id]);
+        } catch (\Exception $exception) {
+            $transaction->rollBack();
+            return $this->redirect(["detail", "id" => $appropriation->animal_id]);
+        }
+
+    }
 
 
 

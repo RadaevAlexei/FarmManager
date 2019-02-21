@@ -2,6 +2,7 @@
 
 namespace common\models;
 
+use backend\modules\scheme\models\AppropriationScheme;
 use Yii;
 use yii\db\ActiveRecord;
 
@@ -197,6 +198,21 @@ class Animal extends ActiveRecord
             1 => Yii::t('app/animal', 'ANIMAL_MAN'),
             2 => Yii::t('app/animal', 'ANIMAL_WOMAN')
         ];
+    }
+
+    /**
+     * Проверяем стоит ли животное на схеме
+     *
+     * @return array|null|ActiveRecord
+     */
+    public function onScheme()
+    {
+        return AppropriationScheme::find()
+            ->where([
+                'animal_id' => $this->id,
+                'status' => AppropriationScheme::STATUS_IN_PROGRESS,
+            ])
+            ->one();
     }
 
     /**

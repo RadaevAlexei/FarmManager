@@ -7,11 +7,13 @@ use common\models\User;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
+use yii\db\Expression;
 
 /**
  * Class AppropriationScheme
  * @package backend\modules\scheme\models
  *
+ * @property integer $id
  * @property integer $animal_id
  * @property integer $scheme_id
  * @property integer $status
@@ -19,6 +21,8 @@ use yii\db\ActiveRecord;
  */
 class AppropriationScheme extends ActiveRecord
 {
+    const STATUS_IN_PROGRESS = 0;
+
     /**
      * @return string
      */
@@ -34,26 +38,27 @@ class AppropriationScheme extends ActiveRecord
     {
         return [
             'animal_id'  => Yii::t('app/appropriation-scheme', 'APPROPRIATION_SCHEME_ANIMAL'),
-            'scheme_id'  => Yii::t('app/appropriation-scheme', 'APPROPRIATION_SCHEME_NAME'),
+            'scheme_id'  => 'Схема лечения',
             'status'     => Yii::t('app/appropriation-scheme', 'APPROPRIATION_SCHEME_STATUS'),
-            'started_at' => Yii::t('app/appropriation-scheme', 'APPROPRIATION_SCHEME_STARTED_AT'),
+            'started_at' => 'Дата применения схемы',
         ];
     }
 
     /**
      * @return array
      */
-    public function behaviors()
+    /*public function behaviors()
     {
         return [
             [
                 'class'      => TimestampBehavior::class,
                 'attributes' => [
                     ActiveRecord::EVENT_BEFORE_INSERT => ['started_at']
-                ]
+                ],
+                'value' => new Expression('NOW()'),
             ]
         ];
-    }
+    }*/
 
     /**
      * @return array
@@ -63,7 +68,7 @@ class AppropriationScheme extends ActiveRecord
         return [
             [['animal_id', 'scheme_id', 'status'], 'integer'],
             [['animal_id', 'scheme_id', 'status', 'started_at'], 'required'],
-            [['started_at'], 'datetime']
+            [['started_at'], 'safe']
         ];
     }
 
@@ -81,5 +86,16 @@ class AppropriationScheme extends ActiveRecord
     public function getScheme()
     {
         return $this->hasOne(Scheme::class, ['id' => 'scheme_id']);
+    }
+
+    /**
+     *
+     */
+    public function removeFromScheme()
+    {
+        self::findOne([
+            'animal_id' => $this->animal_id,
+            'scheme_id' => $this->scheme_id,
+        ])->delete();
     }
 }

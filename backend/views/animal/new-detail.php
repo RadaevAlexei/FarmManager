@@ -1,17 +1,18 @@
 <?php
 
 use yii\helpers\ArrayHelper;
-use \backend\assets\ChartAsset;
 use \yii\helpers\Url;
-use \yii\helpers\Html;
 use common\models\Animal;
 use \backend\modules\scheme\models\Scheme;
+use \backend\modules\scheme\models\AppropriationScheme;
 
 //ChartAsset::register($this);
 
 /**
  * @var Animal $model
  * @var Scheme[] $schemeList
+ * @var AppropriationScheme $appropriationScheme
+ * @var AppropriationScheme $animalOnScheme
  */
 
 $this->params['breadcrumbs'][] = [
@@ -133,8 +134,10 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app/animal', "ANIMAL_DETAIL
 
                 <div class="tab-pane" id="scheme">
                     <?= $this->render('/animal/tabs/scheme', [
-                        'animal'     => $model,
-                        'schemeList' => $schemeList,
+                        'animal'              => $model,
+                        'schemeList'          => $schemeList,
+                        'appropriationScheme' => $appropriationScheme,
+                        'animalOnScheme'      => $animalOnScheme,
                     ]) ?>
                 </div>
 
