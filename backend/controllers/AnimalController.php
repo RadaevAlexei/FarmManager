@@ -2,24 +2,17 @@
 
 namespace backend\controllers;
 
+use Yii;
 use backend\modules\scheme\models\AppropriationScheme;
 use backend\modules\scheme\models\Scheme;
-use common\helpers\Excel\ExcelHelper;
-use Yii;
-use alexgx\phpexcel\PhpExcel;
 use common\helpers\DataHelper;
 use common\models\Animal;
 use common\models\Cow;
 use common\models\Color;
 use common\models\search\CowSearch;
-use common\models\Suspension;
-use frontend\assets\SuspensionAsset;
 use yii\data\ActiveDataProvider;
-use yii\data\Pagination;
-use yii\db\Query;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 
 /**
@@ -181,6 +174,7 @@ class AnimalController extends BackendController
      * Детальная карточка животного
      *
      * @param $id
+     *
      * @return string
      */
     public function actionDetail($id)
@@ -194,15 +188,17 @@ class AnimalController extends BackendController
 
         $appropriationScheme = new AppropriationScheme([
             'animal_id' => $id,
-            'status' => AppropriationScheme::STATUS_IN_PROGRESS,
+            'status'    => AppropriationScheme::STATUS_IN_PROGRESS,
         ]);
-        
+
         return $this->render('new-detail',
             compact('model', 'schemeList', 'appropriationScheme', 'animalOnScheme')
         );
     }
 
     /**
+     * Поставить животное на схему
+     *
      * @return \yii\web\Response
      */
     public function actionAppropriationScheme()
@@ -214,6 +210,8 @@ class AnimalController extends BackendController
 
         if ($isLoading && $model->validate()) {
             $model->save();
+            $model->createActionHistory();
+
             Yii::$app->session->setFlash('success', 'Успешное назначение схемы на животного');
 
             return $this->redirect(["detail", "id" => $model->animal_id]);
@@ -247,14 +245,6 @@ class AnimalController extends BackendController
     }
 
 
-
-
-
-
-
-
-
-
     private function viewDataCalfs(&$calfs = null)
     {
         if (empty($calfs)) {
@@ -268,6 +258,7 @@ class AnimalController extends BackendController
 
     /**
      * @param null $id
+     *
      * @return string
      */
     /*public function actionDetail($number = null)
@@ -301,9 +292,11 @@ class AnimalController extends BackendController
 
     /**
      * Расчет нормы роста теленка
+     *
      * @param array $dates
      * @param array $weights
      * @param int $birthWeight
+     *
      * @return array
      */
     private function calculcateNorm($dates = [], $weights = [], $birthWeight = 0)
@@ -368,6 +361,7 @@ class AnimalController extends BackendController
 
     /**
      * Преобразование данных для вывода
+     *
      * @param null $calf
      */
     private function viewListDataCalf(&$calf = null)
@@ -395,6 +389,7 @@ class AnimalController extends BackendController
     /**
      * @param null $action
      * @param null $id
+     *
      * @return string|Yii\web\Response
      * @throws \Exception
      */
@@ -406,18 +401,26 @@ class AnimalController extends BackendController
             if ($action == "new") {
                 $model = new Cow();
                 $url = Url::toRoute(['/calf/save/']);
-            } else if ($action == "edit") {
-                $model = Cow::find()->where(['id' => $id])->one();
-                $model["birthday"] = DataHelper::getDate($model["birthday"], "Y-m-d");
-                $url = Url::toRoute(['/calf/update/' . $id . '/']);
-            } else if ($action == "delete") {
-                $model = Cow::find()->where(['id' => $id])->one();
-                $model->delete();
-                return $this->redirect(['/calfs']);
+            } else {
+                if ($action == "edit") {
+                    $model = Cow::find()->where(['id' => $id])->one();
+                    $model["birthday"] = DataHelper::getDate($model["birthday"], "Y-m-d");
+                    $url = Url::toRoute(['/calf/update/' . $id . '/']);
+                } else {
+                    if ($action == "delete") {
+                        $model = Cow::find()->where(['id' => $id])->one();
+                        $model->delete();
+                        return $this->redirect(['/calfs']);
+                    }
+                }
             }
         }
 
-        $groups = Groups::find()->select(['name', 'employeeId', 'id'])->indexBy("id")->orderBy(['id' => SORT_ASC])->column();
+        $groups = Groups::find()->select([
+            'name',
+            'employeeId',
+            'id'
+        ])->indexBy("id")->orderBy(['id' => SORT_ASC])->column();
         $colors = Color::find()->select(['name', 'id'])->indexBy("id")->orderBy(['id' => SORT_ASC])->column();
         $mothers = [];
         $fathers = [];
@@ -436,6 +439,7 @@ class AnimalController extends BackendController
     /**
      * @param null $action
      * @param null $id
+     *
      * @return string|Yii\web\Response
      * @throws NotFoundHttpException
      */
@@ -446,10 +450,12 @@ class AnimalController extends BackendController
         } else {
             if ($action == "save") {
                 $model = new Cow();
-            } else if ($action == "update") {
-                $model = Cow::find()->where(['id' => $id])->one();
             } else {
-                throw new NotFoundHttpException("Такого действия нет");
+                if ($action == "update") {
+                    $model = Cow::find()->where(['id' => $id])->one();
+                } else {
+                    throw new NotFoundHttpException("Такого действия нет");
+                }
             }
         }
 

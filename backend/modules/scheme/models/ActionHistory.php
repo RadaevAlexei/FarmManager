@@ -6,7 +6,7 @@ use Yii;
 use yii\db\ActiveRecord;
 
 /**
- * Class ActionValue
+ * Class ActionHistory
  * @package backend\modules\scheme\models
  *
  * ЗНАЧЕНИЯ ДЕЙСТВИЙ
@@ -20,14 +20,16 @@ use yii\db\ActiveRecord;
  * @property double $double_value
  * @property string $action_list_values
  */
-class ActionValue extends ActiveRecord
+class ActionHistory extends ActiveRecord
 {
+    const STATUS_NEW = 'new';
+
     /**
      * @return string
      */
     public static function tableName()
     {
-        return '{{%action_value}}';
+        return '{{%action_history}}';
     }
 
     /**
@@ -43,7 +45,6 @@ class ActionValue extends ActiveRecord
             'text_value'         => Yii::t('app/action-value', 'ACTION_VALUE_TEXT_VALUE'),
             'number_value'       => Yii::t('app/action-value', 'ACTION_VALUE_NUMBER_VALUE'),
             'double_value'       => Yii::t('app/action-value', 'ACTION_VALUE_DOUBLE_VALUE'),
-            'action_list_values' => Yii::t('app/action-value', 'ACTION_VALUE_LIST_VALUES'),
         ];
     }
 
@@ -53,10 +54,11 @@ class ActionValue extends ActiveRecord
     public function rules()
     {
         return [
-            [['scheme_id', 'scheme_day_id', 'groups_action_id', 'action_id'], 'required'],
-            [['text_value', 'action_list_values'], 'string'],
-            [['scheme_id', 'scheme_day_id', 'groups_action_id', 'action_id', 'number_value'], 'integer'],
-            [['double_value'], 'double']
+            [['appropriation_scheme_id', 'groups_action_id', 'action_id'], 'required'],
+            [['text_value'], 'string'],
+            [['appropriation_scheme_id', 'groups_action_id', 'action_id', 'number_value'], 'integer'],
+            [['double_value'], 'double'],
+            [['scheme_day_at', 'execute_at'], 'safe']
         ];
     }
 }

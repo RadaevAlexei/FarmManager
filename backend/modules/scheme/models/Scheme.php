@@ -108,7 +108,8 @@ class Scheme extends ActiveRecord
     public function getSchemeDays()
     {
         return $this->hasMany(SchemeDay::class, ['id' => 'scheme_day_id'])
-            ->viaTable(SchemeDayLink::tableName(), ['scheme_id' => 'id'])->orderBy(['number' => SORT_ASC]);
+            ->viaTable(SchemeDayLink::tableName(), ['scheme_id' => 'id'])
+            ->orderBy(['number' => SORT_ASC]);
     }
 
     /**

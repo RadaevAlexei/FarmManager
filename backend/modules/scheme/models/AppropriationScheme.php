@@ -2,12 +2,10 @@
 
 namespace backend\modules\scheme\models;
 
-use common\models\Animal;
-use common\models\User;
 use Yii;
-use yii\behaviors\TimestampBehavior;
+use common\models\Animal;
+use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
-use yii\db\Expression;
 
 /**
  * Class AppropriationScheme
@@ -97,5 +95,51 @@ class AppropriationScheme extends ActiveRecord
             'animal_id' => $this->animal_id,
             'scheme_id' => $this->scheme_id,
         ])->delete();
+    }
+
+    /**
+     * Создание невыполненных действий для истории
+     */
+    public function createActionHistory()
+    {
+        /** @var Scheme $scheme */
+        $scheme = Scheme::find()
+            ->alias('s')
+            ->joinWith([
+                'schemeDays' => function (ActiveQuery $query) {
+                    $query->joinWith([
+                        'groupsAction' => function (ActiveQuery $query) {
+                            $query->joinWith(['actions']);
+                        }
+                    ]);
+                }
+            ])
+            ->where([
+                's.id' => $this->scheme_id
+            ])->one();
+
+        $userId = Yii::$app->getUser()->getIdentity()->getId();
+        foreach ($scheme->schemeDays as $day) {
+            foreach ($day->groupsAction as $group) {
+                foreach ($group->actions as $action) {
+                    $schemeDayAt = date('Y-m-d', strtotime((string)$this->started_at . ' + ' . ($day->number - 1) . ' days'));
+
+                    $newActionHistory = new ActionHistory([
+                        "appropriation_scheme_id" => $this->id,
+                        "scheme_day_at"           => $schemeDayAt,
+                        "groups_action_id"        => $group->id,
+                        "action_id"               => $action->id,
+                        "text_value"              => null,
+                        "number_value"            => null,
+                        "double_value"            => null,
+                        "list_value"              => null,
+                        "execute_at"              => null,
+                        "user_id"                 => $userId,
+                        "status"                  => self::STATUS_IN_PROGRESS,
+                    ]);
+                    $newActionHistory->save();
+                }
+            }
+        }
     }
 }
