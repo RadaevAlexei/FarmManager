@@ -8,12 +8,14 @@ use \backend\modules\scheme\models\AppropriationScheme;
 use \yii\jui\DatePicker;
 use \yii\helpers\Html;
 use \yii\helpers\ArrayHelper;
+use \backend\modules\scheme\models\ActionHistory;
 
 /**
  * @var Animal $animal
  * @var Scheme[] $schemeList
  * @var AppropriationScheme $appropriationScheme
  * @var AppropriationScheme $animalOnScheme
+ * @var ActionHistory[] $actionsToday
  */
 
 if ($animalOnScheme) {
@@ -34,6 +36,11 @@ if ($animalOnScheme) {
             ]
         )
     );
+
+    echo $this->render('/animal/tabs/actions-today', [
+        'actionsToday' => $actionsToday
+    ]);
+
 } else {
     $form = ActiveForm::begin([
         'action' => Url::toRoute(['animal/appropriation-scheme']),

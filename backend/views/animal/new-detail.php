@@ -13,6 +13,7 @@ use \backend\modules\scheme\models\AppropriationScheme;
  * @var Scheme[] $schemeList
  * @var AppropriationScheme $appropriationScheme
  * @var AppropriationScheme $animalOnScheme
+ * @var AppropriationScheme $actionsToday
  */
 
 $this->params['breadcrumbs'][] = [
@@ -138,6 +139,7 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app/animal', "ANIMAL_DETAIL
                         'schemeList'          => $schemeList,
                         'appropriationScheme' => $appropriationScheme,
                         'animalOnScheme'      => $animalOnScheme,
+                        'actionsToday'        => $actionsToday,
                     ]) ?>
                 </div>
 

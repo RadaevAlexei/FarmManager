@@ -2,6 +2,7 @@
 
 namespace common\models;
 
+use backend\modules\scheme\models\ActionHistory;
 use backend\modules\scheme\models\AppropriationScheme;
 use Yii;
 use yii\db\ActiveRecord;
@@ -210,7 +211,7 @@ class Animal extends ActiveRecord
         return AppropriationScheme::find()
             ->where([
                 'animal_id' => $this->id,
-                'status' => AppropriationScheme::STATUS_IN_PROGRESS,
+                'status'    => AppropriationScheme::STATUS_IN_PROGRESS,
             ])
             ->one();
     }
@@ -219,6 +220,7 @@ class Animal extends ActiveRecord
      * Получение пола животного по значению
      *
      * @param $value
+     *
      * @return mixed
      */
     public static function getSexType($value)
@@ -248,6 +250,7 @@ class Animal extends ActiveRecord
      * Получение физиологического состояния животного по значению
      *
      * @param $value
+     *
      * @return mixed
      */
     public static function getPhysicalState($value)
@@ -271,6 +274,7 @@ class Animal extends ActiveRecord
 
     /**
      * @param $value
+     *
      * @return mixed
      */
     public static function getStatus($value)
@@ -295,6 +299,7 @@ class Animal extends ActiveRecord
     /**
      *
      * @param $value
+     *
      * @return mixed
      */
     public static function getRectalExamination($value)
@@ -313,6 +318,7 @@ class Animal extends ActiveRecord
 
     /**
      * @param bool $insert
+     *
      * @return bool
      */
     /*public function beforeSave($insert)
@@ -382,5 +388,21 @@ class Animal extends ActiveRecord
     public function getFarm()
     {
         return $this->hasOne(Farm::class, ['id' => 'farm_id']);
+    }
+
+    /**
+     * @param AppropriationScheme $appropriationScheme
+     *
+     * @return array|ActiveRecord[]
+     */
+    public function getActionsToday($appropriationScheme)
+    {
+        return ActionHistory::find()
+            ->joinWith(['groupsAction', 'action'])
+            ->where([
+                'appropriation_scheme_id' => $appropriationScheme->id,
+                'scheme_day_at'           => (new \DateTime())->format('Y-m-d')
+            ])
+            ->all();
     }
 }

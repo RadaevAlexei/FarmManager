@@ -61,4 +61,20 @@ class ActionHistory extends ActiveRecord
             [['scheme_day_at', 'execute_at'], 'safe']
         ];
     }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getGroupsAction()
+    {
+        return $this->hasOne(GroupsAction::class, ['id' => 'groups_action_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAction()
+    {
+        return $this->hasOne(Action::class, ['id' => 'action_id']);
+    }
 }

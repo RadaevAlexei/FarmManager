@@ -184,7 +184,13 @@ class AnimalController extends BackendController
 
         $schemeList = Scheme::getAllList();
 
+        /** @var AppropriationScheme $animalOnScheme */
         $animalOnScheme = $model->onScheme();
+        $actionsToday = [];
+        if ($animalOnScheme) {
+            $actionsToday = $model->getActionsToday($animalOnScheme);
+        }
+        
 
         $appropriationScheme = new AppropriationScheme([
             'animal_id' => $id,
@@ -192,7 +198,7 @@ class AnimalController extends BackendController
         ]);
 
         return $this->render('new-detail',
-            compact('model', 'schemeList', 'appropriationScheme', 'animalOnScheme')
+            compact('model', 'schemeList', 'appropriationScheme', 'animalOnScheme', 'actionsToday')
         );
     }
 
