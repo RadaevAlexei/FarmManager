@@ -37,7 +37,7 @@ class ActionDayController extends BackendController
 
     private function getPathTemplate()
     {
-        return Yii::getAlias('@webroot') . '\\templates\\' . self::TEMPLATE_NAME;
+        return Yii::getAlias('@webroot') . '/templates/' . self::TEMPLATE_NAME;
     }
 
     private function getTimePrefix()
@@ -111,7 +111,7 @@ class ActionDayController extends BackendController
 
         $writer = IOFactory::createWriter($spreadsheet, self::WRITER_TYPE);
         $prefix = $this->getTimePrefix();
-        $newFileName = self::DIRECTORY_REPORTS . "\\" . self::TEMPLATE_FILE_NAME . '_' . $prefix . '.xlsx';
+        $newFileName = self::DIRECTORY_REPORTS . "/" . self::TEMPLATE_FILE_NAME . '_' . $prefix . '.xlsx';
         $writer->save($newFileName);
 
         return Yii::$app->response->sendFile($newFileName);
