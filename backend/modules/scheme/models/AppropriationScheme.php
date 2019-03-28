@@ -122,11 +122,13 @@ class AppropriationScheme extends ActiveRecord
         foreach ($scheme->schemeDays as $day) {
             foreach ($day->groupsAction as $group) {
                 foreach ($group->actions as $action) {
-                    $schemeDayAt = date('Y-m-d', strtotime((string)$this->started_at . ' + ' . ($day->number - 1) . ' days'));
+                    $schemeDayAt = date('Y-m-d',
+                        strtotime((string)$this->started_at . ' + ' . ($day->number - 1) . ' days'));
 
                     $newActionHistory = new ActionHistory([
                         "appropriation_scheme_id" => $this->id,
                         "scheme_day_at"           => $schemeDayAt,
+                        "scheme_day"              => $day->number,
                         "groups_action_id"        => $group->id,
                         "action_id"               => $action->id,
                         "text_value"              => null,

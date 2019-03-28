@@ -19,6 +19,7 @@ use yii\db\ActiveRecord;
  * @property integer $number_value
  * @property double $double_value
  * @property string $action_list_values
+ * @property integer $scheme_day
  */
 class ActionHistory extends ActiveRecord
 {
@@ -54,12 +55,20 @@ class ActionHistory extends ActiveRecord
     public function rules()
     {
         return [
-            [['appropriation_scheme_id', 'groups_action_id', 'action_id'], 'required'],
+            [['appropriation_scheme_id', 'groups_action_id', 'action_id', 'scheme_day'], 'required'],
             [['text_value'], 'string'],
-            [['appropriation_scheme_id', 'groups_action_id', 'action_id', 'number_value'], 'integer'],
+            [['appropriation_scheme_id', 'groups_action_id', 'action_id', 'number_value', 'scheme_day'], 'integer'],
             [['double_value'], 'double'],
             [['scheme_day_at', 'execute_at'], 'safe']
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAppropriationScheme()
+    {
+        return $this->hasOne(AppropriationScheme::class, ['id' => 'appropriation_scheme_id']);
     }
 
     /**

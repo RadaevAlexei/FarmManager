@@ -127,6 +127,11 @@ use \yii\helpers\Url;
                         'url'   => Url::toRoute(['/scheme/scheme/index'])
                     ],
                     [
+                        'label' => 'Список дел',
+                        'icon'  => 'users',
+                        'url'   => Url::toRoute(['/scheme/action-day/index'])
+                    ],
+                    [
                         'label' => 'Календарь',
                         'icon'  => 'users',
                         'url'   => Url::toRoute(['/scheme/calendar/index'])

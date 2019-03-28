@@ -401,7 +401,7 @@ class Animal extends ActiveRecord
             ->joinWith(['groupsAction', 'action'])
             ->where([
                 'appropriation_scheme_id' => $appropriationScheme->id,
-                'scheme_day_at'           => (new \DateTime())->format('Y-m-d')
+                'scheme_day_at'           => (new \DateTime('now', (new \DateTimeZone('Europe/Samara'))))->format('Y-m-d')
             ])
             ->all();
     }
