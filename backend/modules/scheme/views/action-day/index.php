@@ -1,74 +1,59 @@
 <?php
 
-use \yii\grid\GridView;
 use \yii\helpers\Html;
 use \yii\helpers\Url;
-use \yii\data\ActiveDataProvider;
-use backend\modules\scheme\models\search\ActionSearch;
-use backend\modules\scheme\models\Action;
-use \common\models\TypeField;
+use \yii\grid\GridView;
+use \backend\modules\scheme\models\ActionHistory;
 use \yii\helpers\ArrayHelper;
 
 $this->title = 'Список дел';
 $this->params['breadcrumbs'][] = $this->title;
 
+/**
+ * /** @var $dataProvider ActiveDataProvider
+ * /** @var $searchModel ActionHistorySearch
+ */
 ?>
 
-<div class="form-group">
-    <?= Html::a(
-        'Скачать список дел на сегодня',
-        Url::toRoute(['action-day/download-action-list']),
-        [
-            'class' => 'btn btn-success'
-        ]
-    ) ?>
-</div>
+    <div class="form-group">
+        <?= Html::a(
+            'Скачать список дел на сегодня',
+            Url::toRoute(['action-day/download-action-list']),
+            [
+                'class' => 'btn btn-success'
+            ]
+        ) ?>
+    </div>
 
 <?php /*echo GridView::widget([
     "dataProvider" => $dataProvider,
-    "filterModel"  => $searchModel,
-    'formatter'    => ['class' => 'yii\i18n\Formatter', 'nullDisplay' => ''],
-    'tableOptions' => [
-        'style' => 'display:block; width:100%; overflow-x:auto',
-        'class' => 'table table-striped',
-    ],
     'columns'      => [
         ['class' => 'yii\grid\SerialColumn'],
-        'name',
         [
-            'attribute' => 'type',
-            'value'     => function (Action $model) {
-                return TypeField::getType($model->type);
+            'label' => 'Схема лечения',
+            'value' => function (ActionHistory $model) {
+                return ArrayHelper::getValue($model, "appropriationScheme.scheme.name");
             }
         ],
         [
-            'attribute' => 'action_list_id',
-            'format'    => 'raw',
-            'value'     => function (Action $model) {
-                return Html::a(ArrayHelper::getValue($model, "actionList.name"),
-                    Url::to(['action-list/edit', 'id' => $model->action_list_id]));
+            'label' => 'Диагноз',
+            'value' => function (ActionHistory $model) {
+                return ArrayHelper::getValue($model, "appropriationScheme.scheme.diagnosis.name");
             }
         ],
         [
             'class'    => 'yii\grid\ActionColumn',
-            'header'   => Yii::t('app/action', 'ACTIONS'),
-            'template' => '<div class="btn-group">{update} {delete} </div>',
+            'header'   => 'Просмотр',
+            'template' => '<div class="btn-group">{detail}</div>',
             'buttons'  => [
-                'update' => function ($url, $model) {
+                'detail' => function ($url, ActionHistory $model) {
                     return Html::a(
-                        '<span class="glyphicon glyphicon-edit"></span>',
-                        Url::toRoute(['action/edit', 'id' => $model->id]),
-                        ['class' => 'btn btn-warning']
+                        '<span class="glyphicon glyphicon-eye-open"></span>',
+                        Url::toRoute(['action-day/details', 'scheme_id' => ArrayHelper::getValue($model, "appropriationScheme.scheme.id")]),
+                        ['class' => 'btn btn-primary']
                     );
-                },
-                'delete' => function ($url, $model) {
-                    return Html::a(
-                        '<span class="glyphicon glyphicon-trash"></span>',
-                        Url::toRoute(['action/delete', 'id' => $model->id]),
-                        ['class' => 'btn btn-danger']
-                    );
-                },
+                }
             ],
-        ],
+        ]
     ]
 ]);*/

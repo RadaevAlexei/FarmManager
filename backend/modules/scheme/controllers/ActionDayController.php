@@ -3,6 +3,7 @@
 namespace backend\modules\scheme\controllers;
 
 use backend\modules\scheme\models\ActionHistory;
+use backend\modules\scheme\models\search\ActionHistorySearch;
 use PhpOffice\PhpSpreadsheet\Reader\BaseReader;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -10,6 +11,8 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Yii;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use backend\controllers\BackendController;
+use yii\data\ActiveDataProvider;
+use yii\data\ArrayDataProvider;
 use yii\db\ActiveQuery;
 use yii\helpers\ArrayHelper;
 
@@ -32,7 +35,15 @@ class ActionDayController extends BackendController
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        /** @var ActionHistorySearch $searchModel */
+//        $searchModel = new ActionHistorySearch();
+        
+        /** @var ArrayDataProvider $dataProvider */
+//        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        return $this->render('index',
+            compact('searchModel')
+        );
     }
 
     private function getPathTemplate()
@@ -57,6 +68,8 @@ class ActionDayController extends BackendController
 
         /** @var Worksheet $sheet */
         $sheet = $spreadsheet->getActiveSheet();
+
+        $sheet->setCellValue("H1", (new \DateTime('now', new \DateTimeZone('Europe/Samara')))->format('d-m-Y'));
 
         /** @var ActionHistory[] $history */
         $history = ActionHistory::find()
@@ -105,7 +118,7 @@ class ActionDayController extends BackendController
         }
 
         $end = $offset + 1;
-        $spreadsheet->getActiveSheet()->getStyle("A3:I$end")->getFont()->setBold(false);
+        $spreadsheet->getActiveSheet()->getStyle("A3:J$end")->getFont()->setBold(false);
 
         $sheet->setTitle('Список дел на сегодня');
 
