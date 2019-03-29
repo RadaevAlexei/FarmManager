@@ -36,13 +36,13 @@ class ActionDayController extends BackendController
     public function actionIndex()
     {
         /** @var ActionHistorySearch $searchModel */
-//        $searchModel = new ActionHistorySearch();
-        
+        $searchModel = new ActionHistorySearch();
+
         /** @var ArrayDataProvider $dataProvider */
-//        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index',
-            compact('searchModel')
+            compact('searchModel', 'dataProvider')
         );
     }
 

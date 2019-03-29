@@ -51,19 +51,28 @@ class ActionHistorySearch extends ActionHistory
                 'ah.scheme_day_at' => (new \DateTime('now', new \DateTimeZone('Europe/Samara')))->format('Y-m-d')
             ])->all();
 
-        $result = [];
+        $schemes = [];
         foreach ($history as $action) {
-            if (array_key_exists(ArrayHelper::getValue($action, "appropriationScheme.scheme.id"), $result)) {
-                if (!in_array(ArrayHelper::getValue($action, "appropriationScheme.animal.nickname"),
-                    $result[ArrayHelper::getValue($action, "appropriationScheme.scheme.id")])
-                ) {
-                    $result[ArrayHelper::getValue($action, "appropriationScheme.scheme.id")][] =
-                        ArrayHelper::getValue($action, "appropriationScheme.animal.nickname");
+            $schemeId = ArrayHelper::getValue($action, "appropriationScheme.scheme.id");
+            $animalName = ArrayHelper::getValue($action, "appropriationScheme.animal.nickname");
+
+            if (array_key_exists($schemeId, $schemes)) {
+                if (!in_array($animalName, $schemes[$schemeId]["animals"])) {
+                    $schemes[$schemeId]["animals"][] = $animalName;
                 }
             } else {
-                $result[ArrayHelper::getValue($action, "appropriationScheme.scheme.id")][] =
-                    ArrayHelper::getValue($action, "appropriationScheme.animal.nickname");
+                $schemes[$schemeId]["animals"][] = $animalName;
+                $schemes[$schemeId]["scheme_name"] = ArrayHelper::getValue($action, "appropriationScheme.scheme.name");
             }
+        }
+
+        $result = [];
+        foreach ($schemes as $schemeId => $data) {
+            $result[] = [
+                'scheme_id'   => $schemeId,
+                'scheme_name' => $data["scheme_name"],
+                'animals'     => $data["animals"],
+            ];
         }
 
         $dataProvider = new ArrayDataProvider([

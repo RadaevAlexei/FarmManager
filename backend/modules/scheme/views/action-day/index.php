@@ -5,12 +5,14 @@ use \yii\helpers\Url;
 use \yii\grid\GridView;
 use \backend\modules\scheme\models\ActionHistory;
 use \yii\helpers\ArrayHelper;
+use \yii\data\ArrayDataProvider;
+use \backend\modules\scheme\models\search\ActionHistorySearch;
 
 $this->title = 'Список дел';
 $this->params['breadcrumbs'][] = $this->title;
 
 /**
- * /** @var $dataProvider ActiveDataProvider
+ * /** @var $dataProvider ArrayDataProvider
  * /** @var $searchModel ActionHistorySearch
  */
 ?>
@@ -25,20 +27,20 @@ $this->params['breadcrumbs'][] = $this->title;
         ) ?>
     </div>
 
-<?php /*echo GridView::widget([
+<?php echo GridView::widget([
     "dataProvider" => $dataProvider,
     'columns'      => [
         ['class' => 'yii\grid\SerialColumn'],
         [
             'label' => 'Схема лечения',
-            'value' => function (ActionHistory $model) {
-                return ArrayHelper::getValue($model, "appropriationScheme.scheme.name");
+            'value' => function ($model) {
+                return ArrayHelper::getValue($model, "scheme_name");
             }
         ],
         [
-            'label' => 'Диагноз',
-            'value' => function (ActionHistory $model) {
-                return ArrayHelper::getValue($model, "appropriationScheme.scheme.diagnosis.name");
+            'label' => 'Количество голов на схеме',
+            'value' => function ($model) {
+                return count(ArrayHelper::getValue($model, "animals"));
             }
         ],
         [
@@ -46,14 +48,14 @@ $this->params['breadcrumbs'][] = $this->title;
             'header'   => 'Просмотр',
             'template' => '<div class="btn-group">{detail}</div>',
             'buttons'  => [
-                'detail' => function ($url, ActionHistory $model) {
+                'detail' => function ($url, $model) {
                     return Html::a(
                         '<span class="glyphicon glyphicon-eye-open"></span>',
-                        Url::toRoute(['action-day/details', 'scheme_id' => ArrayHelper::getValue($model, "appropriationScheme.scheme.id")]),
+                        Url::toRoute(['action-day/details', 'scheme_id' => ArrayHelper::getValue($model, "scheme_id")]),
                         ['class' => 'btn btn-primary']
                     );
                 }
             ],
         ]
     ]
-]);*/
+]);
