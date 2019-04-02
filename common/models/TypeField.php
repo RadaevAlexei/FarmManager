@@ -12,12 +12,15 @@ class TypeField
 {
     // Текст
     const TYPE_TEXT = 0;
+    const TYPE_TEXT_STRING = "text_value";
 
     // Число
     const TYPE_NUMBER = 1;
+    const TYPE_NUMBER_STRING = "number_value";
 
     // Список
     const TYPE_LIST = 2;
+    const TYPE_LIST_STRING = "list_value";
 
     /**
      * @return array

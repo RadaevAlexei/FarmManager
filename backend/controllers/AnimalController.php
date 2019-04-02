@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\modules\scheme\models\AnimalHistory;
 use Yii;
 use backend\modules\scheme\models\AppropriationScheme;
 use backend\modules\scheme\models\Scheme;
@@ -197,8 +198,14 @@ class AnimalController extends BackendController
             'status'    => AppropriationScheme::STATUS_IN_PROGRESS,
         ]);
 
+        /** @var AnimalHistory[] $history */
+        $history = AnimalHistory::find()
+            ->where(['animal_id' => $model->id])
+            ->orderBy(['date' => SORT_DESC])
+            ->all();
+
         return $this->render('new-detail',
-            compact('model', 'schemeList', 'appropriationScheme', 'animalOnScheme', 'actionsToday')
+            compact('model', 'schemeList', 'appropriationScheme', 'animalOnScheme', 'actionsToday', 'history')
         );
     }
 

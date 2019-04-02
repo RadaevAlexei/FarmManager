@@ -5,6 +5,7 @@ use \yii\helpers\Url;
 use common\models\Animal;
 use \backend\modules\scheme\models\Scheme;
 use \backend\modules\scheme\models\AppropriationScheme;
+use \backend\modules\scheme\models\AnimalHistory;
 
 //ChartAsset::register($this);
 
@@ -14,6 +15,7 @@ use \backend\modules\scheme\models\AppropriationScheme;
  * @var AppropriationScheme $appropriationScheme
  * @var AppropriationScheme $animalOnScheme
  * @var AppropriationScheme $actionsToday
+ * @var AnimalHistory[] $history
  */
 
 $this->params['breadcrumbs'][] = [
@@ -113,6 +115,7 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app/animal', "ANIMAL_DETAIL
                 <li class=""><a href="#calvings" data-toggle="tab" aria-expanded="true">Отёлы</a></li>
                 <li class=""><a href="#inseminations" data-toggle="tab" aria-expanded="true">Осеменения</a></li>
                 <li class=""><a href="#scheme" data-toggle="tab" aria-expanded="true">Схема лечения</a></li>
+                <li class=""><a href="#animal-history" data-toggle="tab" aria-expanded="true">История</a></li>
             </ul>
             <div class="tab-content">
 
@@ -140,6 +143,12 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app/animal', "ANIMAL_DETAIL
                         'appropriationScheme' => $appropriationScheme,
                         'animalOnScheme'      => $animalOnScheme,
                         'actionsToday'        => $actionsToday,
+                    ]) ?>
+                </div>
+
+                <div class="tab-pane" id="animal-history">
+                    <?= $this->render('/animal/tabs/animal-history', [
+                        'history' => $history
                     ]) ?>
                 </div>
 

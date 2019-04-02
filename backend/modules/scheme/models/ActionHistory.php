@@ -2,6 +2,7 @@
 
 namespace backend\modules\scheme\models;
 
+use common\models\TypeField;
 use Yii;
 use yii\db\ActiveRecord;
 
@@ -11,6 +12,7 @@ use yii\db\ActiveRecord;
  *
  * ЗНАЧЕНИЯ ДЕЙСТВИЙ
  *
+ * @property integer $id
  * @property integer $scheme_id
  * @property integer $scheme_day_id
  * @property integer $groups_action_id
@@ -24,6 +26,7 @@ use yii\db\ActiveRecord;
 class ActionHistory extends ActiveRecord
 {
     const STATUS_NEW = 'new';
+    const STATUS_EXECUTED = 'executed';
 
     /**
      * @return string
@@ -39,13 +42,13 @@ class ActionHistory extends ActiveRecord
     public function attributeLabels()
     {
         return [
-            'scheme_id'          => Yii::t('app/action-value', 'ACTION_VALUE_SCHEME'),
-            'scheme_day_id'      => Yii::t('app/action-value', 'ACTION_VALUE_DAY'),
-            'groups_action_id'   => Yii::t('app/action-value', 'ACTION_VALUE_GROUPS_ACTION'),
-            'action_id'          => Yii::t('app/action-value', 'ACTION_VALUE_ACTION'),
-            'text_value'         => Yii::t('app/action-value', 'ACTION_VALUE_TEXT_VALUE'),
-            'number_value'       => Yii::t('app/action-value', 'ACTION_VALUE_NUMBER_VALUE'),
-            'double_value'       => Yii::t('app/action-value', 'ACTION_VALUE_DOUBLE_VALUE'),
+            'scheme_id'        => Yii::t('app/action-value', 'ACTION_VALUE_SCHEME'),
+            'scheme_day_id'    => Yii::t('app/action-value', 'ACTION_VALUE_DAY'),
+            'groups_action_id' => Yii::t('app/action-value', 'ACTION_VALUE_GROUPS_ACTION'),
+            'action_id'        => Yii::t('app/action-value', 'ACTION_VALUE_ACTION'),
+            'text_value'       => Yii::t('app/action-value', 'ACTION_VALUE_TEXT_VALUE'),
+            'number_value'     => Yii::t('app/action-value', 'ACTION_VALUE_NUMBER_VALUE'),
+            'double_value'     => Yii::t('app/action-value', 'ACTION_VALUE_DOUBLE_VALUE'),
         ];
     }
 
@@ -55,9 +58,23 @@ class ActionHistory extends ActiveRecord
     public function rules()
     {
         return [
-            [['appropriation_scheme_id', 'groups_action_id', 'action_id', 'scheme_day'], 'required'],
+            [
+                ['appropriation_scheme_id', 'groups_action_id', 'action_id', 'scheme_day', 'created_at', 'updated_at'],
+                'required'
+            ],
             [['text_value'], 'string'],
-            [['appropriation_scheme_id', 'groups_action_id', 'action_id', 'number_value', 'scheme_day'], 'integer'],
+            [
+                [
+                    'appropriation_scheme_id',
+                    'groups_action_id',
+                    'action_id',
+                    'number_value',
+                    'scheme_day',
+                    'created_at',
+                    'updated_at'
+                ],
+                'integer'
+            ],
             [['double_value'], 'double'],
             [['scheme_day_at', 'execute_at'], 'safe']
         ];
@@ -85,5 +102,36 @@ class ActionHistory extends ActiveRecord
     public function getAction()
     {
         return $this->hasOne(Action::class, ['id' => 'action_id']);
+    }
+
+    /**
+     * @param $type
+     * @param $value
+     */
+    public function setValueByType($type, $value)
+    {
+        $column = "";
+        switch ($type) {
+            case TypeField::TYPE_NUMBER:
+                $column = TypeField::TYPE_NUMBER_STRING;
+                break;
+            case TypeField::TYPE_TEXT:
+                $column = TypeField::TYPE_TEXT_STRING;
+                break;
+            case TypeField::TYPE_LIST:
+                $column = TypeField::TYPE_LIST_STRING;
+                break;
+        }
+
+        if (!empty($column)) {
+            $userId = Yii::$app->getUser()->getIdentity()->getId();
+
+            $this->updateAttributes([
+                $column      => $value,
+                "status"     => ActionHistory::STATUS_EXECUTED,
+                "updated_at" => $userId,
+                "execute_at" => (new \DateTime('now', new \DateTimeZone('Europe/Samara')))->format('Y-m-d H:i:s')
+            ]);
+        }
     }
 }

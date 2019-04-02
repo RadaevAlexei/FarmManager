@@ -48,7 +48,8 @@ class ActionHistorySearch extends ActionHistory
                 },
             ])
             ->where([
-                'ah.scheme_day_at' => (new \DateTime('now', new \DateTimeZone('Europe/Samara')))->format('Y-m-d')
+                'ah.scheme_day_at' => (new \DateTime('now', new \DateTimeZone('Europe/Samara')))->format('Y-m-d'),
+                'ah.status' => ActionHistory::STATUS_NEW
             ])->all();
 
         $schemes = [];

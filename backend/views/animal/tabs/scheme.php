@@ -56,9 +56,12 @@ if ($animalOnScheme) {
             <?= $form->field($appropriationScheme, 'status')->textInput(['class' => 'hidden'])->label(false); ?>
 
             <?= $form->field($appropriationScheme, 'started_at')->widget(DatePicker::class, [
-                'language'   => 'ru',
-                'dateFormat' => 'yyyy-MM-dd',
-                'class'      => 'form-control'
+                'language'     => 'ru',
+                'dateFormat'   => 'yyyy-MM-dd',
+                'class'        => 'form-control',
+//                'clientOptions' => [
+//                    'autocomplete' => 'off'
+//                ]
             ]) ?>
         </div>
     </div>

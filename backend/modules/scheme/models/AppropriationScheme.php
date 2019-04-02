@@ -6,6 +6,7 @@ use Yii;
 use common\models\Animal;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
+use yii\helpers\ArrayHelper;
 
 /**
  * Class AppropriationScheme
@@ -91,10 +92,30 @@ class AppropriationScheme extends ActiveRecord
      */
     public function removeFromScheme()
     {
+        ActionHistory::deleteAll(['appropriation_scheme_id' => $this->id]);
+
         self::findOne([
             'animal_id' => $this->animal_id,
             'scheme_id' => $this->scheme_id,
         ])->delete();
+
+        $user = Yii::$app->getUser()->getIdentity();
+        $userId = ArrayHelper::getValue($user, "id");
+
+        $userName = ArrayHelper::getValue($user, "lastName");
+        $animalName = ArrayHelper::getValue($this, "animal.nickname");
+        $schemeName = ArrayHelper::getValue($this, "scheme.name");
+
+        /** @var AnimalHistory $newAnimalHistory */
+        $newAnimalHistory = new AnimalHistory([
+            'animal_id'   => $this->animal_id,
+            'user_id'     => $userId,
+            'date'        => (new \DateTime('now', new \DateTimeZone('Europe/Samara')))->format('Y-m-d H:i:s'),
+            'action_type' => AnimalHistory::ACTION_TYPE_DELETE_SCHEME,
+            'action_text' => "\"$userName\" убрал \"$animalName\" со схемы лечения \"$schemeName\""
+        ]);
+
+        $newAnimalHistory->save();
     }
 
     /**
@@ -118,7 +139,8 @@ class AppropriationScheme extends ActiveRecord
                 's.id' => $this->scheme_id
             ])->one();
 
-        $userId = Yii::$app->getUser()->getIdentity()->getId();
+        $user = Yii::$app->getUser()->getIdentity();
+        $userId = ArrayHelper::getValue($user, "id");
         foreach ($scheme->schemeDays as $day) {
             foreach ($day->groupsAction as $group) {
                 foreach ($group->actions as $action) {
@@ -136,12 +158,28 @@ class AppropriationScheme extends ActiveRecord
                         "double_value"            => null,
                         "list_value"              => null,
                         "execute_at"              => null,
-                        "user_id"                 => $userId,
-                        "status"                  => self::STATUS_IN_PROGRESS,
+                        "created_at"              => $userId,
+                        "updated_at"              => $userId,
+                        "status"                  => ActionHistory::STATUS_NEW,
                     ]);
                     $newActionHistory->save();
                 }
             }
         }
+
+        $userName = ArrayHelper::getValue($user, "lastName");
+        $animalName = ArrayHelper::getValue($this, "animal.nickname");
+        $schemeName = ArrayHelper::getValue($this, "scheme.name");
+
+        /** @var AnimalHistory $newAnimalHistory */
+        $newAnimalHistory = new AnimalHistory([
+            'animal_id'   => $this->animal_id,
+            'user_id'     => $userId,
+            'date'        => (new \DateTime('now', new \DateTimeZone('Europe/Samara')))->format('Y-m-d H:i:s'),
+            'action_type' => AnimalHistory::ACTION_TYPE_APPROPRIATION_SCHEME,
+            'action_text' => "\"$userName\" поставил \"$animalName\" на схему лечения \"$schemeName\""
+        ]);
+
+        $newAnimalHistory->save();
     }
 }

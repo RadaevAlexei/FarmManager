@@ -3,7 +3,7 @@
 use \yii\helpers\Html;
 use \yii\helpers\Url;
 use \yii\grid\GridView;
-use \backend\modules\scheme\models\ActionHistory;
+use \backend\modules\scheme\assets\ActionDayAsset;
 use \yii\helpers\ArrayHelper;
 use \yii\data\ArrayDataProvider;
 use \backend\modules\scheme\models\search\ActionHistorySearch;
@@ -11,21 +11,24 @@ use \backend\modules\scheme\models\search\ActionHistorySearch;
 $this->title = 'Список дел';
 $this->params['breadcrumbs'][] = $this->title;
 
+ActionDayAsset::register($this);
+
 /**
  * /** @var $dataProvider ArrayDataProvider
  * /** @var $searchModel ActionHistorySearch
  */
 ?>
 
-    <div class="form-group">
-        <?= Html::a(
-            'Скачать список дел на сегодня',
-            Url::toRoute(['action-day/download-action-list']),
-            [
-                'class' => 'btn btn-success'
-            ]
-        ) ?>
-    </div>
+<div class="form-group">
+    <?= Html::a(
+        'Скачать список дел на сегодня',
+        $dataProvider->getModels() ? Url::toRoute(['action-day/download-action-list']) : "#",
+        [
+            'class'    => 'btn btn-success',
+            'disabled' => $dataProvider->getModels() ? false : true
+        ]
+    ) ?>
+</div>
 
 <?php echo GridView::widget([
     "dataProvider" => $dataProvider,
