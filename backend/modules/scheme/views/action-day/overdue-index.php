@@ -8,7 +8,7 @@ use \yii\helpers\ArrayHelper;
 use \yii\data\ArrayDataProvider;
 use \backend\modules\scheme\models\search\ActionHistorySearch;
 
-$this->title = 'Текущие и предстоящие дела';
+$this->title = 'Просроченные дела в схемах';
 $this->params['breadcrumbs'][] = $this->title;
 
 ActionDayAsset::register($this);
@@ -18,17 +18,6 @@ ActionDayAsset::register($this);
  * /** @var $searchModel ActionHistorySearch
  */
 ?>
-
-<div class="form-group">
-    <?= Html::a(
-        'Скачать список дел на сегодня',
-        $dataProvider->getModels() ? Url::toRoute(['action-day/download-action-list']) : "#",
-        [
-            'class'    => 'btn btn-success',
-            'disabled' => $dataProvider->getModels() ? false : true
-        ]
-    ) ?>
-</div>
 
 <?php echo GridView::widget([
     "dataProvider" => $dataProvider,
@@ -54,7 +43,10 @@ ActionDayAsset::register($this);
                 'detail' => function ($url, $model) {
                     return Html::a(
                         '<span class="glyphicon glyphicon-eye-open"></span>',
-                        Url::toRoute(['action-day/details', 'scheme_id' => ArrayHelper::getValue($model, "scheme_id")]),
+                        Url::toRoute([
+                            'action-day/overdue-details',
+                            'scheme_id' => ArrayHelper::getValue($model, "scheme_id")
+                        ]),
                         ['class' => 'btn btn-primary']
                     );
                 }

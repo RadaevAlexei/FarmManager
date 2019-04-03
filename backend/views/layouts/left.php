@@ -129,7 +129,19 @@ use \yii\helpers\Url;
                     [
                         'label' => 'Список дел',
                         'icon'  => 'users',
-                        'url'   => Url::toRoute(['/scheme/action-day/index'])
+                        'url'   => '#',
+                        'items' => [
+                            [
+                                'label' => 'Просроченные',
+                                'icon'  => 'users',
+                                'url'   =>  Url::toRoute(['/scheme/action-day/overdue'])
+                            ],
+                            [
+                                'label' => 'Текущие и будущие',
+                                'icon'  => 'users',
+                                'url'   =>  Url::toRoute(['/scheme/action-day/index'])
+                            ],
+                        ]
                     ],
                     [
                         'label' => 'Календарь',

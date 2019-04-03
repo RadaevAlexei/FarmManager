@@ -26,8 +26,7 @@ class ActionHistorySearch extends ActionHistory
      */
     public function search($params)
     {
-        /** @var ActionHistory[] $history */
-        $history = ActionHistory::find()
+        $historyQuery = ActionHistory::find()
             ->alias('ah')
             ->select(['ah.*', 'as.scheme_id', 'as.animal_id'])
             ->joinWith([
@@ -48,9 +47,17 @@ class ActionHistorySearch extends ActionHistory
                 },
             ])
             ->where([
-                'ah.scheme_day_at' => (new \DateTime('now', new \DateTimeZone('Europe/Samara')))->format('Y-m-d'),
                 'ah.status' => ActionHistory::STATUS_NEW
-            ])->all();
+            ]);
+
+        if (ArrayHelper::getValue($params, 'overdue')) {
+            $historyQuery->andWhere(['<=', 'ah.scheme_day_at', ArrayHelper::getValue($params, 'day')]);
+            $historyQuery->andWhere(['is', 'ah.execute_at', null]);
+        } else {
+            $historyQuery->andWhere(['=', 'ah.scheme_day_at', ArrayHelper::getValue($params, 'day')]);
+        }
+
+        $history = $historyQuery->all();
 
         $schemes = [];
         foreach ($history as $action) {

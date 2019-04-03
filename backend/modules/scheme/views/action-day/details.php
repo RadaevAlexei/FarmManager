@@ -5,12 +5,12 @@ use \backend\modules\scheme\models\ActionHistory;
 
 /**
  * @var ActionHistory $details
+ * @var bool $overdue
  */
 
 //SchemeAsset::register($this);
 $this->title = 'Животные на схеме';
 $this->params['breadcrumbs'][] = $this->title;
-
 ?>
 
 <div class="box box-info">
@@ -25,7 +25,8 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="form-group" id="scheme_days_block">
             <div class="col-sm-12">
                 <?= $this->render('actions-today', [
-                    'details' => $details
+                    'details' => $details,
+                    'overdue' => $overdue,
                 ]) ?>
             </div>
         </div>

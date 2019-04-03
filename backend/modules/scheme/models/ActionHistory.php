@@ -22,6 +22,7 @@ use yii\db\ActiveRecord;
  * @property double $double_value
  * @property string $action_list_values
  * @property integer $scheme_day
+ * @property \DateTime $scheme_day_at
  */
 class ActionHistory extends ActiveRecord
 {
@@ -107,8 +108,9 @@ class ActionHistory extends ActiveRecord
     /**
      * @param $type
      * @param $value
+     * @param $executeAt
      */
-    public function setValueByType($type, $value)
+    public function setValueByType($type, $value, $executeAt)
     {
         $column = "";
         switch ($type) {
@@ -120,6 +122,7 @@ class ActionHistory extends ActiveRecord
                 break;
             case TypeField::TYPE_LIST:
                 $column = TypeField::TYPE_LIST_STRING;
+                $value = json_encode($value);
                 break;
         }
 
@@ -130,7 +133,7 @@ class ActionHistory extends ActiveRecord
                 $column      => $value,
                 "status"     => ActionHistory::STATUS_EXECUTED,
                 "updated_at" => $userId,
-                "execute_at" => (new \DateTime('now', new \DateTimeZone('Europe/Samara')))->format('Y-m-d H:i:s')
+                "execute_at" => $executeAt
             ]);
         }
     }

@@ -115,7 +115,7 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app/animal', "ANIMAL_DETAIL
                 <li class=""><a href="#calvings" data-toggle="tab" aria-expanded="true">Отёлы</a></li>
                 <li class=""><a href="#inseminations" data-toggle="tab" aria-expanded="true">Осеменения</a></li>
                 <li class=""><a href="#scheme" data-toggle="tab" aria-expanded="true">Схема лечения</a></li>
-                <li class=""><a href="#animal-history" data-toggle="tab" aria-expanded="true">История</a></li>
+                <li class=""><a href="#animal-history" data-toggle="tab" aria-expanded="true">Амбулаторная карта животного</a></li>
             </ul>
             <div class="tab-content">
 

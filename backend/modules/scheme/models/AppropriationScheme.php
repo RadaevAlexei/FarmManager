@@ -112,7 +112,7 @@ class AppropriationScheme extends ActiveRecord
             'user_id'     => $userId,
             'date'        => (new \DateTime('now', new \DateTimeZone('Europe/Samara')))->format('Y-m-d H:i:s'),
             'action_type' => AnimalHistory::ACTION_TYPE_DELETE_SCHEME,
-            'action_text' => "\"$userName\" убрал \"$animalName\" со схемы лечения \"$schemeName\""
+            'action_text' => "Убрал \"$animalName\" со схемы лечения \"$schemeName\""
         ]);
 
         $newAnimalHistory->save();
@@ -177,7 +177,7 @@ class AppropriationScheme extends ActiveRecord
             'user_id'     => $userId,
             'date'        => (new \DateTime('now', new \DateTimeZone('Europe/Samara')))->format('Y-m-d H:i:s'),
             'action_type' => AnimalHistory::ACTION_TYPE_APPROPRIATION_SCHEME,
-            'action_text' => "\"$userName\" поставил \"$animalName\" на схему лечения \"$schemeName\""
+            'action_text' => "Поставил \"$animalName\" на схему лечения \"$schemeName\""
         ]);
 
         $newAnimalHistory->save();

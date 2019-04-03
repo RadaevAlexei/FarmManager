@@ -4,18 +4,20 @@ use kartik\tabs\TabsX;
 
 /**
  * @var array $details
+ * @var bool $overdue
  */
 
 $items = [];
 if (!empty($details)) :
     $index = 0;
     foreach ($details as $scheme_id => $animalActionData) :
-        $dayName = "Животное #{$animalActionData["animal_label"]}";
+        $dayName = "{$animalActionData["animal_nickname"]} - #{$animalActionData["animal_label"]}";
 
         $items[] = [
             'label'   => '<i class="fa fa-user"></i>&nbsp;' . $dayName,
             'content' => $this->render('animal-actions', [
-                'actions_data' => $animalActionData["data"]
+                'actions_data' => $animalActionData["data"],
+                'overdue' => $overdue
             ]),
             'active'  => ($index == 0) ? true : false
         ];
