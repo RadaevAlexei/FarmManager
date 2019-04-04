@@ -14,6 +14,7 @@ use yii\db\ActiveRecord;
  * @package common\models
  *
  * @property integer $id
+ * @property integer $collar
  */
 class Animal extends ActiveRecord
 {
@@ -98,6 +99,7 @@ class Animal extends ActiveRecord
             'previous_weighing'      => 'Предыдущее взвешивание',
             'current_weighing_date'  => 'Дата текущего взвешивания',
             'current_weighing'       => 'Текущее взвешивание',
+            'collar'                 => 'Номер ошейника',
         ];
     }
 
@@ -131,6 +133,7 @@ class Animal extends ActiveRecord
                     'cowshed_id',
                     'status',
                     'rectal_examination',
+                    'collar',
                 ],
                 'safe'
             ],

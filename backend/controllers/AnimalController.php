@@ -2,7 +2,9 @@
 
 namespace backend\controllers;
 
+use backend\models\forms\UploadForm;
 use backend\modules\scheme\models\AnimalHistory;
+use common\helpers\Excel\ExcelHelper;
 use Yii;
 use backend\modules\scheme\models\AppropriationScheme;
 use backend\modules\scheme\models\Scheme;
@@ -15,6 +17,7 @@ use yii\data\ActiveDataProvider;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use yii\web\NotFoundHttpException;
+use yii\web\UploadedFile;
 
 /**
  * Class AnimalController
@@ -191,7 +194,7 @@ class AnimalController extends BackendController
         if ($animalOnScheme) {
             $actionsToday = $model->getActionsToday($animalOnScheme);
         }
-        
+
 
         $appropriationScheme = new AppropriationScheme([
             'animal_id' => $id,
@@ -484,5 +487,34 @@ class AnimalController extends BackendController
                 'model' => $model,
             ]);
         }
+    }
+
+    /**
+     * @return \yii\web\Response
+     */
+    public function actionUpdateFromFile()
+    {
+        $model = new UploadForm();
+
+        $transaction = Yii::$app->db->beginTransaction();
+
+        try {
+            if (Yii::$app->request->isPost) {
+                $model->file = UploadedFile::getInstance($model, 'file');
+
+                if ($model->file && $model->validate()) {
+                    ExcelHelper::updateFields($model->file->tempName);
+                }
+
+                Yii::$app->session->setFlash('success', 'Успешное обновление данных');
+                $transaction->commit();
+                return $this->redirect(['index']);
+            }
+        } catch (\Exception $exception) {
+            Yii::$app->session->setFlash('error', 'Ошибка при обновлении данных');
+            $transaction->rollBack();
+            return $this->redirect(['index']);
+        }
+
     }
 }

@@ -9,8 +9,6 @@ use common\models\Cow;
 use common\models\Cowshed;
 use common\models\Farm;
 use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Reader\BaseReader;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -90,6 +88,48 @@ class ExcelHelper
         ];
 
         $new_animal->save();
+    }
+
+    /**
+     * @param $filename
+     *
+     * @return bool
+     */
+    public static function updateFields($filename)
+    {
+        $filter_subset = new WorksheetReadFilter();
+
+        $input_file_type = IOFactory::identify($filename);
+
+        $sheet_name = "worksheet";
+        $reader = IOFactory::createReader($input_file_type);
+        $reader->setLoadSheetsOnly($sheet_name);
+        $reader->setReadFilter($filter_subset);
+        $spreadsheet = $reader->load($filename);
+        $animals = $spreadsheet->getActiveSheet()->toArray(null, true, true, true);
+
+        foreach ($animals as $animal_data) {
+            self::updateField($animal_data);
+        }
+    }
+
+    /**
+     * @param $data
+     */
+    public static function updateField($data)
+    {
+
+        $label = ArrayHelper::getValue($data, 'F');
+        if (!empty($label)) {
+            /** @var Animal $animal */
+            $animal = Animal::find()->where(['label' => $label])->one();
+            if ($animal)  {
+                $collar = ArrayHelper::getValue($data, 'E');
+                if (!empty($collar)) {
+                    $animal->updateAttributes(['collar' => $collar]);
+                }
+            }
+        }
     }
 
     /**

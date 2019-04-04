@@ -6,29 +6,54 @@ use \yii\helpers\Html;
 use \yii\helpers\Url;
 use \common\models\Animal;
 use \common\models\Bull;
+use \yii\widgets\ActiveForm;
+use \backend\models\forms\UploadForm;
 
 $this->title = Yii::t('app/animal', 'ANIMAL_LIST');
 $this->params['breadcrumbs'][] = $this->title;
+$uploadModel = new UploadForm();
 
 /** @var $dataProvider \yii\data\ActiveDataProvider */
 /** @var $searchModel CowSearch */
 
 ?>
+    <div class="box box-success">
+        <div class="box-header with-border">
+            <h3 class="box-title">Обновление данных</h3>
+        </div>
+        <?php $form = ActiveForm::begin([
+            'action'  => Url::toRoute(['update-from-file']),
+            'options' => ['enctype' => 'multipart/form-data']
+        ]) ?>
+        <div class="box-body">
+            <div class="form-group">
+                <?= $form->field($uploadModel, 'file')->fileInput() ?>
+            </div>
+        </div>
+        <div class="box-footer">
+            <button type="submit" class="btn btn-primary">Обновить</button>
+        </div>
+        <?php ActiveForm::end() ?>
+    </div>
 
-<div class="form-group">
-    <?= Html::a(
-        Yii::t('app/animal', 'ANIMAL_ADD'),
-        Url::toRoute(['animal/new']),
-        [
-            'class' => 'btn btn-primary'
-        ]
-    ) ?>
-</div>
+    <div class="form-group">
+        <?= Html::a(
+            Yii::t('app/animal', 'ANIMAL_ADD'),
+            Url::toRoute(['animal/new']),
+            [
+                'class' => 'btn btn-primary'
+            ]
+        ) ?>
+    </div>
 
 <?php
 echo GridView::widget([
+    'formatter'    => [
+        'class'       => 'yii\i18n\Formatter',
+        'nullDisplay' => '',
+    ],
     "dataProvider" => $dataProvider,
-//    "filterModel"  => $searchModel,
+    //    "filterModel"  => $searchModel,
     'tableOptions' => [
         'style' => 'display:block; width:100%; overflow-x:auto',
         'class' => 'table table-striped',
@@ -47,6 +72,7 @@ echo GridView::widget([
                 );
             }
         ],
+        'collar',
         'label',
         'birthday',
         [
