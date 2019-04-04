@@ -9,6 +9,8 @@ use \common\models\Bull;
 use \yii\widgets\ActiveForm;
 use \backend\models\forms\UploadForm;
 use \backend\assets\AnimalAsset;
+use \backend\modules\scheme\models\AppropriationScheme;
+use \yii\helpers\ArrayHelper;
 
 $this->title = Yii::t('app/animal', 'ANIMAL_LIST');
 $this->params['breadcrumbs'][] = $this->title;
@@ -119,6 +121,14 @@ echo GridView::widget([
             'attribute' => 'rectal_examination',
             'content'   => function ($model) {
                 return '<span class="label label-primary">' . Animal::getRectalExamination($model->rectal_examination) . '</span>';
+            }
+        ],
+        [
+            'label'   => 'Схема',
+            'content' => function (Animal $model) {
+                /** @var AppropriationScheme $scheme */
+                $appropriationScheme = $model->onScheme();
+                return '<span class="label label-primary">' . ArrayHelper::getValue($appropriationScheme, "scheme.name") . '</span>';
             }
         ],
         [
