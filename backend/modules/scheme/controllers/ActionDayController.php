@@ -134,7 +134,7 @@ class ActionDayController extends BackendController
             $sheet->setCellValue("B$offset", ArrayHelper::getValue($action, "scheme_day"));
             $sheet->setCellValue("C$offset",
                 ArrayHelper::getValue($action, "appropriationScheme.animal.animalGroup.name"));
-            $sheet->setCellValue("D$offset", ArrayHelper::getValue($action, "appropriationScheme.animal.label"));
+            $sheet->setCellValue("D$offset", ArrayHelper::getValue($action, "appropriationScheme.animal.collar"));
             $sheet->setCellValue("E$offset", ArrayHelper::getValue($action, "appropriationScheme.animal.label"));
             $sheet->setCellValue("F$offset",
                 ArrayHelper::getValue($action, "appropriationScheme.scheme.diagnosis.name"));
@@ -145,6 +145,8 @@ class ActionDayController extends BackendController
 
         $end = $offset + 1;
         $spreadsheet->getActiveSheet()->getStyle("A3:J$end")->getFont()->setBold(false);
+        $spreadsheet->getActiveSheet()->getProtection()->setSheet(false);
+        $spreadsheet->getActiveSheet()->getPageSetup()->setScale(100);
 
         $sheet->setTitle('Список дел на сегодня');
 

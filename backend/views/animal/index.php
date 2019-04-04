@@ -8,10 +8,13 @@ use \common\models\Animal;
 use \common\models\Bull;
 use \yii\widgets\ActiveForm;
 use \backend\models\forms\UploadForm;
+use \backend\assets\AnimalAsset;
 
 $this->title = Yii::t('app/animal', 'ANIMAL_LIST');
 $this->params['breadcrumbs'][] = $this->title;
 $uploadModel = new UploadForm();
+
+AnimalAsset::register($this);
 
 /** @var $dataProvider \yii\data\ActiveDataProvider */
 /** @var $searchModel CowSearch */
@@ -58,6 +61,12 @@ echo GridView::widget([
         'style' => 'display:block; width:100%; overflow-x:auto',
         'class' => 'table table-striped',
     ],
+    'rowOptions'   => function (Animal $model, $key, $index, $grid) {
+        $class = $model->onScheme() ? "animal-on-scheme" : "";
+        return [
+            'class' => $class
+        ];
+    },
     'columns'      => [
         ['class' => 'yii\grid\SerialColumn'],
         [
