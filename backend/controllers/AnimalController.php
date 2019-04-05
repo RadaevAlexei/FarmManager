@@ -5,6 +5,7 @@ namespace backend\controllers;
 use backend\models\forms\HealthForm;
 use backend\models\forms\UploadForm;
 use backend\modules\scheme\models\AnimalHistory;
+use backend\modules\scheme\models\Diagnosis;
 use common\helpers\Excel\ExcelHelper;
 use Yii;
 use backend\modules\scheme\models\AppropriationScheme;
@@ -529,11 +530,32 @@ class AnimalController extends BackendController
             if (Yii::$app->request->isPost) {
                 if ($model->load(Yii::$app->request->post()) && $model->validate()) {
                     $animal = Animal::findOne($model->animal_id);
+                    
                     if ($animal) {
                         $animal->updateAttributes([
                             'health_status' => $model->health_status,
                             'diagnosis'     => $model->diagnosis,
                         ]);
+
+                        $userId = Yii::$app->getUser()->getIdentity()->getId();
+
+                        if ($model->health_status == 0) {
+                            $diagnosisName = "Здоровая";
+                        } else {
+                            $diagnosis = Diagnosis::findOne($model->diagnosis);
+                            $diagnosisName = ArrayHelper::getValue($diagnosis, "name");
+                        }
+
+                        /** @var AnimalHistory $newAnimalHistory */
+                        $newAnimalHistory = new AnimalHistory([
+                            'animal_id'   => $animal->id,
+                            'user_id'     => $userId,
+                            'date'        => (new \DateTime('now', new \DateTimeZone('Europe/Samara')))->format('Y-m-d H:i:s'),
+                            'action_type' => AnimalHistory::ACTION_TYPE_SET_DIAGNOSIS,
+                            'action_text' => "Поставил диагноз \"$diagnosisName\""
+                        ]);
+
+                        $newAnimalHistory->save();
                     }
                 }
 
