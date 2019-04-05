@@ -33,12 +33,25 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app/animal', "ANIMAL_DETAIL
     <div class="col-md-3">
 
         <!-- Profile Image -->
-        <div class="box box-primary">
+        <div class="box box-warning">
+            <div class="box-body box-profile" style="padding: 10px 0 10px 0px">
+                <div class="col-md-12 box-primary no-padding no-margin" style="background-color: #efdb14; margin: -10px 0 10px 0 !important">
+                    <h3 class="profile-username text-center"><?= ArrayHelper::getValue($model, "label") ?></h3>
+                </div>
+            </div>
             <div class="box-body box-profile">
                 <img class="profile-user-img img-responsive img-circle"
                      src="<?= Yii::getAlias('@web') . '/images/1.png' ?>" alt="User profile picture">
-
                 <h3 class="profile-username text-center"><?= ArrayHelper::getValue($model, "nickname") ?></h3>
+            </div>
+
+            <div class="box-body box-profile" style="padding: 10px 0 10px 0px">
+                <div class="col-md-12 box-primary no-padding no-margin" style="background-color: #efdb14; margin: -10px 0 10px 0 !important">
+                    <h3 class="profile-username text-center"><?= (new DateTime((string)ArrayHelper::getValue($model, "birthday")))->format('d-m-Y') ?></h3>
+                </div>
+            </div>
+
+            <div class="box-body box-profile">
 
                 <p class="text-muted text-center"><?= ArrayHelper::getValue($model, "birthday") ?></p>
 
