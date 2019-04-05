@@ -63,6 +63,10 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app/animal', "ANIMAL_DETAIL
                         <b>Рект. иссл-е</b><span
                                 class="pull-right label label-primary"><?= Animal::getPhysicalState($model->rectal_examination) ?></span>
                     </li>
+                    <li class="list-group-item">
+                        <b>Состояние здоровья</b><span
+                                class="pull-right label label-<?= ($model->health_status == Animal::HEALTH_STATUS_HEALTHY ? "success" : "danger") ?>"><?= $model->getHealthStatus() ?></span>
+                    </li>
                 </ul>
 
                 <a href="#" class="btn btn-primary btn-block"><b>Follow</b></a>
@@ -118,7 +122,8 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app/animal', "ANIMAL_DETAIL
                 <li class=""><a href="#calvings" data-toggle="tab" aria-expanded="true">Отёлы</a></li>
                 <li class=""><a href="#inseminations" data-toggle="tab" aria-expanded="true">Осеменения</a></li>
                 <li class=""><a href="#scheme" data-toggle="tab" aria-expanded="true">Схема лечения</a></li>
-                <li class=""><a href="#animal-history" data-toggle="tab" aria-expanded="true">Амбулаторная карта животного</a></li>
+                <li class=""><a href="#animal-history" data-toggle="tab" aria-expanded="true">Амбулаторная карта
+                        животного</a></li>
             </ul>
             <div class="tab-content">
 

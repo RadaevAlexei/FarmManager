@@ -6,6 +6,7 @@ use backend\modules\scheme\models\ActionHistory;
 use backend\modules\scheme\models\AppropriationScheme;
 use Yii;
 use yii\db\ActiveRecord;
+use yii\helpers\ArrayHelper;
 
 /**
  * Общий класс для животных
@@ -66,6 +67,12 @@ class Animal extends ActiveRecord
     const STATUS_INSEMINATED = 0;     // "Осемененная"
     const STATUS_NOT_INSEMINATED = 1; // "Не осемененная"
     const STATUS_HUNT = 2;            // "Охота"
+
+    /**
+     * Состояния здоровья
+     */
+    const HEALTH_STATUS_HEALTHY = 0;            // "Здоровая"
+    const HEALTH_STATUS_SICK = 1;               // "Больная"
 
     /**
      * @return string
@@ -215,9 +222,17 @@ class Animal extends ActiveRecord
     public static function getHealthStatusList()
     {
         return [
-            0 => 'Здоровая',
-            1 => 'Больная',
+            self::HEALTH_STATUS_HEALTHY => 'Здоровая',
+            self::HEALTH_STATUS_SICK    => 'Больная',
         ];
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getHealthStatus()
+    {
+        return self::getHealthStatusList()[$this->health_status];
     }
 
     /**
