@@ -52,9 +52,6 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app/animal', "ANIMAL_DETAIL
             </div>
 
             <div class="box-body box-profile">
-
-                <p class="text-muted text-center"><?= ArrayHelper::getValue($model, "birthday") ?></p>
-
                 <ul class="list-group list-group-unbordered">
                     <li class="list-group-item">
                         <b>Происхождение</b> <a class="pull-right"><?= ArrayHelper::getValue($model, "farm.name") ?></a>
