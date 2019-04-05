@@ -6,6 +6,7 @@ use common\models\Animal;
 use \backend\modules\scheme\models\Scheme;
 use \backend\modules\scheme\models\AppropriationScheme;
 use \backend\modules\scheme\models\AnimalHistory;
+use \backend\assets\AnimalAsset;
 
 //ChartAsset::register($this);
 
@@ -17,6 +18,8 @@ use \backend\modules\scheme\models\AnimalHistory;
  * @var AppropriationScheme $actionsToday
  * @var AnimalHistory[] $history
  */
+
+AnimalAsset::register($this);
 
 $this->params['breadcrumbs'][] = [
     'label' => Yii::t('app/animal', "ANIMAL_LIST"),

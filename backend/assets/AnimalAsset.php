@@ -18,6 +18,7 @@ class AnimalAsset extends AssetBundle
     ];
 
     public $js = [
+        'js/animal/animal.js',
     ];
 
     public $depends = [

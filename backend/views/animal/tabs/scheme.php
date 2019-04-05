@@ -9,6 +9,8 @@ use \yii\jui\DatePicker;
 use \yii\helpers\Html;
 use \yii\helpers\ArrayHelper;
 use \backend\modules\scheme\models\ActionHistory;
+use \backend\modules\scheme\models\Diagnosis;
+use \backend\models\forms\HealthForm;
 
 /**
  * @var Animal $animal
@@ -18,7 +20,53 @@ use \backend\modules\scheme\models\ActionHistory;
  * @var ActionHistory[] $actionsToday
  */
 
-if ($animalOnScheme) {
+$healthModel = new HealthForm();
+
+?>
+
+    <div class="box box-success">
+        <div class="box-header with-border">
+            <h3 class="box-title">Диагноз</h3>
+        </div>
+        <?php $form = ActiveForm::begin([
+            'action' => Url::toRoute(['update-health']),
+            'method' => 'post',
+            'id'     => 'tttwrter',
+            'class'  => 'form-horizontal',
+        ]); ?>
+        <div class="box-body">
+            <div class="form-group">
+                <?= $form->field($healthModel, 'animal_id')->hiddenInput(['value' => $animal->id])->label(false) ?>
+                <?= $form->field($healthModel, 'health_status')->dropDownList(
+                    Animal::getHealthStatusList(),
+                    [
+                        'id'     => 'health_status_list',
+                        'prompt' => 'Выберите статус здоровья',
+                        'class'  => 'form-control',
+                        'value'  => $animal->health_status,
+                    ]
+                ) ?>
+            </div>
+            <div id="diagnosis_list" class="form-group <?= ($animal->health_status == 0 ? 'hidden' : '') ?>">
+                <?= $form->field($healthModel, 'diagnosis')->dropDownList(
+                    ArrayHelper::map(Diagnosis::getAllList(), "id", "name"),
+                    [
+                        'prompt' => 'Выберите диагноз',
+                        'class'  => [
+                            'form-control'
+                        ],
+                        'value'  => $animal->diagnosis,
+                    ]
+                ) ?>
+            </div>
+        </div>
+        <div class="box-footer">
+            <button type="submit" class="btn btn-primary">Поставить диагноз</button>
+        </div>
+        <?php ActiveForm::end() ?>
+    </div>
+
+<?php if ($animalOnScheme) {
     echo Html::tag('span', 'Животное находится на схеме ' .
         Html::tag('span', ArrayHelper::getValue($animalOnScheme, 'scheme.name'), [
             'class' => 'label label-danger'
@@ -56,12 +104,12 @@ if ($animalOnScheme) {
             <?= $form->field($appropriationScheme, 'status')->textInput(['class' => 'hidden'])->label(false); ?>
 
             <?= $form->field($appropriationScheme, 'started_at')->widget(DatePicker::class, [
-                'language'     => 'ru',
-                'dateFormat'   => 'yyyy-MM-dd',
-                'class'        => 'form-control',
-//                'clientOptions' => [
-//                    'autocomplete' => 'off'
-//                ]
+                'language'   => 'ru',
+                'dateFormat' => 'yyyy-MM-dd',
+                'class'      => 'form-control',
+                //                'clientOptions' => [
+                //                    'autocomplete' => 'off'
+                //                ]
             ]) ?>
         </div>
     </div>

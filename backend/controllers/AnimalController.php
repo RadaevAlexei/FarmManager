@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\models\forms\HealthForm;
 use backend\models\forms\UploadForm;
 use backend\modules\scheme\models\AnimalHistory;
 use common\helpers\Excel\ExcelHelper;
@@ -516,5 +517,34 @@ class AnimalController extends BackendController
             return $this->redirect(['index']);
         }
 
+    }
+
+    public function actionUpdateHealth()
+    {
+        $model = new HealthForm();
+
+        $transaction = Yii::$app->db->beginTransaction();
+
+        try {
+            if (Yii::$app->request->isPost) {
+                if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+                    $animal = Animal::findOne($model->animal_id);
+                    if ($animal) {
+                        $animal->updateAttributes([
+                            'health_status' => $model->health_status,
+                            'diagnosis'     => $model->diagnosis,
+                        ]);
+                    }
+                }
+
+                Yii::$app->session->setFlash('success', 'Успешное смена состояния здоровья');
+                $transaction->commit();
+                return $this->redirect(['detail', 'id' => $model->animal_id]);
+            }
+        } catch (\Exception $exception) {
+            Yii::$app->session->setFlash('error', 'Ошибка при смене состояния здоровья');
+            $transaction->rollBack();
+            return $this->redirect(['detail', 'id' => $model->animal_id]);
+        }
     }
 }

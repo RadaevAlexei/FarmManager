@@ -15,6 +15,8 @@ use yii\db\ActiveRecord;
  *
  * @property integer $id
  * @property integer $collar
+ * @property integer $health_status
+ * @property integer $diagnosis
  */
 class Animal extends ActiveRecord
 {
@@ -100,6 +102,8 @@ class Animal extends ActiveRecord
             'current_weighing_date'  => 'Дата текущего взвешивания',
             'current_weighing'       => 'Текущее взвешивание',
             'collar'                 => 'Номер ошейника',
+            'health_status'          => 'Состояние здоровья',
+            'diagnosis'              => 'Диагноз',
         ];
     }
 
@@ -134,6 +138,7 @@ class Animal extends ActiveRecord
                     'status',
                     'rectal_examination',
                     'collar',
+                    'health_status',
                 ],
                 'safe'
             ],
@@ -201,6 +206,17 @@ class Animal extends ActiveRecord
         return [
             1 => Yii::t('app/animal', 'ANIMAL_MAN'),
             2 => Yii::t('app/animal', 'ANIMAL_WOMAN')
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public static function getHealthStatusList()
+    {
+        return [
+            0 => 'Здоровая',
+            1 => 'Больная',
         ];
     }
 
