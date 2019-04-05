@@ -47,7 +47,7 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app/animal', "ANIMAL_DETAIL
 
             <div class="box-body box-profile" style="padding: 10px 0 10px 0px">
                 <div class="col-md-12 box-primary no-padding no-margin" style="background-color: #efdb14; margin: -10px 0 10px 0 !important">
-                    <h3 class="profile-username text-center"><?= (new DateTime((string)ArrayHelper::getValue($model, "birthday")))->format('d-m-Y') ?></h3>
+                    <h3 class="profile-username text-center"><?= (new DateTime((string)ArrayHelper::getValue($model, "birthday")))->format('d.m.Y') ?></h3>
                 </div>
             </div>
 
