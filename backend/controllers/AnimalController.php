@@ -188,7 +188,12 @@ class AnimalController extends BackendController
         /** @var Animal $model */
         $model = Animal::findOne($id);
 
-        $schemeList = Scheme::getAllList();
+
+        $schemeList = [];
+        if ($model) {
+            $schemeList = $model->getListSchemes();
+            $schemeList = ArrayHelper::map($schemeList, "id", "name");
+        }
 
         /** @var AppropriationScheme $animalOnScheme */
         $animalOnScheme = $model->onScheme();

@@ -4,6 +4,7 @@ namespace common\models;
 
 use backend\modules\scheme\models\ActionHistory;
 use backend\modules\scheme\models\AppropriationScheme;
+use backend\modules\scheme\models\Scheme;
 use Yii;
 use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
@@ -439,6 +440,20 @@ class Animal extends ActiveRecord
                     (new \DateTimeZone('Europe/Samara'))))->format('Y-m-d'),
                 'status'                  => ActionHistory::STATUS_NEW
             ])
+            ->all();
+    }
+
+    /**
+     * @return array|ActiveRecord[]
+     */
+    public function getListSchemes()
+    {
+        if (empty($this->diagnosis)) {
+            return [];
+        }
+
+        return Scheme::find()
+            ->where(['diagnosis_id' => $this->diagnosis])
             ->all();
     }
 }

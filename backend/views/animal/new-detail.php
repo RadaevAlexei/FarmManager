@@ -36,7 +36,7 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app/animal', "ANIMAL_DETAIL
         <div class="box box-warning">
             <div class="box-body box-profile" style="padding: 10px 0 10px 0px">
                 <div class="col-md-12 box-primary no-padding no-margin" style="background-color: #efdb14; margin: -10px 0 10px 0 !important">
-                    <h3 class="profile-username text-center"><?= ArrayHelper::getValue($model, "label") ?></h3>
+                    <h1 class="text-center" style="margin: 10px 0 10px 0px;"><?= ArrayHelper::getValue($model, "label") ?></h1>
                 </div>
             </div>
             <div class="box-body box-profile">
@@ -58,9 +58,6 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app/animal', "ANIMAL_DETAIL
                     </li>
                     <li class="list-group-item">
                         <b>Коровник</b> <a class="pull-right"><?= ArrayHelper::getValue($model, "cowshed.name") ?></a>
-                    </li>
-                    <li class="list-group-item">
-                        <b>Бирка</b> <a class="pull-right"><?= ArrayHelper::getValue($model, "label") ?></a>
                     </li>
                     <li class="list-group-item">
                         <b>Возраст</b> <a class="pull-right">1 год 2 месяца 6 дней</a>
