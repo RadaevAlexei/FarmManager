@@ -144,6 +144,11 @@ use \yii\helpers\Url;
                         ]
                     ],
                     [
+                        'label' => 'Список больных животных',
+                        'icon'  => 'users',
+                        'url'   => Url::toRoute(['/animal/sick-index'])
+                    ],
+                    [
                         'label' => 'Календарь',
                         'icon'  => 'users',
                         'url'   => Url::toRoute(['/scheme/calendar/index'])

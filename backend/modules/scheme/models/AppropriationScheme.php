@@ -182,4 +182,12 @@ class AppropriationScheme extends ActiveRecord
 
         $newAnimalHistory->save();
     }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getActionHistory()
+    {
+        return $this->hasMany(ActionHistory::class, ['appropriation_scheme_id' => 'id']);
+    }
 }

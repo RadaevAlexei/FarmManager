@@ -4,6 +4,7 @@ namespace common\models;
 
 use backend\modules\scheme\models\ActionHistory;
 use backend\modules\scheme\models\AppropriationScheme;
+use backend\modules\scheme\models\Diagnosis;
 use backend\modules\scheme\models\Scheme;
 use Yii;
 use yii\db\ActiveRecord;
@@ -455,5 +456,21 @@ class Animal extends ActiveRecord
         return Scheme::find()
             ->where(['diagnosis_id' => $this->diagnosis])
             ->all();
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAppropriationScheme()
+    {
+        return $this->hasOne(AppropriationScheme::class, ['animal_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getDiagnoses()
+    {
+        return $this->hasOne(Diagnosis::class, ['id' => 'diagnosis']);
     }
 }
