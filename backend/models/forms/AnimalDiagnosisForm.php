@@ -7,11 +7,11 @@ use yii\base\Model;
 /**
  * UploadForm is the model behind the upload form.
  */
-class HealthForm extends Model
+class AnimalDiagnosisForm extends Model
 {
-    public $health_status;
+    public $health_status = 1;
     public $animal_id;
-    public $date_health;
+    public $diagnosis;
 
     /**
      * @return array the validation rules.
@@ -19,16 +19,14 @@ class HealthForm extends Model
     public function rules()
     {
         return [
-            [['health_status', 'animal_id'], 'integer'],
-            [['date_health'], 'safe']
+            [['health_status', 'animal_id', 'diagnosis'], 'integer'],
         ];
     }
 
     public function attributeLabels()
     {
         return [
-            'health_status' => 'Состояние здоровья',
-            'date_health' => 'Дата',
+            'diagnosis' => 'Диагноз',
         ];
     }
 }

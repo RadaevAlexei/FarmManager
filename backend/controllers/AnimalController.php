@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\models\forms\AnimalDiagnosisForm;
 use backend\models\forms\HealthForm;
 use backend\models\forms\UploadForm;
 use backend\models\search\AnimalSickSearch;
@@ -63,14 +64,14 @@ class AnimalController extends BackendController
 
         /** @var ActiveDataProvider $provider */
         $dataProvider = new ActiveDataProvider([
-            'query'      => Animal::find(),
+            'query' => Animal::find(),
             'pagination' => [
                 'pageSize' => 20,
             ],
         ]);
 
         return $this->render('index', [
-            "searchModel"  => $searchModel,
+            "searchModel" => $searchModel,
             "dataProvider" => $dataProvider,
         ]);
 
@@ -219,7 +220,7 @@ class AnimalController extends BackendController
 
         $appropriationScheme = new AppropriationScheme([
             'animal_id' => $id,
-            'status'    => AppropriationScheme::STATUS_IN_PROGRESS,
+            'status' => AppropriationScheme::STATUS_IN_PROGRESS,
         ]);
 
         /** @var AnimalHistory[] $history */
@@ -463,11 +464,11 @@ class AnimalController extends BackendController
         $fathers = [];
 
         return $this->render('animal-add', [
-            "action"  => $action,
-            "url"     => $url,
-            "model"   => $model,
-            "groups"  => $groups,
-            "colors"  => $colors,
+            "action" => $action,
+            "url" => $url,
+            "model" => $model,
+            "groups" => $groups,
+            "colors" => $colors,
             "mothers" => $mothers,
             "fathers" => $fathers,
         ]);
@@ -539,6 +540,11 @@ class AnimalController extends BackendController
 
     }
 
+    /**
+     * @return \yii\web\Response
+     * @throws \Throwable
+     * @throws \yii\db\Exception
+     */
     public function actionUpdateHealth()
     {
         $model = new HealthForm();
@@ -553,23 +559,74 @@ class AnimalController extends BackendController
                     if ($animal) {
                         $animal->updateAttributes([
                             'health_status' => $model->health_status,
-                            'diagnosis'     => $model->diagnosis,
+                            'date_health' => (new \DateTime($model->date_health))->format('Y-m-d H:i:s'),
                         ]);
 
                         $userId = Yii::$app->getUser()->getIdentity()->getId();
 
-                        if ($model->health_status == 0) {
-                            $diagnosisName = "Здоровая";
-                        } else {
-                            $diagnosis = Diagnosis::findOne($model->diagnosis);
+                        $health_status = ($model->health_status == Animal::HEALTH_STATUS_HEALTHY) ? "Здоровая" : "Больная";
+
+                        /** @var AnimalHistory $newAnimalHistory */
+                        $newAnimalHistory = new AnimalHistory([
+                            'animal_id' => $animal->id,
+                            'user_id' => $userId,
+                            'date' => (new \DateTime('now',
+                                new \DateTimeZone('Europe/Samara')))->format('Y-m-d H:i:s'),
+                            'action_type' => AnimalHistory::ACTION_TYPE_SET_HEALTH_STATUS,
+                            'action_text' => "Поставил статус \"$health_status\""
+                        ]);
+
+                        $newAnimalHistory->save();
+                    }
+                }
+
+                Yii::$app->session->setFlash('success', 'Успешное смена состояния здоровья');
+                $transaction->commit();
+                return $this->redirect(['detail', 'id' => $model->animal_id]);
+            }
+        } catch (\Exception $exception) {
+            Yii::$app->session->setFlash('error', 'Ошибка при смене состояния здоровья');
+            $transaction->rollBack();
+            return $this->redirect(['detail', 'id' => $model->animal_id]);
+        }
+    }
+
+    /**
+     * @return \yii\web\Response
+     * @throws \Throwable
+     * @throws \yii\db\Exception
+     */
+    public function actionUpdateDiagnoses()
+    {
+        $model = new AnimalDiagnosisForm();
+
+        $transaction = Yii::$app->db->beginTransaction();
+
+        try {
+            if (Yii::$app->request->isPost) {
+                if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+                    $animal = Animal::findOne($model->animal_id);
+
+                    if ($animal) {
+                        $animal->updateAttributes([
+                            'health_status' => $model->health_status,
+                            'diagnosis' => $model->diagnosis,
+                        ]);
+
+                        $userId = Yii::$app->getUser()->getIdentity()->getId();
+
+                        /** @var Diagnosis $diagnosis */
+                        $diagnosis = Diagnosis::findOne($model->diagnosis);
+                        $diagnosisName = "";
+                        if ($diagnosis) {
                             $diagnosisName = ArrayHelper::getValue($diagnosis, "name");
                         }
 
                         /** @var AnimalHistory $newAnimalHistory */
                         $newAnimalHistory = new AnimalHistory([
-                            'animal_id'   => $animal->id,
-                            'user_id'     => $userId,
-                            'date'        => (new \DateTime('now',
+                            'animal_id' => $animal->id,
+                            'user_id' => $userId,
+                            'date' => (new \DateTime('now',
                                 new \DateTimeZone('Europe/Samara')))->format('Y-m-d H:i:s'),
                             'action_type' => AnimalHistory::ACTION_TYPE_SET_DIAGNOSIS,
                             'action_text' => "Поставил диагноз \"$diagnosisName\""
@@ -635,7 +692,7 @@ class AnimalController extends BackendController
         $animals = Animal::find()
             ->alias('a')
             ->with([
-                'diagnoses'           => function (ActiveQuery $query) {
+                'diagnoses' => function (ActiveQuery $query) {
                     $query->alias('d');
                 },
                 'appropriationScheme' => function (ActiveQuery $query) {
@@ -668,7 +725,9 @@ class AnimalController extends BackendController
             $sheet->setCellValue("A$offset", $index + 1);
             $sheet->setCellValue("B$offset", ArrayHelper::getValue($animal, "collar"));
             $sheet->setCellValue("C$offset", ArrayHelper::getValue($animal, "label"));
-            $sheet->setCellValue("D$offset", null);
+            $sheet->setCellValue("D$offset",
+                (new \DateTime(ArrayHelper::getValue($animal,
+                    "date_health")))->format('d.m.Y'));
             $sheet->setCellValue("E$offset", ArrayHelper::getValue($animal, "diagnoses.name"));
             $sheet->setCellValue("F$offset",
                 (new \DateTime(ArrayHelper::getValue($animal,

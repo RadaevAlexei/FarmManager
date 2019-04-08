@@ -35,6 +35,7 @@ class ExcelHelper
         $reader->setLoadSheetsOnly($sheet_name);
         $reader->setReadFilter($filter_subset);
         $spreadsheet = $reader->load($filename);
+        
         $animals = $spreadsheet->getActiveSheet()->toArray(null, true, true, true);
 
         foreach ($animals as $animal_data) {
@@ -296,6 +297,6 @@ class ExcelHelper
     private static function identifyRectalExamination($animal_data)
     {
         $rectal_examination = (int)ArrayHelper::getValue($animal_data, "Y");
-        return (in_array($rectal_examination, Animal::AVAILABLE_RECTAL_EXAMINATION_STATUSES)) ? $rectal_examination : null;
+        return (in_array($rectal_examination, Animal::$AVAILABLE_RECTAL_EXAMINATION_STATUSES)) ? $rectal_examination : null;
     }
 }

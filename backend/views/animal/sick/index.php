@@ -50,7 +50,8 @@ $this->params['breadcrumbs'][] = $this->title;
         [
             'label' => 'Дата заболевания',
             'value' => function ($model) {
-                return null;
+                return (new DateTime(ArrayHelper::getValue($model,
+                    "date_health")))->format('d.m.Y');
             }
         ],
         [

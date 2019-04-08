@@ -24,6 +24,7 @@ class AnimalHistory extends ActiveRecord
     const ACTION_TYPE_APPROPRIATION_SCHEME = 'appropriation_scheme';
     const ACTION_TYPE_DELETE_SCHEME = 'delete_scheme';
     const ACTION_TYPE_EXECUTE_ACTION = 'execute_action';
+    const ACTION_TYPE_SET_HEALTH_STATUS = 'set_health_status';
     const ACTION_TYPE_SET_DIAGNOSIS = 'set_diagnosis';
 
     /**

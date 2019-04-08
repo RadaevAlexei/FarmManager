@@ -20,6 +20,7 @@ use yii\helpers\ArrayHelper;
  * @property integer $collar
  * @property integer $health_status
  * @property integer $diagnosis
+ * @property \DateTime $date_health
  */
 class Animal extends ActiveRecord
 {
@@ -472,5 +473,14 @@ class Animal extends ActiveRecord
     public function getDiagnoses()
     {
         return $this->hasOne(Diagnosis::class, ['id' => 'diagnosis']);
+    }
+
+    /**
+     * Проверяем, здоровое ли у нас животное
+     * @return bool
+     */
+    public function isHealthy()
+    {
+        return $this->health_status === self::HEALTH_STATUS_HEALTHY;
     }
 }
