@@ -2,6 +2,7 @@
 
 namespace backend\modules\scheme\controllers;
 
+use backend\modules\scheme\models\ActionListItem;
 use backend\modules\scheme\models\AnimalHistory;
 use common\models\TypeField;
 use Yii;
@@ -57,7 +58,7 @@ class ActionDayController extends BackendController
 
         /** @var ArrayDataProvider $dataProvider */
         $dataProvider = $searchModel->search(array_merge(Yii::$app->request->queryParams, [
-            'day'     => $filterDate,
+            'day' => $filterDate,
             'overdue' => false
         ]));
 
@@ -76,7 +77,7 @@ class ActionDayController extends BackendController
 
         /** @var ArrayDataProvider $dataProvider */
         $dataProvider = $searchModel->search(array_merge(Yii::$app->request->queryParams, [
-            'day'     => (new \DateTime('-1 days', new \DateTimeZone('Europe/Samara')))
+            'day' => (new \DateTime('-1 days', new \DateTimeZone('Europe/Samara')))
                 ->setTime(23, 59, 59)
                 ->format('Y-m-d H:i:s'),
             'overdue' => true
@@ -151,7 +152,7 @@ class ActionDayController extends BackendController
             ])
             ->where([
                 'ah.scheme_day_at' => $date->format('Y-m-d'),
-                'ah.status'        => ActionHistory::STATUS_NEW
+                'ah.status' => ActionHistory::STATUS_NEW
             ])
             ->all();
 
@@ -202,12 +203,14 @@ class ActionDayController extends BackendController
             ->select(['ah.*', 'as.scheme_id', 'as.animal_id'])
             ->joinWith([
                 'groupsAction',
-                'action'              => function (ActiveQuery $query) {
+                'action' => function (ActiveQuery $query) {
                     $query->alias('ac');
-                    $query->joinWith(['actionList' => function (ActiveQuery $query) {
-                        $query->alias('al');
-                        $query->joinWith(['items']);
-                    }]);
+                    $query->joinWith([
+                        'actionList' => function (ActiveQuery $query) {
+                            $query->alias('al');
+                            $query->joinWith(['items']);
+                        }
+                    ]);
                 },
                 'appropriationScheme' => function (ActiveQuery $query) use ($scheme_id) {
                     $query->alias('as');
@@ -224,7 +227,7 @@ class ActionDayController extends BackendController
                 },
             ])
             ->where([
-                'ah.status'        => ActionHistory::STATUS_NEW,
+                'ah.status' => ActionHistory::STATUS_NEW,
                 'ah.scheme_day_at' => (new \DateTime('now', new \DateTimeZone('Europe/Samara')))->format('Y-m-d')
             ])
             ->orderBy(['animal_id' => SORT_ASC])
@@ -259,12 +262,14 @@ class ActionDayController extends BackendController
             ->select(['ah.*', 'as.scheme_id', 'as.animal_id'])
             ->joinWith([
                 'groupsAction',
-                'action'              => function (ActiveQuery $query) {
+                'action' => function (ActiveQuery $query) {
                     $query->alias('ac');
-                    $query->joinWith(['actionList' => function (ActiveQuery $query) {
-                        $query->alias('al');
-                        $query->joinWith(['items']);
-                    }]);
+                    $query->joinWith([
+                        'actionList' => function (ActiveQuery $query) {
+                            $query->alias('al');
+                            $query->joinWith(['items']);
+                        }
+                    ]);
                 },
                 'appropriationScheme' => function (ActiveQuery $query) use ($scheme_id) {
                     $query->alias('as');
@@ -327,7 +332,7 @@ class ActionDayController extends BackendController
         $actionHistory = ActionHistory::find()
             ->alias('ah')
             ->joinWith([
-                'action'              => function (ActiveQuery $query) {
+                'action' => function (ActiveQuery $query) {
                     $query->alias('ac');
                 },
                 'appropriationScheme' => function (ActiveQuery $query) {
@@ -375,16 +380,23 @@ class ActionDayController extends BackendController
             $actionName = ArrayHelper::getValue($actionHistory, "action.name");
 
             if ($type == TypeField::TYPE_LIST) {
-                $value = json_encode($value);
+                $listItems = ActionListItem::find()->where(['in', 'id', $value])->all();
+                if ($listItems) {
+                    $mappedItems = ArrayHelper::map($listItems, "id", "name");
+                    $values = array_values($mappedItems);
+                    $value = json_encode($values);
+                } else {
+                    $value = json_encode($value);
+                }
             } else {
                 $value = "\"$value\"";
             }
 
             /** @var AnimalHistory $newAnimalHistory */
             $newAnimalHistory = new AnimalHistory([
-                'animal_id'   => ArrayHelper::getValue($actionHistory, "appropriationScheme.animal.id"),
-                'user_id'     => $userId,
-                'date'        => $executeAt,
+                'animal_id' => ArrayHelper::getValue($actionHistory, "appropriationScheme.animal.id"),
+                'user_id' => $userId,
+                'date' => $executeAt,
                 'action_type' => AnimalHistory::ACTION_TYPE_EXECUTE_ACTION,
                 'action_text' => "Ввел \"$actionName\"=$value для \"$animalName\""
             ]);
