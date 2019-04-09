@@ -21,14 +21,28 @@ SchemeAsset::register($this);
 $this->title = Yii::t('app/scheme', 'SCHEME_EDIT');
 $this->params['breadcrumbs'][] = $this->title;
 
+if ($canApprove) {
+    $boxClass = "warning";
+    $boxHeaderBackgroundColor = "#f3d75a";
+    $title = "Схема не утверждена";
+} else {
+    $boxClass = "success";
+    $boxHeaderBackgroundColor = "#65e065";
+    $title = "Схема утверждена";
+}
+
 ?>
 
-<div class="box box-info">
+<div class="box box-<?= $boxClass ?>">
+
+    <div class="box-header with-border" style="background-color: <?= $boxHeaderBackgroundColor ?>">
+        <h3 class="box-title"><?= $title ?></h3>
+    </div>
 
     <?php $form = ActiveForm::begin([
         'action' => Url::toRoute(['scheme/update', 'id' => $model->id]),
-        'id'     => 'scheme-form',
-        'class'  => 'form-horizontal'
+        'id' => 'scheme-form',
+        'class' => 'form-horizontal'
     ]); ?>
     <div class="box-body">
 
@@ -36,8 +50,8 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="col-sm-12">
                 <?= $form->field($model, 'name')->textInput([
                     'autofocus' => true,
-                    'class'     => 'form-control',
-                    'disabled'  => $model->approve ? true : false
+                    'class' => 'form-control',
+                    'disabled' => $model->approve ? true : false
                 ]) ?>
             </div>
         </div>
@@ -47,8 +61,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 <?= $form->field($model, 'diagnosis_id')->dropDownList(
                     $diagnosisList,
                     [
-                        'class'    => 'form-control',
-                        'prompt'   => 'Выберите диагноз',
+                        'class' => 'form-control',
+                        'prompt' => 'Выберите диагноз',
                         'disabled' => $model->approve ? true : false
                     ])
                 ?>
@@ -69,8 +83,8 @@ $this->params['breadcrumbs'][] = $this->title;
                         </button>
                     </div>
                     <?= Html::input('number', 'day', null, [
-                        'id'       => 'new-day',
-                        'class'    => 'form-control',
+                        'id' => 'new-day',
+                        'class' => 'form-control',
                         'disabled' => $model->approve ? true : false
                     ]) ?>
                 </div>
@@ -80,7 +94,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="form-group" id="scheme_days_block">
             <div class="col-sm-12">
                 <?= $this->render('days', [
-                    'model'            => $model,
+                    'model' => $model,
                     'groupsActionList' => $groupsActionList
                 ]) ?>
             </div>
@@ -99,11 +113,15 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <div class="box-footer">
         <?php
-        if (!$model->approve) :
-            if ($canApprove) :
-                echo Html::a('Утвердить', Url::to(['approve', 'id' => $model->id]),
-                    ['class' => 'btn btn-success', 'name' => 'approve-button']);
-            endif;
+        if ($canApprove) :
+            echo Html::a('Утвердить', Url::to(['approve', 'id' => $model->id]),
+                [
+                    'class' => 'btn btn-success',
+                    'name' => 'approve-button',
+                    'data' => [
+                        'confirm' => 'Вы действительно хотите утвердить схему?'
+                    ]
+                ]);
 
             echo Html::submitButton(Yii::t('app/scheme', 'EDIT'),
                 ['class' => 'btn btn-info pull-right', 'name' => 'contact-button']);

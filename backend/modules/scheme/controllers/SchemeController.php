@@ -13,6 +13,7 @@ use backend\modules\scheme\models\Scheme;
 use \backend\controllers\BackendController;
 use backend\modules\scheme\models\search\SchemeSearch;
 use yii\data\ActiveDataProvider;
+use yii\db\Exception;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use yii\web\BadRequestHttpException;
@@ -203,8 +204,8 @@ class SchemeController extends BackendController
     /**
      * @param $scheme_day_id
      * @param $groups_action_id
-     *
      * @return \yii\console\Response|Response
+     * @throws \yii\db\Exception
      */
     public function actionRemoveGroupsAction($scheme_day_id, $groups_action_id)
     {
@@ -238,11 +239,12 @@ class SchemeController extends BackendController
     }
 
     /**
-     * @param $scheme_id
-     * @param $scheme_day_id
      * Удаление дня из схемы
      *
+     * @param $scheme_id
+     * @param $scheme_day_id
      * @return Response
+     * @throws \yii\db\Exception
      */
     public function actionRemoveDay($scheme_id, $scheme_day_id)
     {
@@ -271,10 +273,11 @@ class SchemeController extends BackendController
     }
 
     /**
-     * @param $scheme_id
      * Добавление нового дня в схему лечения
      *
+     * @param $scheme_id
      * @return Response
+     * @throws \yii\db\Exception
      */
     public function actionAddNewDay($scheme_id)
     {
@@ -315,9 +318,11 @@ class SchemeController extends BackendController
     }
 
     /**
-     * @param $id
+     * Утверждение схемя
      *
+     * @param $id
      * @return Response
+     * @throws \yii\db\Exception
      */
     public function actionApprove($id)
     {
@@ -325,13 +330,18 @@ class SchemeController extends BackendController
 
         try {
             $model = Scheme::findOne($id);
+
+            if ($model->approve) {
+                throw new Exception('Схема уже утверждена');
+            }
+
             $model->approve = true;
             $model->updateAttributes(['approve']);
 
             Yii::$app->session->setFlash('success', 'Схема была успешно утверждена');
             $transaction->commit();
         } catch (\Exception $exception) {
-            Yii::$app->session->setFlash('error', 'Ошибка при утверждении схемы');
+            Yii::$app->session->setFlash('error', $exception->getMessage());
             $transaction->rollBack();
         }
 
