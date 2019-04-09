@@ -238,23 +238,30 @@ class AnimalController extends BackendController
      * Поставить животное на схему
      *
      * @return \yii\web\Response
+     * @throws \yii\db\Exception
      */
     public function actionAppropriationScheme()
     {
         /** @var AppropriationScheme $model */
         $model = new AppropriationScheme();
 
-        $isLoading = $model->load(Yii::$app->request->post());
+        $transaction = Yii::$app->db->beginTransaction();
 
-        if ($isLoading && $model->validate()) {
-            $model->save();
-            $model->createActionHistory();
+        try {
+            $isLoading = $model->load(Yii::$app->request->post());
+            if ($isLoading && $model->validate()) {
+                $model->save();
+                $model->createActionHistory();
+            }
 
             Yii::$app->session->setFlash('success', 'Успешное назначение схемы на животного');
+            $transaction->commit();
 
             return $this->redirect(["detail", "id" => $model->animal_id]);
-        } else {
-            Yii::$app->session->setFlash('error', 'Ошибка при назначении животного на схему');
+        } catch (\Exception $exception) {
+            Yii::$app->session->setFlash('error', $exception->getMessage());
+            $transaction->rollBack();
+
             return $this->redirect(["detail", "id" => $model->animal_id]);
         }
     }
@@ -513,6 +520,7 @@ class AnimalController extends BackendController
 
     /**
      * @return \yii\web\Response
+     * @throws \yii\db\Exception
      */
     public function actionUpdateFromFile()
     {
