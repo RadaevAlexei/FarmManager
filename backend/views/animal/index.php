@@ -85,7 +85,12 @@ echo GridView::widget([
         ],
         'collar',
         'label',
-        'birthday',
+        [
+            'attribute' => 'birthday',
+            'content'   => function (Animal $model) {
+                return (new DateTime($model->birthday))->format('d.m.Y');
+            }
+        ],
         [
             'attribute' => 'cowshed_id',
             'content'   => function ($model) {

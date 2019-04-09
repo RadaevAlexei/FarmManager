@@ -81,7 +81,8 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app/animal', "ANIMAL_DETAIL
                     <?php if ($model->health_status == Animal::HEALTH_STATUS_SICK) : ?>
                         <li class="list-group-item">
                             <b>Диагноз</b>
-                            <span class="pull-right label label-danger"><?=ArrayHelper::getValue($model, "diagnoses.name")?></span>
+                            <span class="pull-right label label-danger"><?= ArrayHelper::getValue($model,
+                                    "diagnoses.name") ?></span>
                         </li>
                     <?php endif; ?>
                 </ul>

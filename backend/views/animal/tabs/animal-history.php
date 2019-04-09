@@ -30,9 +30,9 @@ use \yii\helpers\ArrayHelper;
                         foreach ($history as $index => $action) : ?>
                             <tr>
                                 <td><?= ($index + 1) ?></td>
-                                <td><?=ArrayHelper::getValue($action, "date")?></td>
-                                <td><?=ArrayHelper::getValue($action, "user.lastName")?></td>
-                                <td><?=ArrayHelper::getValue($action, "action_text")?></td>
+                                <td><?= (new DateTime(ArrayHelper::getValue($action, "date")))->format('d.m.Y H:i:s') ?></td>
+                                <td><?= ArrayHelper::getValue($action, "user.lastName") ?></td>
+                                <td><?= ArrayHelper::getValue($action, "action_text") ?></td>
                             </tr>
                         <?php endforeach;
                     endif; ?>

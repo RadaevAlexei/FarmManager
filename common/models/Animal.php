@@ -21,6 +21,7 @@ use yii\helpers\ArrayHelper;
  * @property integer $health_status
  * @property integer $diagnosis
  * @property \DateTime $date_health
+ * @property \DateTime $birthday
  */
 class Animal extends ActiveRecord
 {
