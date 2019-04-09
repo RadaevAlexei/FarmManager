@@ -23,7 +23,7 @@ AnimalAsset::register($this);
 
 $this->params['breadcrumbs'][] = [
     'label' => Yii::t('app/animal', "ANIMAL_LIST"),
-    'url'   => Url::toRoute(['/animal/index'])
+    'url' => Url::toRoute(['/animal/index'])
 ];
 
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app/animal', "ANIMAL_DETAIL")];
@@ -35,8 +35,10 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app/animal', "ANIMAL_DETAIL
         <!-- Profile Image -->
         <div class="box box-warning">
             <div class="box-body box-profile" style="padding: 10px 0 10px 0px">
-                <div class="col-md-12 box-primary no-padding no-margin" style="background-color: #efdb14; margin: -10px 0 10px 0 !important">
-                    <h1 class="text-center" style="margin: 10px 0 10px 0px;"><?= ArrayHelper::getValue($model, "label") ?></h1>
+                <div class="col-md-12 box-primary no-padding no-margin"
+                     style="background-color: #efdb14; margin: -10px 0 10px 0 !important">
+                    <h1 class="text-center" style="margin: 10px 0 10px 0px;"><?= ArrayHelper::getValue($model,
+                            "label") ?></h1>
                 </div>
             </div>
             <div class="box-body box-profile">
@@ -46,8 +48,10 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app/animal', "ANIMAL_DETAIL
             </div>
 
             <div class="box-body box-profile" style="padding: 10px 0 10px 0px">
-                <div class="col-md-12 box-primary no-padding no-margin" style="background-color: #efdb14; margin: -10px 0 10px 0 !important">
-                    <h3 class="profile-username text-center"><?= (new DateTime((string)ArrayHelper::getValue($model, "birthday")))->format('d.m.Y') ?></h3>
+                <div class="col-md-12 box-primary no-padding no-margin"
+                     style="background-color: #efdb14; margin: -10px 0 10px 0 !important">
+                    <h3 class="profile-username text-center"><?= (new DateTime((string)ArrayHelper::getValue($model,
+                            "birthday")))->format('d.m.Y') ?></h3>
                 </div>
             </div>
 
@@ -71,9 +75,15 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app/animal', "ANIMAL_DETAIL
                                 class="pull-right label label-primary"><?= Animal::getPhysicalState($model->rectal_examination) ?></span>
                     </li>
                     <li class="list-group-item">
-                        <b>Состояние здоровья</b><span
-                                class="pull-right label label-<?= ($model->health_status == Animal::HEALTH_STATUS_HEALTHY ? "success" : "danger") ?>"><?= $model->getHealthStatus() ?></span>
+                        <b>Состояние здоровья</b>
+                        <span class="pull-right label label-<?= ($model->health_status == Animal::HEALTH_STATUS_HEALTHY ? "success" : "danger") ?>"><?= $model->getHealthStatus() ?></span>
                     </li>
+                    <?php if ($model->health_status == Animal::HEALTH_STATUS_SICK) : ?>
+                        <li class="list-group-item">
+                            <b>Диагноз</b>
+                            <span class="pull-right label label-danger"><?=ArrayHelper::getValue($model, "diagnoses.name")?></span>
+                        </li>
+                    <?php endif; ?>
                 </ul>
 
                 <a href="#" class="btn btn-primary btn-block"><b>Follow</b></a>
@@ -153,11 +163,11 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app/animal', "ANIMAL_DETAIL
 
                 <div class="tab-pane" id="scheme">
                     <?= $this->render('/animal/tabs/scheme', [
-                        'animal'              => $model,
-                        'schemeList'          => $schemeList,
+                        'animal' => $model,
+                        'schemeList' => $schemeList,
                         'appropriationScheme' => $appropriationScheme,
-                        'animalOnScheme'      => $animalOnScheme,
-                        'actionsToday'        => $actionsToday,
+                        'animalOnScheme' => $animalOnScheme,
+                        'actionsToday' => $actionsToday,
                     ]) ?>
                 </div>
 

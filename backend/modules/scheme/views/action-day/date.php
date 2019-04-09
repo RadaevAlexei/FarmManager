@@ -6,6 +6,7 @@ use \yii\jui\DatePicker;
  * @var string $label
  * @var DateTime $date
  * @var string $name
+ * @var array $options
  */
 
 ?>
@@ -21,7 +22,7 @@ use \yii\jui\DatePicker;
         'value'      => $date,
         'language'   => 'ru',
         'dateFormat' => 'yyyy-MM-dd',
-        'options'    => ['class' => 'form-control']
+        'options'    => $options
     ]) ?>
 </div>
 

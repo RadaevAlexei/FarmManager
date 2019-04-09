@@ -3,6 +3,7 @@
 namespace backend\modules\scheme\controllers;
 
 use backend\modules\scheme\models\AnimalHistory;
+use common\models\TypeField;
 use Yii;
 use backend\modules\scheme\models\ActionHistory;
 use backend\modules\scheme\models\search\ActionHistorySearch;
@@ -35,17 +36,33 @@ class ActionDayController extends BackendController
      */
     public function actionIndex()
     {
+        $filterDate = (new \DateTime('now', new \DateTimeZone('Europe/Samara')));
+
+        if (Yii::$app->request->isPost) {
+            $postDate = Yii::$app->request->post("filter_date");
+            if (!empty($postDate)) {
+                $filterDate = (new \DateTime($postDate));
+            }
+        }
+
+        $disableExecuteAction = false;
+        if ($filterDate > new \DateTime('now', new \DateTimeZone('Europe/Samara'))) {
+            $disableExecuteAction = true;
+        }
+
+        $filterDate = $filterDate->format('Y-m-d');
+
         /** @var ActionHistorySearch $searchModel */
         $searchModel = new ActionHistorySearch();
 
         /** @var ArrayDataProvider $dataProvider */
         $dataProvider = $searchModel->search(array_merge(Yii::$app->request->queryParams, [
-            'day'     => (new \DateTime('now', new \DateTimeZone('Europe/Samara')))->format('Y-m-d'),
+            'day'     => $filterDate,
             'overdue' => false
         ]));
 
         return $this->render('index',
-            compact('searchModel', 'dataProvider')
+            compact('searchModel', 'dataProvider', 'disableExecuteAction', 'filterDate')
         );
     }
 
@@ -80,8 +97,16 @@ class ActionDayController extends BackendController
         return (new \DateTime('now', new \DateTimeZone('Europe/Samara')))->format('Y_m_d_H_i_s');
     }
 
-
-    public function actionDownloadActionList()
+    /**
+     * Скачивание списка дел на сегодня
+     *
+     * @param null $filterDate
+     * @return \yii\console\Response|\yii\web\Response
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
+     */
+    public function actionDownloadActionList($filterDate = null)
     {
         /** @var BaseReader $reader */
         $templatePath = $this->getPathTemplate();
@@ -94,7 +119,14 @@ class ActionDayController extends BackendController
         /** @var Worksheet $sheet */
         $sheet = $spreadsheet->getActiveSheet();
 
-        $sheet->setCellValue("H1", (new \DateTime('now', new \DateTimeZone('Europe/Samara')))->format('d-m-Y'));
+        /** @var \DateTime $date */
+        if (empty($filterDate)) {
+            $date = new \DateTime('now', new \DateTimeZone('Europe/Samara'));
+        } else {
+            $date = new \DateTime($filterDate);
+        }
+
+        $sheet->setCellValue("H1", $date->format('d.m.Y'));
 
         /** @var ActionHistory[] $history */
         $history = ActionHistory::find()
@@ -118,7 +150,7 @@ class ActionDayController extends BackendController
                 },
             ])
             ->where([
-                'ah.scheme_day_at' => (new \DateTime('now', new \DateTimeZone('Europe/Samara')))->format('Y-m-d'),
+                'ah.scheme_day_at' => $date->format('Y-m-d'),
                 'ah.status'        => ActionHistory::STATUS_NEW
             ])
             ->all();
@@ -160,10 +192,10 @@ class ActionDayController extends BackendController
 
     /**
      * @param $scheme_id
-     *
+     * @param bool $disable
      * @return string
      */
-    public function actionDetails($scheme_id)
+    public function actionDetails($scheme_id, $disable = false)
     {
         $history = ActionHistory::find()
             ->alias('ah')
@@ -212,7 +244,7 @@ class ActionDayController extends BackendController
             $details[$animalId]["data"][$groupActionId]["actions"][] = $action;
         }
 
-        return $this->render('details', compact('details'));
+        return $this->render('details', compact('details', 'disable'));
     }
 
     /**
@@ -285,8 +317,9 @@ class ActionDayController extends BackendController
     /**
      * @param $id
      * @param bool $overdue
-     *
      * @return \yii\web\Response
+     * @throws \Throwable
+     * @throws \yii\db\Exception
      */
     public function actionExecute($id, $overdue = false)
     {
@@ -341,13 +374,19 @@ class ActionDayController extends BackendController
             $animalName = ArrayHelper::getValue($actionHistory, "appropriationScheme.animal.nickname");
             $actionName = ArrayHelper::getValue($actionHistory, "action.name");
 
+            if ($type == TypeField::TYPE_LIST) {
+                $value = json_encode($value);
+            } else {
+                $value = "\"$value\"";
+            }
+
             /** @var AnimalHistory $newAnimalHistory */
             $newAnimalHistory = new AnimalHistory([
                 'animal_id'   => ArrayHelper::getValue($actionHistory, "appropriationScheme.animal.id"),
                 'user_id'     => $userId,
                 'date'        => $executeAt,
                 'action_type' => AnimalHistory::ACTION_TYPE_EXECUTE_ACTION,
-                'action_text' => "Ввел \"$actionName\"=\"$value\" для \"$animalName\""
+                'action_text' => "Ввел \"$actionName\"=$value для \"$animalName\""
             ]);
 
             $newAnimalHistory->save();

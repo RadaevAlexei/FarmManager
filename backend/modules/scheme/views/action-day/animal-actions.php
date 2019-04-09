@@ -6,6 +6,7 @@ use \yii\helpers\ArrayHelper;
 /**
  * @var ActionHistory[] $actions_data
  * @var bool $overdue
+ * @var bool $disable
  */
 
 //$groupsAction = $day->groupsAction;
@@ -22,7 +23,7 @@ use \yii\helpers\ArrayHelper;
 
                 <div class="box-body table-responsive" style="padding: 0 0 10px 0">
                     <?php foreach ($data["actions"] as $actionHistory) :
-                        echo $this->render('action', compact('actionHistory', 'overdue'));
+                        echo $this->render('action', compact('actionHistory', 'overdue', 'disable'));
                     endforeach; ?>
                 </div>
 

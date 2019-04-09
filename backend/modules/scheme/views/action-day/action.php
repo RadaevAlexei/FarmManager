@@ -13,6 +13,7 @@ use \common\models\TypeList;
 /**
  * @var ActionHistory $actionHistory
  * @var bool $overdue
+ * @var bool $disable
  */
 
 ActionDayAsset::register($this);
@@ -20,8 +21,8 @@ $type = ArrayHelper::getValue($actionHistory, "action.type");
 
 $form = ActiveForm::begin([
     'action' => Url::toRoute(['action-day/execute', 'id' => $actionHistory->id, 'overdue' => $overdue]),
-    'id'     => 'execute-action-form',
-    'class'  => 'form-horizontal'
+    'id' => 'execute-action-form',
+    'class' => 'form-horizontal'
 ]);
 
 if ($overdue) {
@@ -30,26 +31,36 @@ if ($overdue) {
     $date = (new DateTime('now', new DateTimeZone('Europe/Samara')))->format('Y-m-d H:i:s');
 }
 
+$disabled = $disable ? true : false;
+
 if ($type === TypeField::TYPE_TEXT) { ?>
     <div class="form-group">
         <div class="col-sm-6" style="margin-top: 20px">
             <label><?= ArrayHelper::getValue($actionHistory, "action.name") ?></label>
             <div class="input-group">
                 <div class="input-group-btn">
-                    <button type="button" class="btn btn-warning execute-action">Применить</button>
+                    <?= Html::button('Применить', [
+                        'class' => 'btn btn-warning execute-action',
+                        'disabled' => $disabled,
+                    ]) ?>
                 </div>
                 <?= Html::textInput('ExecuteForm[value]', '', [
                     'autofocus' => true,
-                    'class'     => 'form-control',
+                    'class' => 'form-control',
+                    'disabled' => $disabled,
                 ]) ?>
-                <?= Html::hiddenInput('ExecuteForm[type]', TypeField::TYPE_TEXT) ?>
+                <?= Html::hiddenInput('ExecuteForm[type]', TypeField::TYPE_TEXT, ['disabled' => $disabled]) ?>
             </div>
         </div>
         <div class="col-sm-6" style="margin-top: 20px">
             <?= $this->render('date', [
                 'label' => 'Дата выполнения:',
-                'name'  => 'ExecuteForm[execute_at]',
-                'date'  => $date,
+                'name' => 'ExecuteForm[execute_at]',
+                'date' => $date,
+                'options' => [
+                    'class' => 'form-control',
+                    'disabled' => $disabled,
+                ],
             ]) ?>
         </div>
     </div>
@@ -60,20 +71,28 @@ if ($type === TypeField::TYPE_TEXT) { ?>
                 <label><?= ArrayHelper::getValue($actionHistory, "action.name") ?></label>
                 <div class="input-group">
                     <div class="input-group-btn">
-                        <button type="button" class="btn btn-warning execute-action">Применить</button>
+                        <?= Html::button('Применить', [
+                            'class' => 'btn btn-warning execute-action',
+                            'disabled' => $disabled,
+                        ]) ?>
                     </div>
                     <?= Html::input('number', 'ExecuteForm[value]', null, [
                         'autofocus' => true,
-                        'class'     => 'form-control',
+                        'class' => 'form-control',
+                        'disabled' => $disabled,
                     ]) ?>
-                    <?= Html::hiddenInput('ExecuteForm[type]', TypeField::TYPE_NUMBER) ?>
+                    <?= Html::hiddenInput('ExecuteForm[type]', TypeField::TYPE_NUMBER, ['disabled' => $disabled]) ?>
                 </div>
             </div>
             <div class="col-sm-6" style="margin-top: 20px">
                 <?= $this->render('date', [
                     'label' => 'Дата выполнения:',
-                    'name'  => 'ExecuteForm[execute_at]',
-                    'date'  => $date,
+                    'name' => 'ExecuteForm[execute_at]',
+                    'date' => $date,
+                    'options' => [
+                        'class' => 'form-control',
+                        'disabled' => $disabled,
+                    ],
                 ]) ?>
             </div>
         </div>
@@ -90,24 +109,32 @@ if ($type === TypeField::TYPE_TEXT) { ?>
                     <label><?= ArrayHelper::getValue($actionHistory, "action.name") ?></label>
                     <div class="input-group">
                         <div class="input-group-btn">
-                            <button type="button" class="btn btn-warning execute-action">Применить</button>
+                            <?= Html::button('Применить', [
+                                'class' => 'btn btn-warning execute-action',
+                                'disabled' => $disabled,
+                            ]) ?>
                         </div>
                         <?= Html::dropDownList('ExecuteForm[value]',
                             [],
                             $list,
                             [
-                                'class'    => 'form-control',
+                                'class' => 'form-control',
                                 'multiple' => ($listType === TypeList::MULTIPLE) ? true : false,
+                                'disabled' => $disabled,
                             ]
                         ) ?>
-                        <?= Html::hiddenInput('ExecuteForm[type]', TypeField::TYPE_LIST) ?>
+                        <?= Html::hiddenInput('ExecuteForm[type]', TypeField::TYPE_LIST, ['disabled' => $disabled]) ?>
                     </div>
                 </div>
                 <div class="col-sm-6" style="margin-top: 20px">
                     <?= $this->render('date', [
                         'label' => 'Дата выполнения:',
-                        'name'  => 'ExecuteForm[execute_at]',
-                        'date'  => $date,
+                        'name' => 'ExecuteForm[execute_at]',
+                        'date' => $date,
+                        'options' => [
+                            'class' => 'form-control',
+                            'disabled' => $disabled,
+                        ],
                     ]) ?>
                 </div>
             </div>

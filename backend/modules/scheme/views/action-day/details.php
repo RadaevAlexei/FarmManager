@@ -6,6 +6,7 @@ use \backend\modules\scheme\models\ActionHistory;
 /**
  * @var ActionHistory $details
  * @var bool $overdue
+ * @var bool $disable
  */
 
 //SchemeAsset::register($this);
@@ -27,6 +28,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <?= $this->render('actions-today', [
                     'details' => $details,
                     'overdue' => $overdue,
+                    'disable' => $disable,
                 ]) ?>
             </div>
         </div>

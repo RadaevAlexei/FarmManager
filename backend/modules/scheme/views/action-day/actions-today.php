@@ -5,6 +5,7 @@ use kartik\tabs\TabsX;
 /**
  * @var array $details
  * @var bool $overdue
+ * @var bool $disable
  */
 
 $items = [];
@@ -17,7 +18,8 @@ if (!empty($details)) :
             'label'   => '<i class="fa fa-user"></i>&nbsp;' . $dayName,
             'content' => $this->render('animal-actions', [
                 'actions_data' => $animalActionData["data"],
-                'overdue' => $overdue
+                'overdue' => $overdue,
+                'disable' => $disable,
             ]),
             'active'  => ($index == 0) ? true : false
         ];
