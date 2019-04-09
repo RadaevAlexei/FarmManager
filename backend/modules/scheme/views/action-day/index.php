@@ -21,6 +21,7 @@ ActionDayAsset::register($this);
  * @var $filterDate string
  * @var $disableExecuteAction bool
  */
+
 ?>
 
 <div class="box box-success">
@@ -38,7 +39,12 @@ ActionDayAsset::register($this);
                     'value' => (new DateTime($filterDate))->format('d.m.Y'),
                     'language' => 'ru',
                     'dateFormat' => 'dd.MM.yyyy',
-                    'options' => ['class' => 'form-control']
+                    'options' => ['class' => 'form-control'],
+                    'clientOptions' => [
+                        'changeMonth' => true,
+                        'changeYear' => true,
+                        'minDate' => (new DateTime('now', new DateTimeZone('Europe/Samara')))->format('d.m.Y'),
+                    ]
                 ]) ?>
             </div>
             <div class="col-sm-3">
@@ -52,7 +58,10 @@ ActionDayAsset::register($this);
 <div class="form-group">
     <?= Html::a(
         'Скачать список дел на выбранную дату',
-        $dataProvider->getModels() ? Url::toRoute(['action-day/download-action-list', 'filterDate' => $filterDate]) : "#",
+        $dataProvider->getModels() ? Url::toRoute([
+            'action-day/download-action-list',
+            'filterDate' => $filterDate
+        ]) : "#",
         [
             'class' => 'btn btn-success',
             'disabled' => $dataProvider->getModels() ? false : true

@@ -18,11 +18,11 @@ use \yii\jui\DatePicker;
         <i class="fa fa-calendar"></i>
     </div>
     <?= DatePicker::widget([
-        'name'       => $name,
-        'value'      => $date,
-        'language'   => 'ru',
+        'name' => $name,
+        'value' => $date,
+        'language' => 'ru',
         'dateFormat' => 'yyyy-MM-dd',
-        'options'    => $options
+        'options' => $options
     ]) ?>
 </div>
 
