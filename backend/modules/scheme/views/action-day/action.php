@@ -7,7 +7,7 @@ use yii\helpers\Url;
 use yii\helpers\Html;
 use backend\modules\scheme\assets\ActionDayAsset;
 use \yii\bootstrap\ActiveForm;
-use \yii\jui\DatePicker;
+use \kartik\select2\Select2;
 use \common\models\TypeList;
 
 /**
@@ -114,15 +114,20 @@ if ($type === TypeField::TYPE_TEXT) { ?>
                                 'disabled' => $disabled,
                             ]) ?>
                         </div>
-                        <?= Html::dropDownList('ExecuteForm[value]',
-                            [],
-                            $list,
-                            [
+                        <?= Select2::widget([
+                            'name' => 'ExecuteForm[value]',
+                            'data' => $list,
+                            'size' => Select2::MEDIUM,
+                            'options' => [
+                                'placeholder' => 'Выберите значения из списка',
                                 'class' => 'form-control',
-                                'multiple' => ($listType === TypeList::MULTIPLE) ? true : false,
                                 'disabled' => $disabled,
-                            ]
-                        ) ?>
+                                'multiple' => ($listType === TypeList::MULTIPLE) ? true : false
+                            ],
+                            'pluginOptions' => [
+                                'allowClear' => true
+                            ],
+                        ]) ?>
                         <?= Html::hiddenInput('ExecuteForm[type]', TypeField::TYPE_LIST, ['disabled' => $disabled]) ?>
                     </div>
                 </div>
