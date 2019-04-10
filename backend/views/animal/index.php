@@ -62,7 +62,7 @@ echo GridView::widget([
     //    "filterModel"  => $searchModel,
     'tableOptions' => [
         'style' => 'display:block; width:100%; overflow-x:auto',
-        'class' => 'table table-striped',
+        'class' => 'table table-striped animal-table-hover',
     ],
     'rowOptions' => function (Animal $model, $key, $index, $grid) {
         /** @var AppropriationScheme $onScheme */

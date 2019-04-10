@@ -2,6 +2,11 @@
     background-color: #36a72d69 !important;
 }
 
+.animal-table-hover > tbody > tr:hover {
+    background-color: #7ad87c !important;
+    cursor: pointer;
+}
+
 /*
 .executed-scheme {
     background-color: rgba(255, 5, 7, 0.84) !important;

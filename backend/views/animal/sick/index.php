@@ -6,10 +6,12 @@ use \yii\grid\GridView;
 use \yii\helpers\ArrayHelper;
 use \yii\data\ArrayDataProvider;
 use \backend\models\search\AnimalSickSearch;
+use \backend\assets\AnimalAsset;
 
 $this->title = 'Список больных животных';
 $this->params['breadcrumbs'][] = $this->title;
 
+AnimalAsset::register($this);
 /**
  * /** @var $dataProvider ArrayDataProvider
  * /** @var $searchModel AnimalSickSearch
@@ -31,6 +33,9 @@ $this->params['breadcrumbs'][] = $this->title;
     'formatter'    => [
         'class'       => 'yii\i18n\Formatter',
         'nullDisplay' => '',
+    ],
+    'tableOptions' => [
+        'class' => 'table table-striped animal-table-hover',
     ],
     "dataProvider" => $dataProvider,
     'columns'      => [
