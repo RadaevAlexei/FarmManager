@@ -11,6 +11,7 @@ use \backend\models\forms\UploadForm;
 use \backend\assets\AnimalAsset;
 use \backend\modules\scheme\models\AppropriationScheme;
 use \yii\helpers\ArrayHelper;
+use \backend\modules\scheme\models\ActionHistory;
 
 $this->title = Yii::t('app/animal', 'ANIMAL_LIST');
 $this->params['breadcrumbs'][] = $this->title;
@@ -27,7 +28,7 @@ AnimalAsset::register($this);
             <h3 class="box-title">Обновление данных</h3>
         </div>
         <?php $form = ActiveForm::begin([
-            'action'  => Url::toRoute(['update-from-file']),
+            'action' => Url::toRoute(['update-from-file']),
             'options' => ['enctype' => 'multipart/form-data']
         ]) ?>
         <div class="box-body">
@@ -53,8 +54,8 @@ AnimalAsset::register($this);
 
 <?php
 echo GridView::widget([
-    'formatter'    => [
-        'class'       => 'yii\i18n\Formatter',
+    'formatter' => [
+        'class' => 'yii\i18n\Formatter',
         'nullDisplay' => '',
     ],
     "dataProvider" => $dataProvider,
@@ -63,17 +64,33 @@ echo GridView::widget([
         'style' => 'display:block; width:100%; overflow-x:auto',
         'class' => 'table table-striped',
     ],
-    'rowOptions'   => function (Animal $model, $key, $index, $grid) {
-        $class = $model->onScheme() ? "animal-on-scheme" : "";
+    'rowOptions' => function (Animal $model, $key, $index, $grid) {
+        /** @var AppropriationScheme $onScheme */
+        $onScheme = $model->onScheme();
+        $class = $onScheme ? "animal-on-scheme" : "";
+
+        /*if ($onScheme) {
+            $existNewActions = ActionHistory::find()
+                ->where([
+                    'appropriation_scheme_id' => $onScheme->id,
+                    'status' => ActionHistory::STATUS_NEW
+                ])
+                ->exists();
+
+            if (!$existNewActions) {
+                $class = "executed-scheme";
+            }
+        }*/
+
         return [
             'class' => $class
         ];
     },
-    'columns'      => [
+    'columns' => [
         ['class' => 'yii\grid\SerialColumn'],
         [
             'attribute' => 'nickname',
-            'content'   => function ($model) {
+            'content' => function ($model) {
                 return Html::a(
                     $model->nickname,
                     Url::toRoute(['animal/detail', 'id' => $model->id]),
@@ -87,61 +104,62 @@ echo GridView::widget([
         'label',
         [
             'attribute' => 'birthday',
-            'content'   => function (Animal $model) {
+            'content' => function (Animal $model) {
                 return (new DateTime($model->birthday))->format('d.m.Y');
             }
         ],
         [
             'attribute' => 'cowshed_id',
-            'content'   => function ($model) {
+            'content' => function ($model) {
                 return $model->cowshed->name;
             }
         ],
         [
             'attribute' => 'farm_id',
-            'content'   => function ($model) {
+            'content' => function ($model) {
                 return $model->farm->name;
             }
         ],
         [
             'attribute' => 'sex',
-            'content'   => function ($model) {
+            'content' => function ($model) {
                 $class = ($model->sex == Bull::ANIMAL_SEX_TYPE) ? "primary" : "success";
                 return "<span class='label label-$class'>" . Animal::getSexType($model->sex) . "</span>";
             }
         ],
         [
             'attribute' => 'physical_state',
-            'content'   => function ($model) {
+            'content' => function ($model) {
                 return '<span class="label label-danger">' . Animal::getPhysicalState($model->physical_state) . '</span>';
             }
         ],
         [
             'attribute' => 'status',
-            'content'   => function ($model) {
+            'content' => function ($model) {
                 return '<span class="label label-warning">' . Animal::getStatus($model->status) . '</span>';
             }
         ],
         [
             'attribute' => 'rectal_examination',
-            'content'   => function ($model) {
+            'content' => function ($model) {
                 return '<span class="label label-primary">' . Animal::getRectalExamination($model->rectal_examination) . '</span>';
             }
         ],
         [
-            'label'   => 'Схема',
+            'label' => 'Схема',
             'content' => function (Animal $model) {
                 /** @var AppropriationScheme $scheme */
                 $appropriationScheme = $model->onScheme();
-                return '<span class="label label-primary">' . ArrayHelper::getValue($appropriationScheme, "scheme.name") . '</span>';
+                return '<span class="label label-primary">' . ArrayHelper::getValue($appropriationScheme,
+                        "scheme.name") . '</span>';
             }
         ],
         [
-            'class'    => 'yii\grid\ActionColumn',
-            'header'   => Yii::t('app/animal', 'ACTIONS'),
+            'class' => 'yii\grid\ActionColumn',
+            'header' => Yii::t('app/animal', 'ACTIONS'),
             'template' => '<div class="btn-group">{edit} {delete}</div>',
-            'buttons'  => [
-                'edit'   => function ($url, $model) {
+            'buttons' => [
+                'edit' => function ($url, $model) {
                     return Html::a(
                         '<span class="glyphicon glyphicon-edit"></span>',
                         Url::toRoute(['animal/edit', 'id' => $model->id]),
@@ -154,7 +172,7 @@ echo GridView::widget([
                         Url::toRoute(['animal/delete', 'id' => $model->id]),
                         [
                             'class' => 'btn btn-danger',
-                            'data'  => ['confirm' => 'Вы уверены, что хотите удалить этот элемент?']
+                            'data' => ['confirm' => 'Вы уверены, что хотите удалить этот элемент?']
                         ]
                     );
                 },

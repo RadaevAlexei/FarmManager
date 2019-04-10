@@ -21,6 +21,7 @@ use yii\helpers\ArrayHelper;
 class AppropriationScheme extends ActiveRecord
 {
     const STATUS_IN_PROGRESS = 0;
+    const STATUS_CLOSED = 1;
 
     /**
      * @return string

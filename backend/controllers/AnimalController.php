@@ -3,9 +3,11 @@
 namespace backend\controllers;
 
 use backend\models\forms\AnimalDiagnosisForm;
+use backend\models\forms\CloseSchemeForm;
 use backend\models\forms\HealthForm;
 use backend\models\forms\UploadForm;
 use backend\models\search\AnimalSickSearch;
+use backend\modules\scheme\models\ActionHistory;
 use backend\modules\scheme\models\AnimalHistory;
 use backend\modules\scheme\models\Diagnosis;
 use common\helpers\Excel\ExcelHelper;
@@ -179,7 +181,10 @@ class AnimalController extends BackendController
     /**
      * Удаление животного
      *
-     * @return string|\yii\web\Response
+     * @param $id
+     * @return \yii\web\Response
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
      */
     public function actionDelete($id)
     {
@@ -212,9 +217,21 @@ class AnimalController extends BackendController
 
         /** @var AppropriationScheme $animalOnScheme */
         $animalOnScheme = $model->onScheme();
+        $closeScheme = false;
         $actionsToday = [];
         if ($animalOnScheme) {
             $actionsToday = $model->getActionsToday($animalOnScheme);
+
+            $existNewActions = ActionHistory::find()
+                ->where([
+                    'appropriation_scheme_id' => $animalOnScheme->id,
+                    'status' => ActionHistory::STATUS_NEW
+                ])
+                ->exists();
+
+            if (!$existNewActions) {
+                $closeScheme = true;
+            }
         }
 
 
@@ -230,7 +247,15 @@ class AnimalController extends BackendController
             ->all();
 
         return $this->render('new-detail',
-            compact('model', 'schemeList', 'appropriationScheme', 'animalOnScheme', 'actionsToday', 'history')
+            compact(
+                'model',
+                'schemeList',
+                'appropriationScheme',
+                'animalOnScheme',
+                'actionsToday',
+                'history',
+                'closeScheme'
+            )
         );
     }
 
@@ -582,6 +607,64 @@ class AnimalController extends BackendController
                                 new \DateTimeZone('Europe/Samara')))->format('Y-m-d H:i:s'),
                             'action_type' => AnimalHistory::ACTION_TYPE_SET_HEALTH_STATUS,
                             'action_text' => "Поставил статус \"$health_status\""
+                        ]);
+
+                        $newAnimalHistory->save();
+                    }
+                }
+
+                Yii::$app->session->setFlash('success', 'Успешное смена состояния здоровья');
+                $transaction->commit();
+                return $this->redirect(['detail', 'id' => $model->animal_id]);
+            }
+        } catch (\Exception $exception) {
+            Yii::$app->session->setFlash('error', 'Ошибка при смене состояния здоровья');
+            $transaction->rollBack();
+            return $this->redirect(['detail', 'id' => $model->animal_id]);
+        }
+    }
+
+    /**
+     * @return \yii\web\Response
+     * @throws \Throwable
+     * @throws \yii\db\Exception
+     */
+    public function actionCloseScheme()
+    {
+        $model = new CloseSchemeForm();
+
+        $transaction = Yii::$app->db->beginTransaction();
+
+        try {
+            if (Yii::$app->request->isPost) {
+                if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+                    /** @var Animal $animal */
+                    $animal = Animal::findOne($model->animal_id);
+
+                    if ($animal) {
+                        $animal->updateAttributes([
+                            'health_status' => $model->health_status,
+                            'date_health' => (new \DateTime($model->date_health))->format('Y-m-d H:i:s'),
+                        ]);
+
+                        AppropriationScheme::findOne($model->appropriation_scheme_id)
+                            ->updateAttributes([
+                                'status' => AppropriationScheme::STATUS_CLOSED,
+                                'comment' => 'комментарий',
+                            ]);
+
+                        $userId = Yii::$app->getUser()->getIdentity()->getId();
+
+                        $health_status = ($model->health_status == Animal::HEALTH_STATUS_HEALTHY) ? "Здоровая" : "Больная";
+
+                        /** @var AnimalHistory $newAnimalHistory */
+                        $newAnimalHistory = new AnimalHistory([
+                            'animal_id' => $animal->id,
+                            'user_id' => $userId,
+                            'date' => (new \DateTime('now',
+                                new \DateTimeZone('Europe/Samara')))->format('Y-m-d H:i:s'),
+                            'action_type' => AnimalHistory::ACTION_TYPE_CLOSE_SCHEME,
+                            'action_text' => "Выписал животное со статусом \"$health_status\""
                         ]);
 
                         $newAnimalHistory->save();

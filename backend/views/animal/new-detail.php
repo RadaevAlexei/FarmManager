@@ -7,6 +7,7 @@ use \backend\modules\scheme\models\Scheme;
 use \backend\modules\scheme\models\AppropriationScheme;
 use \backend\modules\scheme\models\AnimalHistory;
 use \backend\assets\AnimalAsset;
+use \yii\helpers\Html;
 
 //ChartAsset::register($this);
 
@@ -17,6 +18,7 @@ use \backend\assets\AnimalAsset;
  * @var AppropriationScheme $animalOnScheme
  * @var AppropriationScheme $actionsToday
  * @var AnimalHistory[] $history
+ * @var bool $closeScheme
  */
 
 AnimalAsset::register($this);
@@ -83,6 +85,26 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app/animal', "ANIMAL_DETAIL
                             <b>Диагноз</b>
                             <span class="pull-right label label-danger"><?= ArrayHelper::getValue($model,
                                     "diagnoses.name") ?></span>
+                        </li>
+                    <?php endif; ?>
+                    <?php if ($animalOnScheme) : ?>
+                        <li class="list-group-item">
+                            <b>Схема лечения</b>
+
+                            <?php
+                            echo Html::a(
+                                '<i class="fa fa-trash-o"></i>',
+                                Url::toRoute(['animal/remove-from-scheme', 'id' => $animalOnScheme->id]),
+                                [
+                                    'class' => 'pull-right label label-success',
+                                    'style' => 'margin-left: 5px',
+                                    'data' => ['confirm' => 'Вы действительно хотите убрать животное со схемы?']
+                                ]
+                            );
+
+                            ?>
+                            <span class="pull-right label label-danger"><?= ArrayHelper::getValue($animalOnScheme,
+                                    'scheme.name') ?></span>
                         </li>
                     <?php endif; ?>
                 </ul>
@@ -169,6 +191,7 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app/animal', "ANIMAL_DETAIL
                         'appropriationScheme' => $appropriationScheme,
                         'animalOnScheme' => $animalOnScheme,
                         'actionsToday' => $actionsToday,
+                        'closeScheme' => $closeScheme,
                     ]) ?>
                 </div>
 

@@ -19,6 +19,7 @@ use \backend\models\forms\AnimalDiagnosisForm;
  * @var AppropriationScheme $appropriationScheme
  * @var AppropriationScheme $animalOnScheme
  * @var ActionHistory[] $actionsToday
+ * @var bool $closeScheme
  */
 
 $healthModel = new HealthForm(['date_health' => $animal->date_health]);
@@ -106,27 +107,17 @@ $animalDiagnosisForm = new AnimalDiagnosisForm();
 <?php endif; ?>
 
 <?php if ($animalOnScheme) :
-    echo Html::tag('span', 'Животное находится на схеме ' .
-        Html::tag('span', ArrayHelper::getValue($animalOnScheme, 'scheme.name'), [
-            'class' => 'label label-danger'
-        ])
-    );
 
-    echo Html::tag('p',
-        Html::a(
-            'Снять со схемы?',
-            Url::toRoute(['animal/remove-from-scheme', 'id' => $animalOnScheme->id]),
-            [
-                'data' => [
-                    'confirm' => 'Вы действительно хотите убрать животное со схемы?'
-                ]
-            ]
-        )
-    );
-
-    echo $this->render('/animal/tabs/actions-today', [
-        'actionsToday' => $actionsToday
-    ]);
+    if ($closeScheme) :
+        echo $this->render('/animal/tabs/close-scheme', [
+            'appropriationScheme' => $animalOnScheme,
+            'animal' => $animal,
+        ]);
+    else:
+        echo $this->render('/animal/tabs/actions-today', [
+            'actionsToday' => $actionsToday
+        ]);
+    endif;
 
 else: ?>
 
