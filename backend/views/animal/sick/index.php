@@ -43,8 +43,14 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
         [
             'label' => '№ Бирки',
-            'value' => function ($model) {
-                return ArrayHelper::getValue($model, "label");
+            'content' => function ($model) {
+                return Html::a(
+                    $model->label,
+                    Url::toRoute(['animal/detail', 'id' => $model->id]),
+                    [
+                        "target" => "_blank"
+                    ]
+                );
             }
         ],
         [
