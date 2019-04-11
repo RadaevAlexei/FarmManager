@@ -6,5 +6,4 @@ use \common\widgets\Alert;
 
 /* @var $this yii\web\View */
 
-$this->title = 'Администрирование';
-?>
+$this->title = Yii::$app->name;
