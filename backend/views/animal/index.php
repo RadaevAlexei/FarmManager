@@ -88,11 +88,13 @@ echo GridView::widget([
     },
     'columns' => [
         ['class' => 'yii\grid\SerialColumn'],
+        'nickname',
+        'collar',
         [
-            'attribute' => 'nickname',
+            'attribute' => 'label',
             'content' => function ($model) {
                 return Html::a(
-                    $model->nickname,
+                    $model->label,
                     Url::toRoute(['animal/detail', 'id' => $model->id]),
                     [
                         "target" => "_blank"
@@ -100,8 +102,6 @@ echo GridView::widget([
                 );
             }
         ],
-        'collar',
-        'label',
         [
             'attribute' => 'birthday',
             'content' => function (Animal $model) {
