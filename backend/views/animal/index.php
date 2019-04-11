@@ -30,27 +30,27 @@ AnimalAsset::register($this);
         <?php /*$form = ActiveForm::begin([
             'action' => Url::toRoute(['update-from-file']),
             'options' => ['enctype' => 'multipart/form-data']
-        ]) */?>
+        ]) */ ?>
         <div class="box-body">
             <div class="form-group">
-                <?/*= $form->field($uploadModel, 'file')->fileInput() */?>
+                <? /*= $form->field($uploadModel, 'file')->fileInput() */ ?>
             </div>
         </div>
         <div class="box-footer">
             <button type="submit" class="btn btn-primary">Обновить</button>
         </div>
-        <?php /*ActiveForm::end() */?>
-    </div>
+        <?php /*ActiveForm::end() */ ?>
+    </div> -->
 
     <div class="form-group">
-        <?/*= Html::a(
+        <?= Html::a(
             Yii::t('app/animal', 'ANIMAL_ADD'),
             Url::toRoute(['animal/new']),
             [
                 'class' => 'btn btn-primary'
             ]
-        ) */?>
-    </div>-->
+        ) ?>
+    </div>
 
 <?php
 echo GridView::widget([
