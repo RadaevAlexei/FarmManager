@@ -6,6 +6,7 @@ use backend\models\forms\AnimalDiagnosisForm;
 use backend\models\forms\CloseSchemeForm;
 use backend\models\forms\HealthForm;
 use backend\models\forms\UploadForm;
+use backend\models\search\AnimalSearch;
 use backend\models\search\AnimalSickSearch;
 use backend\modules\scheme\models\ActionHistory;
 use backend\modules\scheme\models\AnimalHistory;
@@ -54,23 +55,12 @@ class AnimalController extends BackendController
      */
     public function actionIndex()
     {
-//        ExcelHelper::import('1.xlsx');
-
-        /** @var CowSearch $searchModel */
-        /*$searchModel = new CowSearch([
-            "scenario" => Cow::SCENARIO_FILTER
-        ]);*/
+        $searchModel = new AnimalSearch([
+            "scenario" => AnimalSearch::SCENARIO_FILTER
+        ]);
 
         /** @var ActiveDataProvider $dataProvider */
-//        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
-        /** @var ActiveDataProvider $provider */
-        $dataProvider = new ActiveDataProvider([
-            'query' => Animal::find(),
-            'pagination' => [
-                'pageSize' => 20,
-            ],
-        ]);
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
             "searchModel" => $searchModel,

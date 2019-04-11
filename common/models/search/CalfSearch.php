@@ -12,8 +12,8 @@ use yii\data\ActiveDataProvider;
 class CowSearch extends Cow
 {
     /**
-     * Фильтрация поголовья
      * @param $params
+     * @return ActiveDataProvider
      */
     public function search($params)
     {

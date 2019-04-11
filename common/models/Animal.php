@@ -22,6 +22,8 @@ use yii\helpers\ArrayHelper;
  * @property integer $diagnosis
  * @property \DateTime $date_health
  * @property \DateTime $birthday
+ * @property string $nickname
+ * @property string $label
  */
 class Animal extends ActiveRecord
 {
@@ -92,29 +94,29 @@ class Animal extends ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id'                     => 'ID',
-            'cowshed_id'             => 'Коровник',
-            'box'                    => 'Бокс',
-            'nickname'               => 'Кличка',
-            'label'                  => 'Бирка',
-            'farm_id'                => 'Происхождение',
-            'birthday'               => 'Дата Рождения',
-            'sex'                    => 'Пол животного',
-            'birth_weight'           => 'Вес при рождении',
-            'color'                  => 'Масть',
-            'mother_id'              => 'Мать',
-            'father_id'              => 'Отец',
-            'group_id'               => 'Группа',
-            'physical_state'         => 'Физиологическое состояние',
-            'status'                 => 'Статус',
-            'rectal_examination'     => 'Ректальное исследование',
+            'id' => 'ID',
+            'cowshed_id' => 'Коровник',
+            'box' => 'Бокс',
+            'nickname' => 'Кличка',
+            'label' => 'Бирка',
+            'farm_id' => 'Происхождение',
+            'birthday' => 'Дата Рождения',
+            'sex' => 'Пол животного',
+            'birth_weight' => 'Вес при рождении',
+            'color' => 'Масть',
+            'mother_id' => 'Мать',
+            'father_id' => 'Отец',
+            'group_id' => 'Группа',
+            'physical_state' => 'Физиологическое состояние',
+            'status' => 'Статус',
+            'rectal_examination' => 'Ректальное исследование',
             'previous_weighing_date' => 'Дата предыдущего взвешивания',
-            'previous_weighing'      => 'Предыдущее взвешивание',
-            'current_weighing_date'  => 'Дата текущего взвешивания',
-            'current_weighing'       => 'Текущее взвешивание',
-            'collar'                 => 'Номер ошейника',
-            'health_status'          => 'Состояние здоровья',
-            'diagnosis'              => 'Диагноз',
+            'previous_weighing' => 'Предыдущее взвешивание',
+            'current_weighing_date' => 'Дата текущего взвешивания',
+            'current_weighing' => 'Текущее взвешивание',
+            'collar' => 'Номер ошейника',
+            'health_status' => 'Состояние здоровья',
+            'diagnosis' => 'Диагноз',
         ];
     }
 
@@ -124,7 +126,7 @@ class Animal extends ActiveRecord
     public function rules()
     {
         return [
-            ['label', 'unique'],
+            ['label', 'unique', 'on' => self::SCENARIO_CREATE_EDIT],
             [
                 [
                     'label',
@@ -134,6 +136,7 @@ class Animal extends ActiveRecord
                     'physical_state'
                 ],
                 'required',
+                'on' => self::SCENARIO_CREATE_EDIT
             ],
             ['birth_weight', 'double'],
             [
@@ -182,8 +185,9 @@ class Animal extends ActiveRecord
                 'previous_weighing',
                 'current_weighing_date',
                 'current_weighing',
+                'collar',
             ],
-            self::SCENARIO_FILTER      => [
+            self::SCENARIO_FILTER => [
                 'cowshed_id',
                 'box',
                 'nickname',
@@ -203,6 +207,7 @@ class Animal extends ActiveRecord
                 'previous_weighing',
                 'current_weighing_date',
                 'current_weighing',
+                'collar',
             ]
         ];
     }
@@ -227,7 +232,7 @@ class Animal extends ActiveRecord
     {
         return [
             self::HEALTH_STATUS_HEALTHY => 'Здоровая',
-            self::HEALTH_STATUS_SICK    => 'Больная',
+            self::HEALTH_STATUS_SICK => 'Больная',
         ];
     }
 
@@ -249,7 +254,7 @@ class Animal extends ActiveRecord
         return AppropriationScheme::find()
             ->where([
                 'animal_id' => $this->id,
-                'status'    => AppropriationScheme::STATUS_IN_PROGRESS,
+                'status' => AppropriationScheme::STATUS_IN_PROGRESS,
             ])
             ->one();
     }
@@ -304,9 +309,9 @@ class Animal extends ActiveRecord
     public static function getListStatuses()
     {
         return [
-            self::STATUS_INSEMINATED     => Yii::t('app/animal', 'ANIMAL_STATUS_INSEMINATED'),
+            self::STATUS_INSEMINATED => Yii::t('app/animal', 'ANIMAL_STATUS_INSEMINATED'),
             self::STATUS_NOT_INSEMINATED => Yii::t('app/animal', 'ANIMAL_STATUS_NOT_INSEMINATED'),
-            self::STATUS_HUNT            => Yii::t('app/animal', 'ANIMAL_STATUS_HUNT'),
+            self::STATUS_HUNT => Yii::t('app/animal', 'ANIMAL_STATUS_HUNT'),
         ];
     }
 
@@ -329,8 +334,8 @@ class Animal extends ActiveRecord
     {
         return [
             self::RECTAL_EXAMINATION_NOT_STERILE => Yii::t('app/animal', 'ANIMAL_NOT_STERILE'),
-            self::RECTAL_EXAMINATION_STERILE     => Yii::t('app/animal', 'ANIMAL_STERILE'),
-            self::RECTAL_EXAMINATION_DUBIOUS     => Yii::t('app/animal', 'ANIMAL_DUBIOUS'),
+            self::RECTAL_EXAMINATION_STERILE => Yii::t('app/animal', 'ANIMAL_STERILE'),
+            self::RECTAL_EXAMINATION_DUBIOUS => Yii::t('app/animal', 'ANIMAL_DUBIOUS'),
         ];
     }
 
@@ -439,9 +444,9 @@ class Animal extends ActiveRecord
             ->joinWith(['groupsAction', 'action'])
             ->where([
                 'appropriation_scheme_id' => $appropriationScheme->id,
-                'scheme_day_at'           => (new \DateTime('now',
+                'scheme_day_at' => (new \DateTime('now',
                     (new \DateTimeZone('Europe/Samara'))))->format('Y-m-d'),
-                'status'                  => ActionHistory::STATUS_NEW
+                'status' => ActionHistory::STATUS_NEW
             ])
             ->all();
     }

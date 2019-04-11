@@ -59,7 +59,7 @@ echo GridView::widget([
         'nullDisplay' => '',
     ],
     "dataProvider" => $dataProvider,
-    //    "filterModel"  => $searchModel,
+    "filterModel" => $searchModel,
     'tableOptions' => [
         'style' => 'display:block; width:100%; overflow-x:auto',
         'class' => 'table table-striped animal-table-hover',
