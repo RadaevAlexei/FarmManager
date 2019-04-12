@@ -90,7 +90,7 @@ use \yii\helpers\Url;
 
                     ['label' => 'Амбулаторный журнал', 'options' => ['class' => 'header']],
                     [
-                        'label' => 'Управление',
+                        'label' => 'Управление схемами',
                         'icon'  => 'users',
                         'url'   => '#',
                         'items' => [
@@ -109,6 +109,11 @@ use \yii\helpers\Url;
                                 'icon'  => 'users',
                                 'url'   => Url::toRoute(['/scheme/action-list/index']),
                             ],
+                            [
+                                'label' => 'Схемы лечения',
+                                'icon'  => 'users',
+                                'url'   => Url::toRoute(['/scheme/scheme/index'])
+                            ],
                         ],
                     ],
                     [
@@ -117,14 +122,31 @@ use \yii\helpers\Url;
                         'url'   => Url::toRoute(['/scheme/diagnosis/index'])
                     ],
                     [
-                        'label' => 'Аптека',
+                        'label' => 'Управление аптекой',
                         'icon'  => 'users',
-                        'url'   => Url::toRoute(['/scheme/preparation/index'])
-                    ],
-                    [
-                        'label' => 'Схемы лечения',
-                        'icon'  => 'users',
-                        'url'   => Url::toRoute(['/scheme/scheme/index'])
+                        'url'   => '#',
+                        'items' => [
+                            [
+                                'label' => 'Препараты',
+                                'icon'  => 'users',
+                                'url'   => Url::toRoute(['/scheme/preparation/index']),
+                            ],
+                            [
+                                'label' => 'Склады',
+                                'icon'  => 'users',
+                                'url'   => '#',
+                            ],
+                            [
+                                'label' => 'Движения препаратов',
+                                'icon'  => 'users',
+                                'url'   => '#',
+                            ],
+                            [
+                                'label' => 'Расход / Приход',
+                                'icon'  => 'users',
+                                'url'   => '#',
+                            ],
+                        ],
                     ],
                     [
                         'label' => 'Список дел',

@@ -18,62 +18,47 @@ $this->params['breadcrumbs'][] = $this->title;
 
 ?>
 
-<div class="form-group">
-    <?= Html::a(
-        Yii::t('app/preparation', 'PREPARATION_ADD'),
-        Url::toRoute(['preparation/new']),
-        ['class' => 'btn btn-primary']
-    ) ?>
-</div>
+    <div class="form-group">
+        <?= Html::a(
+            Yii::t('app/preparation', 'PREPARATION_ADD'),
+            Url::toRoute(['preparation/new']),
+            ['class' => 'btn btn-primary']
+        ) ?>
+    </div>
 
 <?php echo GridView::widget([
-	"dataProvider" => $dataProvider,
-	"filterModel"  => $searchModel,
+    "dataProvider" => $dataProvider,
+    "filterModel" => $searchModel,
     'tableOptions' => [
-        'style' => 'display:block; width:100%; overflow-x:auto',
+//        'style' => 'display:block; width:100%; overflow-x:auto',
         'class' => 'table table-striped',
     ],
-	'columns'      => [
-		['class' => 'yii\grid\SerialColumn'],
-		'name',
-		[
-			'attribute' => 'receipt_date',
-			'value'     => function (Preparation $model) {
-				if (!empty($model->receipt_date)) {
-					return Yii::$app->formatter->asDate($model->receipt_date, "d.M.Y");
-				} else {
-					return null;
-				}
-			}
-		],
-		[
-			'attribute' => 'packing',
-			'value'     => function (Preparation $model) {
-				return Packing::getType($model->packing);
-			}
-		],
-        'volume',
-        'price',
-		[
-			'class'    => 'yii\grid\ActionColumn',
-			'header'   => Yii::t('app/preparation', 'ACTIONS'),
-			'template' => '<div class="btn-group">{update} {delete} </div>',
-			'buttons'  => [
-				'update' => function ($url, $model) {
-					return Html::a(
-						'<span class="glyphicon glyphicon-edit"></span>',
-						Url::toRoute(['preparation/edit', 'id' => $model->id]),
-						['class' => 'btn btn-warning']
-					);
-				},
-				'delete' => function ($url, $model) {
-					return Html::a(
-						'<span class="glyphicon glyphicon-trash"></span>',
-						Url::toRoute(['preparation/delete', 'id' => $model->id]),
-						['class' => 'btn btn-danger']
-					);
-				},
-			],
-		],
-	]
+    'columns' => [
+        ['class' => 'yii\grid\SerialColumn'],
+        'name',
+        [
+            'class' => 'yii\grid\ActionColumn',
+            'header' => Yii::t('app/preparation', 'ACTIONS'),
+            'template' => '<div class="btn-group">{update} {delete} </div>',
+            'buttons' => [
+                'update' => function ($url, $model) {
+                    return Html::a(
+                        '<span class="glyphicon glyphicon-edit"></span>',
+                        Url::toRoute(['preparation/edit', 'id' => $model->id]),
+                        ['class' => 'btn btn-warning']
+                    );
+                },
+                'delete' => function ($url, $model) {
+                    return Html::a(
+                        '<span class="glyphicon glyphicon-trash"></span>',
+                        Url::toRoute(['preparation/delete', 'id' => $model->id]),
+                        [
+                            'class' => 'btn btn-danger',
+                            'data' => ['confirm' => 'Вы действительно хотите удалить препарат?']
+                        ]
+                    );
+                },
+            ],
+        ],
+    ]
 ]);
