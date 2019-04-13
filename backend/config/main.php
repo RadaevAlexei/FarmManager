@@ -8,7 +8,7 @@ $params = array_merge(
 
 return [
     'id'                  => 'app-backend',
-    'name'                  => "СТАДО ООО \"АГРО-НЕПТУН\"",
+    'name'                => "СТАДО ООО \"АГРО-НЕПТУН\"",
     'basePath'            => dirname(__DIR__),
     'controllerNamespace' => 'backend\controllers',
     'language'            => 'ru-RU',
@@ -87,12 +87,15 @@ return [
     ],
     'params'              => $params,
     'modules'             => [
-        'gii'    => [
+        'gii'      => [
             'class'      => 'yii\gii\Module',
             'allowedIPs' => ['*']
         ],
-        'scheme' => [
+        'scheme'   => [
             'class' => 'backend\modules\scheme\Module'
-        ]
+        ],
+        'pharmacy' => [
+            'class' => 'backend\modules\pharmacy\Module'
+        ],
     ],
 ];

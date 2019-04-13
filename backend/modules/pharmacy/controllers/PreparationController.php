@@ -1,9 +1,9 @@
 <?php
 
-namespace backend\modules\scheme\controllers;
+namespace backend\modules\pharmacy\controllers;
 
-use backend\modules\scheme\models\Preparation;
-use backend\modules\scheme\models\search\PreparationSearch;
+use backend\modules\pharmacy\models\Preparation;
+use backend\modules\pharmacy\models\search\PreparationSearch;
 use common\models\Packing;
 use Yii;
 use \backend\controllers\BackendController;

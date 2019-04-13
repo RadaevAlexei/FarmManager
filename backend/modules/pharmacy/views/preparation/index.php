@@ -4,9 +4,7 @@ use \yii\grid\GridView;
 use \yii\helpers\Html;
 use \yii\helpers\Url;
 use \yii\data\ActiveDataProvider;
-use common\models\Packing;
-use \backend\modules\scheme\models\Preparation;
-use \backend\modules\scheme\models\search\PreparationSearch;
+use \backend\modules\pharmacy\models\search\PreparationSearch;
 
 $this->title = Yii::t('app/preparation', 'PREPARATION_LIST');
 $this->params['breadcrumbs'][] = $this->title;

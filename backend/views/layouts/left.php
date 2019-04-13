@@ -129,12 +129,12 @@ use \yii\helpers\Url;
                             [
                                 'label' => 'Препараты',
                                 'icon'  => 'users',
-                                'url'   => Url::toRoute(['/scheme/preparation/index']),
+                                'url'   => Url::toRoute(['/pharmacy/preparation/index']),
                             ],
                             [
                                 'label' => 'Склады',
                                 'icon'  => 'users',
-                                'url'   => '#',
+                                'url'   => Url::toRoute(['/pharmacy/stock/index']),
                             ],
                             [
                                 'label' => 'Движения препаратов',

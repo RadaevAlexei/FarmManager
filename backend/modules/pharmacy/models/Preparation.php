@@ -1,13 +1,13 @@
 <?php
 
-namespace backend\modules\scheme\models;
+namespace backend\modules\pharmacy\models;
 
 use Yii;
 use yii\db\ActiveRecord;
 
 /**
  * Class Preparation
- * @package backend\modules\scheme\models
+ * @package backend\modules\pharmacy\models
  *
  * @property string $name
  */

@@ -3,33 +3,31 @@
 use \yii\bootstrap\ActiveForm;
 use \yii\helpers\Html;
 use \yii\helpers\Url;
-use \backend\modules\scheme\models\Preparation;
-use \yii\jui\DatePicker;
+use \backend\modules\pharmacy\models\Stock;
 
 /**
- * @var Preparation $model
- * @var array $packingList
+ * @var Stock $model
  */
 
-$this->title = Yii::t('app/preparation', 'PREPARATION_NEW');
+$this->title = 'Добавление склада';
 
 ?>
 
 <div class="box box-info">
 
     <?php $form = ActiveForm::begin([
-        'action' => Url::toRoute(['preparation/create']),
-        'id' => 'preparation-form',
-        'class' => 'form-horizontal'
+        'action' => Url::toRoute(['stock/create']),
+        'id'     => 'stock-form',
+        'class'  => 'form-horizontal'
     ]); ?>
     <div class="box-body">
 
-        <!--Название препарата-->
+        <!--Название склада-->
         <div class="form-group">
             <div class="col-sm-12">
                 <?= $form->field($model, 'name')->textInput([
                     'autofocus' => true,
-                    'class' => 'form-control'
+                    'class'     => 'form-control'
                 ]) ?>
             </div>
         </div>
@@ -37,7 +35,7 @@ $this->title = Yii::t('app/preparation', 'PREPARATION_NEW');
     </div>
 
     <div class="box-footer">
-        <?= Html::submitButton(Yii::t('app/preparation', 'ADD'),
+        <?= Html::submitButton('Добавить',
             ['class' => 'btn btn-info pull-right', 'name' => 'contact-button']) ?>
     </div>
     <?php ActiveForm::end(); ?>

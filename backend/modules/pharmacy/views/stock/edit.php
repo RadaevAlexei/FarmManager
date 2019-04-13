@@ -3,15 +3,13 @@
 use \yii\bootstrap\ActiveForm;
 use \yii\helpers\Html;
 use \yii\helpers\Url;
-use \backend\modules\scheme\models\Preparation;
-use yii\jui\DatePicker;
+use \backend\modules\pharmacy\models\Stock;
 
 /**
- * @var Preparation $model
- * @var array $packingList
+ * @var Stock $model
  */
 
-$this->title = Yii::t('app/preparation', 'PREPARATION_EDIT');
+$this->title = 'Редактирование склада';
 $this->params['breadcrumbs'][] = $this->title;
 
 ?>
@@ -19,13 +17,13 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="box box-info">
 
     <?php $form = ActiveForm::begin([
-        'action' => Url::toRoute(['preparation/update', 'id' => $model->id]),
-        'id' => 'preparation-form',
+        'action' => Url::toRoute(['stock/update', 'id' => $model->id]),
+        'id' => 'stock-form',
         'class' => 'form-horizontal'
     ]); ?>
     <div class="box-body">
 
-        <!--Название препарата-->
+        <!--Название склада-->
         <div class="form-group">
             <div class="col-sm-12">
                 <?= $form->field($model, 'name')->textInput([
@@ -38,7 +36,7 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
 
     <div class="box-footer">
-        <?= Html::submitButton(Yii::t('app/preparation', 'EDIT'),
+        <?= Html::submitButton('Редактировать',
             ['class' => 'btn btn-info pull-right', 'name' => 'contact-button']) ?>
     </div>
     <?php ActiveForm::end(); ?>

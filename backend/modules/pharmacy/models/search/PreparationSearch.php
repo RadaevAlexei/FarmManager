@@ -1,13 +1,13 @@
 <?php
 
-namespace backend\modules\scheme\models\search;
+namespace backend\modules\pharmacy\models\search;
 
-use backend\modules\scheme\models\Preparation;
+use backend\modules\pharmacy\models\Preparation;
 use yii\data\ActiveDataProvider;
 
 /**
  * Class PreparationSearch
- * @package backend\modules\scheme\models\search
+ * @package backend\modules\pharmacy\models\search
  */
 class PreparationSearch extends Preparation
 {
