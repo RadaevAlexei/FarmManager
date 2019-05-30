@@ -19,8 +19,8 @@ $this->title = Yii::t('app/preparation', 'PREPARATION_NEW');
 
     <?php $form = ActiveForm::begin([
         'action' => Url::toRoute(['preparation/create']),
-        'id' => 'preparation-form',
-        'class' => 'form-horizontal'
+        'id'     => 'preparation-form',
+        'class'  => 'form-horizontal'
     ]); ?>
     <div class="box-body">
 
@@ -29,6 +29,40 @@ $this->title = Yii::t('app/preparation', 'PREPARATION_NEW');
             <div class="col-sm-12">
                 <?= $form->field($model, 'name')->textInput([
                     'autofocus' => true,
+                    'class'     => 'form-control'
+                ]) ?>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-sm-12">
+                <?= $form->field($model, 'category')->dropDownList(Preparation::getCategoryList(), [
+                    'class'  => 'form-control',
+                    'prompt' => 'Укажите формакологическую группу',
+                ]) ?>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-sm-12">
+                <?= $form->field($model, 'danger_class')->dropDownList(Preparation::getDangerClass(), [
+                    'class'  => 'form-control',
+                    'prompt' => 'Укажите класс опасности',
+                ]) ?>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-sm-12">
+                <?= $form->field($model, 'period_milk')->input('number', [
+                    'class' => 'form-control'
+                ]) ?>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-sm-12">
+                <?= $form->field($model, 'period_meat')->input('number', [
                     'class' => 'form-control'
                 ]) ?>
             </div>

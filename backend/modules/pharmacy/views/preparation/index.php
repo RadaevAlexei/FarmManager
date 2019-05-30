@@ -5,6 +5,7 @@ use \yii\helpers\Html;
 use \yii\helpers\Url;
 use \yii\data\ActiveDataProvider;
 use \backend\modules\pharmacy\models\search\PreparationSearch;
+use \backend\modules\pharmacy\models\Preparation;
 
 $this->title = Yii::t('app/preparation', 'PREPARATION_LIST');
 $this->params['breadcrumbs'][] = $this->title;
@@ -34,6 +35,20 @@ $this->params['breadcrumbs'][] = $this->title;
     'columns' => [
         ['class' => 'yii\grid\SerialColumn'],
         'name',
+        [
+            'attribute' => 'category',
+            'content' => function (Preparation $model) {
+                return $model->getCategoryName();
+            }
+        ],
+        [
+            'attribute' => 'danger_class',
+            'content' => function (Preparation $model) {
+                return $model->getDangerClassName();
+            }
+        ],
+        'period_milk',
+        'period_meat',
         [
             'class' => 'yii\grid\ActionColumn',
             'header' => Yii::t('app/preparation', 'ACTIONS'),
