@@ -32,6 +32,10 @@ $this->params['breadcrumbs'][] = $this->title;
 //        'style' => 'display:block; width:100%; overflow-x:auto',
         'class' => 'table table-striped',
     ],
+    'formatter' => [
+        'class' => 'yii\i18n\Formatter',
+        'nullDisplay' => '',
+    ],
     'columns' => [
         ['class' => 'yii\grid\SerialColumn'],
         'name',
