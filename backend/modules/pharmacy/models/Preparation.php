@@ -43,7 +43,7 @@ class Preparation extends ActiveRecord
             'period_milk'    => 'Период выведения молока',
             'period_meat'    => 'Период выведения мяса',
             'danger_class'   => 'Класс опасности',
-            'classification' => 'Вид антибиотика',
+            'classification' => 'Классификация',
             'beta'           => 'Вид бета-лактамных',
         ];
     }
