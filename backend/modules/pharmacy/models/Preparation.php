@@ -150,6 +150,22 @@ class Preparation extends ActiveRecord
     /**
      * @return mixed
      */
+    public function getClassificationName()
+    {
+        return self::getClassificationList()[$this->classification];
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getBetaClassificationName()
+    {
+        return self::getBetaClassificationList()[$this->beta];
+    }
+
+    /**
+     * @return mixed
+     */
     public function getDangerClassName()
     {
         return self::getDangerClass()[$this->danger_class];

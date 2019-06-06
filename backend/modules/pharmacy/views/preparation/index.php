@@ -46,6 +46,18 @@ $this->params['breadcrumbs'][] = $this->title;
             }
         ],
         [
+            'attribute' => 'classification',
+            'content' => function (Preparation $model) {
+                return $model->getClassificationName();
+            }
+        ],
+        [
+            'attribute' => 'beta',
+            'content' => function (Preparation $model) {
+                return $model->getBetaClassificationName();
+            }
+        ],
+        [
             'attribute' => 'danger_class',
             'content' => function (Preparation $model) {
                 return $model->getDangerClassName();
