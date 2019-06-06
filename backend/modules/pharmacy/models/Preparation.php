@@ -14,6 +14,8 @@ use yii\db\ActiveRecord;
  * @property integer $period_milk
  * @property integer $period_meat
  * @property integer $danger_class
+ * @property integer $classification
+ * @property integer $beta
  */
 class Preparation extends ActiveRecord
 {
@@ -36,11 +38,13 @@ class Preparation extends ActiveRecord
     public function attributeLabels()
     {
         return [
-            'name'         => 'Название препарата',
-            'category'     => 'Категория',
-            'period_milk'  => 'Период выведения молока',
-            'period_meat'  => 'Период выведения мяса',
-            'danger_class' => 'Класс опасности',
+            'name'           => 'Название препарата',
+            'category'       => 'Категория',
+            'period_milk'    => 'Период выведения молока',
+            'period_meat'    => 'Период выведения мяса',
+            'danger_class'   => 'Класс опасности',
+            'classification' => 'Вид антибиотика',
+            'beta'           => 'Вид бета-лактамных',
         ];
     }
 
@@ -54,7 +58,7 @@ class Preparation extends ActiveRecord
             [['name'], 'trim'],
             [['name'], 'required'],
             [['name'], 'string', 'max' => 255],
-            [['category', 'danger_class', 'period_milk', 'period_meat'], 'integer'],
+            [['category', 'danger_class', 'period_milk', 'period_meat', 'classification', 'beta'], 'integer'],
         ];
     }
 
@@ -82,6 +86,44 @@ class Preparation extends ActiveRecord
             7 => 'Противопаразитарные',
             8 => 'Вакцины',
             9 => 'Прочее',
+        ];
+    }
+
+    /**
+     * Классификация антибиотиков по химической структуре
+     *
+     * @return array
+     */
+    public static function getClassificationList()
+    {
+        return [
+            1  => 'Бета-лактамные',
+            2  => 'Макролиды',
+            3  => 'Тетрациклины',
+            4  => 'Производные диоксиаминофенилпропана(левомицетин)',
+            5  => 'Аминогликозиды',
+            6  => 'Полимиксины',
+            7  => 'Полиеновые антибиотики (противогрибковые)',
+            8  => 'Линкозамиды',
+            9  => 'Фузидин',
+            10 => 'Рифампицины (ансамакролиды)',
+            11 => 'Гликопептиды (ванкомицин и тейкопланин)',
+            12 => 'Ристомицин и др',
+        ];
+    }
+
+    /**
+     * Подтипы бета-лактамных антибиотиков
+     *
+     * @return array
+     */
+    public static function getBetaClassificationList()
+    {
+        return [
+            1 => 'Пенициллины',
+            2 => 'Цефалоспорины',
+            3 => 'Монобактамы',
+            4 => 'Карбопенемы'
         ];
     }
 

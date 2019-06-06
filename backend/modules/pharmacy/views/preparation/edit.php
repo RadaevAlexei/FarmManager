@@ -4,12 +4,14 @@ use \yii\bootstrap\ActiveForm;
 use \yii\helpers\Html;
 use \yii\helpers\Url;
 use \backend\modules\pharmacy\models\Preparation;
-use \kartik\select2\Select2;
+use \backend\modules\pharmacy\assets\PreparationAsset;
 
 /**
  * @var Preparation $model
  * @var array $packingList
  */
+
+PreparationAsset::register($this);
 
 $this->title = Yii::t('app/preparation', 'PREPARATION_EDIT');
 $this->params['breadcrumbs'][] = $this->title;
@@ -38,8 +40,29 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="form-group">
             <div class="col-sm-12">
                 <?= $form->field($model, 'category')->dropDownList(Preparation::getCategoryList(), [
+                    'id'     => 'select-category',
                     'class'  => 'form-control',
                     'prompt' => 'Укажите формакологическую группу',
+                ]) ?>
+            </div>
+        </div>
+
+        <div class="form-group select-classification-block <?=($model->category === 1 ? "" : "hidden")?>">
+            <div class="col-sm-12">
+                <?= $form->field($model, 'classification')->dropDownList(Preparation::getClassificationList(), [
+                    'id'     => 'select-classification',
+                    'class'  => 'form-control',
+                    'prompt' => 'Классификация антибиотиков',
+                ]) ?>
+            </div>
+        </div>
+
+        <div class="form-group select-beta-block <?=($model->classification === 1 ? "" : "hidden")?>">
+            <div class="col-sm-12">
+                <?= $form->field($model, 'beta')->dropDownList(Preparation::getBetaClassificationList(), [
+                    'id'     => 'select-beta',
+                    'class'  => 'form-control',
+                    'prompt' => 'Выберите подтип бета-лактамных',
                 ]) ?>
             </div>
         </div>
