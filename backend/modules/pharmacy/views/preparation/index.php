@@ -27,49 +27,59 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <?php echo GridView::widget([
     "dataProvider" => $dataProvider,
-    "filterModel" => $searchModel,
+    "filterModel"  => $searchModel,
     'tableOptions' => [
 //        'style' => 'display:block; width:100%; overflow-x:auto',
-        'class' => 'table table-striped',
+'class' => 'table table-striped',
     ],
-    'formatter' => [
-        'class' => 'yii\i18n\Formatter',
+    'formatter'    => [
+        'class'       => 'yii\i18n\Formatter',
         'nullDisplay' => '',
     ],
-    'columns' => [
+    'columns'      => [
         ['class' => 'yii\grid\SerialColumn'],
         'name',
         [
             'attribute' => 'category',
-            'content' => function (Preparation $model) {
+            'content'   => function (Preparation $model) {
                 return $model->getCategoryName();
             }
         ],
         [
             'attribute' => 'classification',
-            'content' => function (Preparation $model) {
+            'content'   => function (Preparation $model) {
                 return $model->getClassificationName();
             }
         ],
         [
             'attribute' => 'beta',
-            'content' => function (Preparation $model) {
+            'content'   => function (Preparation $model) {
                 return $model->getBetaClassificationName();
             }
         ],
         [
             'attribute' => 'danger_class',
-            'content' => function (Preparation $model) {
+            'content'   => function (Preparation $model) {
                 return $model->getDangerClassName();
             }
         ],
-        'period_milk',
-        'period_meat',
         [
-            'class' => 'yii\grid\ActionColumn',
-            'header' => Yii::t('app/preparation', 'ACTIONS'),
+            'label'   => 'Период выведения молока, Дни/Часы',
+            'content' => function (Preparation $model) {
+                return implode("/", [$model->period_milk_day, $model->period_milk_hour]);
+            }
+        ],
+        [
+            'label'   => 'Период выведения мяса, Дни/Часы',
+            'content' => function (Preparation $model) {
+                return implode("/", [$model->period_meat_day, $model->period_meat_hour]);
+            }
+        ],
+        [
+            'class'    => 'yii\grid\ActionColumn',
+            'header'   => Yii::t('app/preparation', 'ACTIONS'),
             'template' => '<div class="btn-group">{update} {delete} </div>',
-            'buttons' => [
+            'buttons'  => [
                 'update' => function ($url, $model) {
                     return Html::a(
                         '<span class="glyphicon glyphicon-edit"></span>',
@@ -83,7 +93,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         Url::toRoute(['preparation/delete', 'id' => $model->id]),
                         [
                             'class' => 'btn btn-danger',
-                            'data' => ['confirm' => 'Вы действительно хотите удалить препарат?']
+                            'data'  => ['confirm' => 'Вы действительно хотите удалить препарат?']
                         ]
                     );
                 },

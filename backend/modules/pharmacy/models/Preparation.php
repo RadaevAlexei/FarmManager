@@ -11,8 +11,10 @@ use yii\db\ActiveRecord;
  *
  * @property string $name
  * @property integer $category
- * @property integer $period_milk
- * @property integer $period_meat
+ * @property integer $period_milk_day
+ * @property integer $period_milk_hour
+ * @property integer $period_meat_day
+ * @property integer $period_meat_hour
  * @property integer $danger_class
  * @property integer $classification
  * @property integer $beta
@@ -38,13 +40,15 @@ class Preparation extends ActiveRecord
     public function attributeLabels()
     {
         return [
-            'name'           => 'Название препарата',
-            'category'       => 'Категория',
-            'period_milk'    => 'Период выведения молока',
-            'period_meat'    => 'Период выведения мяса',
-            'danger_class'   => 'Класс опасности',
-            'classification' => 'Классификация',
-            'beta'           => 'Вид бета-лактамных',
+            'name'             => 'Название препарата',
+            'category'         => 'Категория',
+            'period_milk_day'  => 'Молоко/Дни',
+            'period_milk_hour' => 'Молоко/Часы',
+            'period_meat_day'  => 'Мясо/Дни',
+            'period_meat_hour' => 'Мясо/Часы',
+            'danger_class'     => 'Класс опасности',
+            'classification'   => 'Классификация',
+            'beta'             => 'Вид бета-лактамных',
         ];
     }
 
@@ -58,7 +62,19 @@ class Preparation extends ActiveRecord
             [['name'], 'trim'],
             [['name'], 'required'],
             [['name'], 'string', 'max' => 255],
-            [['category', 'danger_class', 'period_milk', 'period_meat', 'classification', 'beta'], 'integer'],
+            [
+                [
+                    'category',
+                    'danger_class',
+                    'period_milk_day',
+                    'period_milk_hour',
+                    'period_meat_day',
+                    'period_meat_hour',
+                    'classification',
+                    'beta'
+                ],
+                'double'
+            ],
         ];
     }
 
