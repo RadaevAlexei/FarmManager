@@ -77,15 +77,39 @@ $this->title = Yii::t('app/preparation', 'PREPARATION_NEW');
 
         <div class="form-group">
             <div class="col-sm-12">
-                <?= $form->field($model, 'period_milk')->input('number', [
+                <h4>Период выведения</h4>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-sm-6">
+                <?= $form->field($model, 'period_milk_day')->input('number', [
+                    'id'    => 'period_milk_day',
+                    'step'  => '0.1',
+                    'class' => 'form-control',
+                ]) ?>
+            </div>
+            <div class="col-sm-6">
+                <?= $form->field($model, 'period_milk_hour')->input('number', [
+                    'id'    => 'period_milk_hour',
+                    'step'  => '0.1',
                     'class' => 'form-control'
                 ]) ?>
             </div>
         </div>
 
         <div class="form-group">
-            <div class="col-sm-12">
-                <?= $form->field($model, 'period_meat')->input('number', [
+            <div class="col-sm-6">
+                <?= $form->field($model, 'period_meat_day')->input('number', [
+                    'id'    => 'period_meat_day',
+                    'step'  => '0.1',
+                    'class' => 'form-control',
+                ]) ?>
+            </div>
+            <div class="col-sm-6">
+                <?= $form->field($model, 'period_meat_hour')->input('number', [
+                    'id'    => 'period_meat_hour',
+                    'step'  => '0.1',
                     'class' => 'form-control'
                 ]) ?>
             </div>
