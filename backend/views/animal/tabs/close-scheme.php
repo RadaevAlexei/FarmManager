@@ -29,11 +29,12 @@ $closeForm = new CloseSchemeForm();
     <div class="box-body">
         <div class="form-group">
             <?= $formHealth->field($closeForm, 'animal_id')->hiddenInput(['value' => $animal->id])->label(false) ?>
-            <?= $formHealth->field($closeForm, 'appropriation_scheme_id')->hiddenInput(['value' => $appropriationScheme->id])->label(false) ?>
+            <?= $formHealth->field($closeForm,
+                'appropriation_scheme_id')->hiddenInput(['value' => $appropriationScheme->id])->label(false) ?>
             <?= $formHealth->field($closeForm, 'health_status')->dropDownList(
-                Animal::getHealthStatusList(),
+                AppropriationScheme::getHealthStatusList(),
                 [
-                    'prompt' => 'Выберите статус здоровья',
+                    'prompt' => 'С каким статусом выписать?',
                     'class' => 'form-control'
                 ]
             ) ?>
@@ -45,11 +46,17 @@ $closeForm = new CloseSchemeForm();
                 'options' => ['class' => 'form-control', 'autocomplete' => 'off']
             ]) ?>
         </div>
+        <div class="form-group">
+            <?= $formHealth->field($closeForm, 'comment')->textInput([
+                'prompt' => 'Что-то хотите отметить?',
+                'class' => 'form-control'
+            ]) ?>
+        </div>
     </div>
     <div class="box-footer">
-        <?= Html::submitButton('Сменить состояние здоровья', [
+        <?= Html::submitButton('Завершить схему', [
             'class' => 'btn btn-primary',
-            'data' => ['confirm' => 'Вы действительно хотите сменить состояние здоровья?']
+            'data' => ['confirm' => 'Вы действительно хотите завершить схему?']
         ]) ?>
     </div>
     <?php ActiveForm::end() ?>

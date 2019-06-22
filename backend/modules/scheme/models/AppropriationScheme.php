@@ -17,11 +17,14 @@ use yii\helpers\ArrayHelper;
  * @property integer $scheme_id
  * @property integer $status
  * @property \DateTime $started_at
+ * @property \DateTime $finished_at
  */
 class AppropriationScheme extends ActiveRecord
 {
     const STATUS_IN_PROGRESS = 0;
-    const STATUS_CLOSED = 1;
+    const RESULT_STATUS_HEALTHY = 1;
+    const RESULT_STATUS_SICK = 2;
+    const RESULT_STATUS_AWAITING = 3;
 
     /**
      * @return string
@@ -37,10 +40,23 @@ class AppropriationScheme extends ActiveRecord
     public function attributeLabels()
     {
         return [
-            'animal_id'  => Yii::t('app/appropriation-scheme', 'APPROPRIATION_SCHEME_ANIMAL'),
-            'scheme_id'  => 'Схема лечения',
-            'status'     => Yii::t('app/appropriation-scheme', 'APPROPRIATION_SCHEME_STATUS'),
+            'animal_id' => Yii::t('app/appropriation-scheme', 'APPROPRIATION_SCHEME_ANIMAL'),
+            'scheme_id' => 'Схема лечения',
+            'status' => Yii::t('app/appropriation-scheme', 'APPROPRIATION_SCHEME_STATUS'),
             'started_at' => 'Дата применения схемы',
+            'finished_at' => 'Дата завершения схемы',
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public static function getHealthStatusList()
+    {
+        return [
+            self::RESULT_STATUS_HEALTHY => 'Здоровая',
+            self::RESULT_STATUS_SICK => 'Больная',
+            self::RESULT_STATUS_AWAITING => 'В ожидании',
         ];
     }
 
@@ -68,7 +84,7 @@ class AppropriationScheme extends ActiveRecord
         return [
             [['animal_id', 'scheme_id', 'status'], 'integer'],
             [['animal_id', 'scheme_id', 'status', 'started_at'], 'required'],
-            [['started_at'], 'safe']
+            [['started_at', 'finished_at'], 'safe']
         ];
     }
 
@@ -109,9 +125,9 @@ class AppropriationScheme extends ActiveRecord
 
         /** @var AnimalHistory $newAnimalHistory */
         $newAnimalHistory = new AnimalHistory([
-            'animal_id'   => $this->animal_id,
-            'user_id'     => $userId,
-            'date'        => (new \DateTime('now', new \DateTimeZone('Europe/Samara')))->format('Y-m-d H:i:s'),
+            'animal_id' => $this->animal_id,
+            'user_id' => $userId,
+            'date' => (new \DateTime('now', new \DateTimeZone('Europe/Samara')))->format('Y-m-d H:i:s'),
             'action_type' => AnimalHistory::ACTION_TYPE_DELETE_SCHEME,
             'action_text' => "Убрал \"$animalName\" со схемы лечения \"$schemeName\""
         ]);
@@ -150,18 +166,18 @@ class AppropriationScheme extends ActiveRecord
 
                     $newActionHistory = new ActionHistory([
                         "appropriation_scheme_id" => $this->id,
-                        "scheme_day_at"           => $schemeDayAt,
-                        "scheme_day"              => $day->number,
-                        "groups_action_id"        => $group->id,
-                        "action_id"               => $action->id,
-                        "text_value"              => null,
-                        "number_value"            => null,
-                        "double_value"            => null,
-                        "list_value"              => null,
-                        "execute_at"              => null,
-                        "created_at"              => $userId,
-                        "updated_at"              => $userId,
-                        "status"                  => ActionHistory::STATUS_NEW,
+                        "scheme_day_at" => $schemeDayAt,
+                        "scheme_day" => $day->number,
+                        "groups_action_id" => $group->id,
+                        "action_id" => $action->id,
+                        "text_value" => null,
+                        "number_value" => null,
+                        "double_value" => null,
+                        "list_value" => null,
+                        "execute_at" => null,
+                        "created_at" => $userId,
+                        "updated_at" => $userId,
+                        "status" => ActionHistory::STATUS_NEW,
                     ]);
                     $newActionHistory->save();
                 }
@@ -174,9 +190,9 @@ class AppropriationScheme extends ActiveRecord
 
         /** @var AnimalHistory $newAnimalHistory */
         $newAnimalHistory = new AnimalHistory([
-            'animal_id'   => $this->animal_id,
-            'user_id'     => $userId,
-            'date'        => (new \DateTime('now', new \DateTimeZone('Europe/Samara')))->format('Y-m-d H:i:s'),
+            'animal_id' => $this->animal_id,
+            'user_id' => $userId,
+            'date' => (new \DateTime('now', new \DateTimeZone('Europe/Samara')))->format('Y-m-d H:i:s'),
             'action_type' => AnimalHistory::ACTION_TYPE_APPROPRIATION_SCHEME,
             'action_text' => "Поставил \"$animalName\" на схему лечения \"$schemeName\""
         ]);

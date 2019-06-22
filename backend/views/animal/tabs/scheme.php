@@ -67,7 +67,7 @@ $animalDiagnosisForm = new AnimalDiagnosisForm();
     <?php ActiveForm::end() ?>
 </div>
 
-<?php if (!$animal->isHealthy()) : ?>
+<?php if ($animal->isSick()) : ?>
 
     <div class="box box-success">
         <div class="box-header with-border" style="background-color: #0ead0e78">
