@@ -54,7 +54,7 @@ $closeForm = new CloseSchemeForm();
         </div>
     </div>
     <div class="box-footer">
-        <?= Html::submitButton('Сменить состояние здоровья', [
+        <?= Html::submitButton('Завершить схему', [
             'class' => 'btn btn-primary',
             'data' => ['confirm' => 'Вы действительно хотите завершить схему?']
         ]) ?>
