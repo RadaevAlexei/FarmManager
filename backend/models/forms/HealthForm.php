@@ -12,6 +12,7 @@ class HealthForm extends Model
     public $health_status;
     public $animal_id;
     public $date_health;
+    public $comment;
 
     /**
      * @return array the validation rules.
@@ -20,6 +21,7 @@ class HealthForm extends Model
     {
         return [
             [['health_status', 'animal_id'], 'integer'],
+            [['comment'], 'string'],
             [['date_health'], 'safe']
         ];
     }
@@ -29,6 +31,7 @@ class HealthForm extends Model
         return [
             'health_status' => 'Состояние здоровья',
             'date_health' => 'Дата',
+            'comment' => 'Комментарий',
         ];
     }
 }

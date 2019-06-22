@@ -8,7 +8,6 @@ use backend\modules\scheme\models\Diagnosis;
 use backend\modules\scheme\models\Scheme;
 use Yii;
 use yii\db\ActiveRecord;
-use yii\helpers\ArrayHelper;
 
 /**
  * Общий класс для животных
@@ -79,6 +78,7 @@ class Animal extends ActiveRecord
      */
     const HEALTH_STATUS_HEALTHY = 0;            // "Здоровая"
     const HEALTH_STATUS_SICK = 1;               // "Больная"
+    const HEALTH_STATUS_AWAITING = 2;           // "В ожидании"
 
     /**
      * @return string
@@ -233,6 +233,7 @@ class Animal extends ActiveRecord
         return [
             self::HEALTH_STATUS_HEALTHY => 'Здоровая',
             self::HEALTH_STATUS_SICK => 'Больная',
+            self::HEALTH_STATUS_AWAITING => 'В ожидании',
         ];
     }
 
@@ -488,5 +489,14 @@ class Animal extends ActiveRecord
     public function isHealthy()
     {
         return $this->health_status === self::HEALTH_STATUS_HEALTHY;
+    }
+
+    /**
+     * Проверяем, больное ли у нас животное
+     * @return bool
+     */
+    public function isSick()
+    {
+        return $this->health_status === self::HEALTH_STATUS_SICK;
     }
 }

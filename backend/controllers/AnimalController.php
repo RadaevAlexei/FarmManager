@@ -19,12 +19,10 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Yii;
 use backend\modules\scheme\models\AppropriationScheme;
-use backend\modules\scheme\models\Scheme;
 use common\helpers\DataHelper;
 use common\models\Animal;
 use common\models\Cow;
 use common\models\Color;
-use common\models\search\CowSearch;
 use yii\data\ActiveDataProvider;
 use yii\db\ActiveQuery;
 use yii\helpers\ArrayHelper;
@@ -207,6 +205,7 @@ class AnimalController extends BackendController
 
         /** @var AppropriationScheme $animalOnScheme */
         $animalOnScheme = $model->onScheme();
+
         $closeScheme = false;
         $actionsToday = [];
         if ($animalOnScheme) {
@@ -628,24 +627,29 @@ class AnimalController extends BackendController
         try {
             if (Yii::$app->request->isPost) {
                 if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+
                     /** @var Animal $animal */
                     $animal = Animal::findOne($model->animal_id);
 
                     if ($animal) {
+                        $dateHealth = (new \DateTime($model->date_health))->format('Y-m-d H:i:s');
+
                         $animal->updateAttributes([
-                            'health_status' => $model->health_status,
-                            'date_health' => (new \DateTime($model->date_health))->format('Y-m-d H:i:s'),
+                            'diagnosis' => ($model->health_status == AppropriationScheme::RESULT_STATUS_HEALTHY) ? null : $animal->diagnosis,
+                            'health_status' => $model->health_status - 1,
+                            'date_health' => $dateHealth,
                         ]);
 
                         AppropriationScheme::findOne($model->appropriation_scheme_id)
                             ->updateAttributes([
-                                'status' => AppropriationScheme::STATUS_CLOSED,
-                                'comment' => 'комментарий',
+                                'status' => $model->health_status,
+                                'comment' => $model->comment,
+                                'finished_at' => $dateHealth
                             ]);
 
                         $userId = Yii::$app->getUser()->getIdentity()->getId();
 
-                        $health_status = ($model->health_status == Animal::HEALTH_STATUS_HEALTHY) ? "Здоровая" : "Больная";
+                        $health_status = $animal->getHealthStatus();
 
                         /** @var AnimalHistory $newAnimalHistory */
                         $newAnimalHistory = new AnimalHistory([
