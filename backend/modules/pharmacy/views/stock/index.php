@@ -22,6 +22,11 @@ $this->params['breadcrumbs'][] = $this->title;
         Url::toRoute(['stock/new']),
         ['class' => 'btn btn-primary']
     ) ?>
+    <?/*= Html::a(
+        'Перемещения',
+        Url::toRoute(['/pharmacy/stock-migration/new']),
+        ['class' => 'btn btn-success']
+    ) */?>
 </div>
 
 <div class="box box-info">

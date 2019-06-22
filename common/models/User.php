@@ -340,4 +340,12 @@ class User extends ActiveRecord implements IdentityInterface
     {
         $this->password_reset_token = null;
     }
+
+    /**
+     * @return array|ActiveRecord[]
+     */
+    public static function getAllList()
+    {
+        return self::find()->all();
+    }
 }

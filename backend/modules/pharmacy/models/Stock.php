@@ -49,4 +49,14 @@ class Stock extends ActiveRecord
             [['name'], 'string', 'max' => 255]
         ];
     }
+
+    /**
+     * Получение списка складов
+     *
+     * @return array|ActiveRecord[]
+     */
+    public static function getAllList()
+    {
+        return self::find()->all();
+    }
 }
