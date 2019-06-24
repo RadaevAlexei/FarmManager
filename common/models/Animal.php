@@ -23,6 +23,7 @@ use yii\db\ActiveRecord;
  * @property \DateTime $birthday
  * @property string $nickname
  * @property string $label
+ * @property integer $animal_group
  */
 class Animal extends ActiveRecord
 {
@@ -107,6 +108,7 @@ class Animal extends ActiveRecord
             'mother_id' => 'Мать',
             'father_id' => 'Отец',
             'group_id' => 'Группа',
+            'animal_group_id' => 'Группа животного',
             'physical_state' => 'Физиологическое состояние',
             'status' => 'Статус',
             'rectal_examination' => 'Ректальное исследование',
@@ -144,6 +146,7 @@ class Animal extends ActiveRecord
                     'farm_id',
                     'nickname',
                     'group_id',
+                    'animal_group_id',
                     'box',
                     'color',
                     'mother_id',
@@ -178,6 +181,7 @@ class Animal extends ActiveRecord
                 'mother_id',
                 'father_id',
                 'group_id',
+                'animal_group_id',
                 'physical_state',
                 'status',
                 'rectal_examination',
@@ -200,6 +204,7 @@ class Animal extends ActiveRecord
                 'mother_id',
                 'father_id',
                 'group_id',
+                'animal_group_id',
                 'physical_state',
                 'status',
                 'rectal_examination',
@@ -395,13 +400,23 @@ class Animal extends ActiveRecord
     }*/
 
     /**
+     * Группа
+     *
+     * @return Yii\db\ActiveQuery
+     */
+    public function getGroup()
+    {
+        return $this->hasOne(Group::class, ['id' => 'group_id']);
+    }
+
+    /**
      * Группа животного
      *
      * @return Yii\db\ActiveQuery
      */
     public function getAnimalGroup()
     {
-        return $this->hasOne(Group::class, ['id' => 'group_id']);
+        return $this->hasOne(AnimalGroup::class, ['id' => 'animal_group_id']);
     }
 
     /**

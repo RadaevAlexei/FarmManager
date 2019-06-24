@@ -73,10 +73,15 @@ use \yii\helpers\Url;
                         'url'   => Url::toRoute(['/farm/index'])
                     ],
                     [
+                        'label' => 'Группы животных',
+                        'icon'  => 'users',
+                        'url'   => Url::toRoute(['/animal-group/index'])
+                    ],
+                    /*[
                         'label' => 'Группы',
                         'icon'  => 'users',
                         'url'   => Url::toRoute(['/group/index'])
-                    ],
+                    ],*/
                     [
                         'label' => 'Переводы',
                         'icon'  => 'users',

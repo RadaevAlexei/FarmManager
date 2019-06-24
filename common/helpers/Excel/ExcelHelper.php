@@ -2,8 +2,10 @@
 
 namespace common\helpers\Excel;
 
+use Yii;
 use common\helpers\DateHelper;
 use common\models\Animal;
+use common\models\AnimalGroup;
 use common\models\Bull;
 use common\models\Cow;
 use common\models\Cowshed;
@@ -29,13 +31,13 @@ class ExcelHelper
         $filter_subset = new WorksheetReadFilter();
 
         $input_file_type = IOFactory::identify($filename);
-        
+
         $sheet_name = "worksheet";
         $reader = IOFactory::createReader($input_file_type);
         $reader->setLoadSheetsOnly($sheet_name);
         $reader->setReadFilter($filter_subset);
         $spreadsheet = $reader->load($filename);
-        
+
         $animals = $spreadsheet->getActiveSheet()->toArray(null, true, true, true);
 
         foreach ($animals as $animal_data) {
@@ -77,15 +79,15 @@ class ExcelHelper
         $farm_id = self::getFarmId($farm_name);
 
         $new_animal->attributes = [
-            "nickname"           => $nickname,
-            "label"              => $label,
-            "birthday"           => $birthday,
-            "sex"                => $sex,
-            "physical_state"     => $physical_state,
-            "status"             => $status,
+            "nickname" => $nickname,
+            "label" => $label,
+            "birthday" => $birthday,
+            "sex" => $sex,
+            "physical_state" => $physical_state,
+            "status" => $status,
             "rectal_examination" => $rectal_examination,
-            "cowshed_id"         => $cowshed_id,
-            "farm_id"            => $farm_id,
+            "cowshed_id" => $cowshed_id,
+            "farm_id" => $farm_id,
         ];
 
         $new_animal->save();
@@ -93,8 +95,8 @@ class ExcelHelper
 
     /**
      * @param $filename
-     *
-     * @return bool
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
      */
     public static function updateFields($filename)
     {
@@ -110,7 +112,33 @@ class ExcelHelper
         $animals = $spreadsheet->getActiveSheet()->toArray(null, true, true, true);
 
         foreach ($animals as $animal_data) {
+            self::updateAnimalGroup($animal_data);
             self::updateField($animal_data);
+        }
+    }
+
+    /**
+     * @param $data
+     * @throws \yii\db\Exception
+     */
+    public static function updateAnimalGroup($data)
+    {
+        $animalGroupName = ArrayHelper::getValue($data, "D");
+        if (!empty($animalGroupName)) {
+            $animalGroupExist = AnimalGroup::find()->where(['=', 'name', $animalGroupName])->exists();
+            if (!$animalGroupExist) {
+                $transaction = Yii::$app->db->beginTransaction();
+                try {
+                    $newAnimalGroup = new AnimalGroup([
+                        'name' => $animalGroupName
+                    ]);
+                    $newAnimalGroup->save();
+
+                    $transaction->commit();
+                } catch (\Exception $exception) {
+                    $transaction->rollBack();
+                }
+            }
         }
     }
 
@@ -119,16 +147,29 @@ class ExcelHelper
      */
     public static function updateField($data)
     {
-
         $label = ArrayHelper::getValue($data, 'F');
         if (!empty($label)) {
             /** @var Animal $animal */
             $animal = Animal::find()->where(['label' => $label])->one();
-            if ($animal)  {
+            if ($animal) {
+                $updateParameters = [];
+
                 $collar = ArrayHelper::getValue($data, 'E');
                 if (!empty($collar)) {
-                    $animal->updateAttributes(['collar' => $collar]);
+                    $updateParameters = ['collar' => $collar];
                 }
+
+                $animalGroupName = ArrayHelper::getValue($data, 'D');
+                if (!empty($animalGroupName)) {
+                    $animalGroup = AnimalGroup::find()->where(['=', 'name', $animalGroupName])->one();
+                    $animalGroupId = ArrayHelper::getValue($animalGroup, "id");
+                    $updateParameters = array_merge(
+                        $updateParameters,
+                        ['animal_group_id' => $animalGroupId]
+                    );
+                }
+
+                $animal->updateAttributes($updateParameters);
             }
         }
     }
@@ -245,18 +286,24 @@ class ExcelHelper
 
             if ($nematode === "НЕТЕЛЬ") {
                 $physical_state = Animal::PHYSICAL_STATE_CALF_NEMATODE;  // нетель
-            } else if (!empty($calving_count) && ($calving_count == 1)) {
-                $physical_state = Animal::PHYSICAL_STATE_CALF_FIRST_AID; // первотёлка
-            } else if (!empty($calving_count) && ($calving_count > 1)) {
-                $physical_state = Animal::PHYSICAL_STATE_COW;            // корова
             } else {
-                $age_month = (double)ArrayHelper::getValue($animal_data, "K");
-                if ($age_month <= 6) {
-                    $physical_state = Animal::PHYSICAL_STATE_CALF;           // тёлочка
-                } else if (($age_month > 6) && ($age_month <= 12)) {
-                    $physical_state = Animal::PHYSICAL_STATE_CALF_PREDSLUCH; // тёлочка предслучного возраста
+                if (!empty($calving_count) && ($calving_count == 1)) {
+                    $physical_state = Animal::PHYSICAL_STATE_CALF_FIRST_AID; // первотёлка
                 } else {
-                    $physical_state = Animal::PHYSICAL_STATE_CALF_SLUCH;     // тёлочка случного возраста
+                    if (!empty($calving_count) && ($calving_count > 1)) {
+                        $physical_state = Animal::PHYSICAL_STATE_COW;            // корова
+                    } else {
+                        $age_month = (double)ArrayHelper::getValue($animal_data, "K");
+                        if ($age_month <= 6) {
+                            $physical_state = Animal::PHYSICAL_STATE_CALF;           // тёлочка
+                        } else {
+                            if (($age_month > 6) && ($age_month <= 12)) {
+                                $physical_state = Animal::PHYSICAL_STATE_CALF_PREDSLUCH; // тёлочка предслучного возраста
+                            } else {
+                                $physical_state = Animal::PHYSICAL_STATE_CALF_SLUCH;     // тёлочка случного возраста
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -279,10 +326,14 @@ class ExcelHelper
 
         if ($rectal_examination == 5) {
             $status = Cow::STATUS_HUNT;
-        } else if (($insemination_count >= 1) && ($rectal_examination == 3)) {
-            $status = Cow::STATUS_INSEMINATED;
-        } else if ($insemination_count == 0) {
-            $status = Cow::STATUS_NOT_INSEMINATED;
+        } else {
+            if (($insemination_count >= 1) && ($rectal_examination == 3)) {
+                $status = Cow::STATUS_INSEMINATED;
+            } else {
+                if ($insemination_count == 0) {
+                    $status = Cow::STATUS_NOT_INSEMINATED;
+                }
+            }
         }
 
         return $status;
@@ -297,6 +348,7 @@ class ExcelHelper
     private static function identifyRectalExamination($animal_data)
     {
         $rectal_examination = (int)ArrayHelper::getValue($animal_data, "Y");
-        return (in_array($rectal_examination, Animal::$AVAILABLE_RECTAL_EXAMINATION_STATUSES)) ? $rectal_examination : null;
+        return (in_array($rectal_examination,
+            Animal::$AVAILABLE_RECTAL_EXAMINATION_STATUSES)) ? $rectal_examination : null;
     }
 }

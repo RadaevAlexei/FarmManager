@@ -180,6 +180,7 @@ class ActionDayController extends BackendController
         $spreadsheet->getActiveSheet()->getStyle("A3:J$end")->getFont()->setBold(false);
         $spreadsheet->getActiveSheet()->getProtection()->setSheet(false);
         $spreadsheet->getActiveSheet()->getPageSetup()->setScale(100);
+        $spreadsheet->getActiveSheet()->getColumnDimension('C')->setAutoSize(true);
 
         $sheet->setTitle('Список дел на сегодня');
 
