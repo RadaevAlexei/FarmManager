@@ -64,6 +64,14 @@ $this->params['breadcrumbs'][] = $this->title;
             }
         ],
         [
+            'attribute' => 'measure',
+            'content'   => function (Preparation $model) {
+                return $model->getMeasureName();
+            }
+        ],
+        'volume',
+        'price',
+        [
             'label'   => 'Период выведения молока, Дни/Часы',
             'content' => function (Preparation $model) {
                 return implode("/", [$model->period_milk_day, $model->period_milk_hour]);

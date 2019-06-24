@@ -2,6 +2,7 @@
 
 namespace backend\modules\pharmacy\models;
 
+use common\models\Measure;
 use Yii;
 use yii\db\ActiveRecord;
 
@@ -18,6 +19,9 @@ use yii\db\ActiveRecord;
  * @property integer $danger_class
  * @property integer $classification
  * @property integer $beta
+ * @property double $price
+ * @property integer $measure
+ * @property double $volume
  */
 class Preparation extends ActiveRecord
 {
@@ -49,6 +53,9 @@ class Preparation extends ActiveRecord
             'danger_class'     => 'Класс опасности',
             'classification'   => 'Классификация',
             'beta'             => 'Вид бета-лактамных',
+            'price'            => 'Цена за ед.',
+            'measure'          => 'Единица измерения',
+            'volume'           => 'Объём',
         ];
     }
 
@@ -71,10 +78,13 @@ class Preparation extends ActiveRecord
                     'period_meat_day',
                     'period_meat_hour',
                     'classification',
-                    'beta'
+                    'beta',
+                    'price',
+                    'volume',
                 ],
                 'double'
             ],
+            [['measure'], 'integer'],
         ];
     }
 
@@ -161,6 +171,14 @@ class Preparation extends ActiveRecord
     public function getCategoryName()
     {
         return self::getCategoryList()[$this->category];
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMeasureName()
+    {
+        return Measure::getList()[$this->measure];
     }
 
     /**

@@ -5,6 +5,7 @@ use \yii\helpers\Html;
 use \yii\helpers\Url;
 use \backend\modules\pharmacy\models\Preparation;
 use \backend\modules\pharmacy\assets\PreparationAsset;
+use \common\models\Measure;
 
 /**
  * @var Preparation $model
@@ -46,7 +47,7 @@ $this->title = Yii::t('app/preparation', 'PREPARATION_NEW');
             </div>
         </div>
 
-        <div class="form-group select-classification-block <?=($model->category === 1 ? "" : "hidden")?>">
+        <div class="form-group select-classification-block <?= ($model->category === 1 ? "" : "hidden") ?>">
             <div class="col-sm-12">
                 <?= $form->field($model, 'classification')->dropDownList(Preparation::getClassificationList(), [
                     'id'     => 'select-classification',
@@ -56,7 +57,7 @@ $this->title = Yii::t('app/preparation', 'PREPARATION_NEW');
             </div>
         </div>
 
-        <div class="form-group select-beta-block <?=($model->classification === 1 ? "" : "hidden")?>">
+        <div class="form-group select-beta-block <?= ($model->classification === 1 ? "" : "hidden") ?>">
             <div class="col-sm-12">
                 <?= $form->field($model, 'beta')->dropDownList(Preparation::getBetaClassificationList(), [
                     'id'     => 'select-beta',
@@ -71,6 +72,36 @@ $this->title = Yii::t('app/preparation', 'PREPARATION_NEW');
                 <?= $form->field($model, 'danger_class')->dropDownList(Preparation::getDangerClass(), [
                     'class'  => 'form-control',
                     'prompt' => 'Укажите класс опасности',
+                ]) ?>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-sm-12">
+                <?= $form->field($model, 'measure')->dropDownList(Measure::getList(), [
+                    'id'     => 'select-measure',
+                    'class'  => 'form-control',
+                    'prompt' => 'Выберите единицу измерения'
+                ]) ?>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-sm-12">
+                <?= $form->field($model, 'volume')->input('number', [
+                    'class' => 'form-control',
+                    'min'   => 0,
+                    'step'  => 0.1,
+                ]) ?>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-sm-12">
+                <?= $form->field($model, 'price')->input('number', [
+                    'class' => 'form-control',
+                    'min'   => 0,
+                    'step'  => 0.01,
                 ]) ?>
             </div>
         </div>

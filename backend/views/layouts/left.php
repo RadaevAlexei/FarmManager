@@ -127,25 +127,31 @@ use \yii\helpers\Url;
                         'url'   => '#',
                         'items' => [
                             [
-                                'label' => 'Препараты',
+                                'label' => 'Управление препаратами',
                                 'icon'  => 'users',
                                 'url'   => Url::toRoute(['/pharmacy/preparation/index']),
                             ],
                             [
-                                'label' => 'Склады',
+                                'label' => 'Управление складами',
                                 'icon'  => 'users',
                                 'url'   => Url::toRoute(['/pharmacy/stock/index']),
+                            ],
+                            [
+                                'label' => 'Хранилище препаратов',
+                                'icon'  => 'users',
+                                'url'   => Url::toRoute(['/pharmacy/storage/index']),
+                            ],
+                            [
+                                'label' => 'Расход / Приход',
+                                'icon'  => 'users',
+                                'url'   => Url::toRoute(['/pharmacy/cash-book/index']),
                             ],
                             /*[
                                 'label' => 'Движения препаратов',
                                 'icon'  => 'users',
                                 'url'   => Url::toRoute(['/pharmacy/stock-migration/index']),
                             ],
-                            [
-                                'label' => 'Расход / Приход',
-                                'icon'  => 'users',
-                                'url'   => '#',
-                            ],*/
+                            ,*/
                         ],
                     ],
                     [
