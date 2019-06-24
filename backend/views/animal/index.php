@@ -11,7 +11,6 @@ use \backend\models\forms\UploadForm;
 use \backend\assets\AnimalAsset;
 use \backend\modules\scheme\models\AppropriationScheme;
 use \yii\helpers\ArrayHelper;
-use \backend\modules\scheme\models\ActionHistory;
 
 $this->title = Yii::t('app/animal', 'ANIMAL_LIST');
 $this->params['breadcrumbs'][] = $this->title;
