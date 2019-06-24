@@ -147,16 +147,29 @@ class ExcelHelper
      */
     public static function updateField($data)
     {
-
         $label = ArrayHelper::getValue($data, 'F');
         if (!empty($label)) {
             /** @var Animal $animal */
             $animal = Animal::find()->where(['label' => $label])->one();
             if ($animal) {
+                $updateParameters = [];
+
                 $collar = ArrayHelper::getValue($data, 'E');
                 if (!empty($collar)) {
-                    $animal->updateAttributes(['collar' => $collar]);
+                    $updateParameters = ['collar' => $collar];
                 }
+
+                $animalGroupName = ArrayHelper::getValue($data, 'D');
+                if (!empty($animalGroupName)) {
+                    $animalGroup = AnimalGroup::find()->where(['=', 'name', $animalGroupName])->one();
+                    $animalGroupId = ArrayHelper::getValue($animalGroup, "id");
+                    $updateParameters = array_merge(
+                        $updateParameters,
+                        ['animal_group_id' => $animalGroupId]
+                    );
+                }
+
+                $animal->updateAttributes($updateParameters);
             }
         }
     }

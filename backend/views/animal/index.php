@@ -115,6 +115,12 @@ echo GridView::widget([
             }
         ],
         [
+            'attribute' => 'animal_group_id',
+            'content' => function ($model) {
+                return ArrayHelper::getValue($model, "animalGroup.name");
+            }
+        ],
+        [
             'attribute' => 'farm_id',
             'content' => function ($model) {
                 return $model->farm->name;

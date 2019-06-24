@@ -416,7 +416,7 @@ class Animal extends ActiveRecord
      */
     public function getAnimalGroup()
     {
-        return $this->hasOne(Group::class, ['id' => 'animal_group_id']);
+        return $this->hasOne(AnimalGroup::class, ['id' => 'animal_group_id']);
     }
 
     /**
