@@ -7,9 +7,7 @@ use common\models\Group;
 use common\models\Groups;
 use common\models\search\GroupSearch;
 use yii\data\ActiveDataProvider;
-use yii\data\Pagination;
 use yii\helpers\Url;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 
 /**

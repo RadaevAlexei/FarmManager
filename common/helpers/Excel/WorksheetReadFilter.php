@@ -18,7 +18,7 @@ class WorksheetReadFilter implements IReadFilter
     /**
      * @var array
      */
-    private $columns = ["C", "H", "E", "F", "I", "K", "P", "AR", "W", "Y"];
+    private $columns = ["C", "D", "H", "E", "F", "I", "K", "P", "AR", "W", "Y"];
 
     /**
      * @param string $column
