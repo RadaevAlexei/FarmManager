@@ -18,6 +18,20 @@ $this->params['breadcrumbs'][] = $this->title;
 
 ?>
 
+    <div class="form-group">
+        <?= Html::a(
+            'Переместить препарат на другой склад',
+            Url::toRoute(['stock-migration/new']),
+            ['class' => 'btn btn-primary']
+        ) ?>
+        <?= Html::a(
+            'История перемещений',
+            Url::toRoute(['stock-migration/index']),
+            ['class' => 'btn btn-success']
+        ) ?>
+    </div>
+
+
 <?php echo GridView::widget([
     "dataProvider" => $dataProvider,
     "filterModel"  => $searchModel,
