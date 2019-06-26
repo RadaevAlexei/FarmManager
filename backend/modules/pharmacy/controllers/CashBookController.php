@@ -56,18 +56,21 @@ class CashBookController extends BackendController
 
         $model->date = (new \DateTime($model->date))->format('Y-m-d H:i:s');
         $preparation = Preparation::findOne($model->preparation_id);
-        $totalPrice = 0;
+        $totalPriceWithoutVat = 0;
+        $totalPriceWithVat = 0;
         $volume = 0;
         if ($preparation) {
+            $totalPriceWithoutVat = $preparation->price * $model->count;
             $vatPercent = 0;
             if ($model->type == CashBook::TYPE_DEBIT) {
                 $vatPercent = $model->vat_percent;
             }
             $model->vat_percent = $vatPercent;
-            $totalPrice = $preparation->price * $model->count * (1 + $vatPercent / 100);
+            $totalPriceWithVat = $totalPriceWithoutVat * (1 + $vatPercent / 100);
             $volume = $preparation->volume;
         }
-        $model->total_price = $totalPrice;
+        $model->total_price_without_vat = $totalPriceWithoutVat;
+        $model->total_price_with_vat = $totalPriceWithVat;
         $model->volume = $volume;
 
         $transaction = Yii::$app->db->beginTransaction();
@@ -99,7 +102,6 @@ class CashBookController extends BackendController
                 Yii::$app->session->setFlash('success', 'Успешное добавление прихода');
                 $transaction->commit();
             } else {
-                echo "<pre>"; print_r($model->getErrors()); echo "</pre>"; die("Debug");
                 Yii::$app->session->setFlash('error', 'Ошибка валидации');
             }
         } catch (\Exception $exception) {
@@ -112,8 +114,9 @@ class CashBookController extends BackendController
 
     /**
      * @param $id
-     *
      * @return \yii\web\Response
+     * @throws \Throwable
+     * @throws \yii\db\Exception
      */
     public function actionDelete($id)
     {

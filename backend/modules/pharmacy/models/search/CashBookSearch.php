@@ -25,7 +25,7 @@ class CashBookSearch extends CashBook
                 'p.id as preparation_id',
                 'p.name as preparation_name',
                 'sum(count) as count',
-                'sum(total_price) as price'
+                'sum(total_price_without_vat) as price'
             ])
             ->leftJoin('preparation as p', 'preparation_id = p.id')
             ->where(['=', 'type', CashBook::TYPE_DEBIT])
@@ -48,7 +48,7 @@ class CashBookSearch extends CashBook
                 'p.id as preparation_id',
                 'p.name as preparation_name',
                 'sum(count) as count',
-                'sum(total_price) as price'
+                'sum(total_price_without_vat) as price'
             ])
             ->leftJoin('preparation as p', 'preparation_id = p.id')
             ->where(['=', 'type', CashBook::TYPE_KREDIT])

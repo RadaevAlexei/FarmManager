@@ -56,7 +56,7 @@ $this->params['breadcrumbs'][] = $this->title;
             }
         ],
         [
-            'label' => 'Приход/Цена',
+            'label' => 'Приход/Цена без НДС',
             'content'   => function ($model) {
                 return ArrayHelper::getValue($model, "debit.price");
             }
@@ -68,7 +68,7 @@ $this->params['breadcrumbs'][] = $this->title;
             }
         ],
         [
-            'label' => 'Расход/Цена',
+            'label' => 'Расход/Цена без НДС',
             'content'   => function ($model) {
                 return ArrayHelper::getValue($model, "kredit.price");
             }
@@ -80,7 +80,7 @@ $this->params['breadcrumbs'][] = $this->title;
             }
         ],
         [
-            'label' => 'Остатки/Цена',
+            'label' => 'Остатки/Цена без НДС',
             'content'   => function ($model) {
                 return ArrayHelper::getValue($model, "remainder.price");
             }

@@ -16,7 +16,8 @@ use yii\db\ActiveRecord;
  * @property integer $stock_id
  * @property integer $count
  * @property double $volume
- * @property double $total_price
+ * @property double $total_price_without_vat
+ * @property double $total_price_with_vat
  * @property double $vat_percent
  * @property integer $type
  */
@@ -44,15 +45,16 @@ class CashBook extends ActiveRecord
     public function attributeLabels()
     {
         return [
-            'date'           => 'Дата',
-            'user_id'        => 'Кто добавил',
+            'date' => 'Дата',
+            'user_id' => 'Кто добавил',
             'preparation_id' => 'Препарат',
-            'type'           => 'Тип',
-            'stock_id'       => 'Склад',
-            'count'          => 'Количество',
-            'volume'         => 'Объём',
-            'total_price'    => 'Сумма итого',
-            'vat_percent'    => 'Ставка НДС,%',
+            'type' => 'Тип',
+            'stock_id' => 'Склад',
+            'count' => 'Количество',
+            'volume' => 'Объём',
+            'total_price_without_vat' => 'Сумма итого, без НДС',
+            'total_price_with_vat' => 'Сумма итого, с НДС',
+            'vat_percent' => 'Ставка НДС,%',
         ];
     }
 
@@ -75,7 +77,7 @@ class CashBook extends ActiveRecord
                 'required'
             ],
             [['preparation_id', 'stock_id', 'count', 'user_id', 'type'], 'integer'],
-            [['volume', 'total_price', 'vat_percent'], 'double'],
+            [['volume', 'total_price_with_vat', 'total_price_without_vat', 'vat_percent'], 'double'],
             [['date'], 'safe'],
         ];
     }
@@ -111,7 +113,7 @@ class CashBook extends ActiveRecord
     {
         return [
             self::TYPE_KREDIT => 'Расход',
-            self::TYPE_DEBIT  => 'Приход'
+            self::TYPE_DEBIT => 'Приход'
         ];
     }
 
