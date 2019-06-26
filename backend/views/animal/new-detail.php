@@ -8,6 +8,7 @@ use \backend\modules\scheme\models\AppropriationScheme;
 use \backend\modules\scheme\models\AnimalHistory;
 use \backend\assets\AnimalAsset;
 use \yii\helpers\Html;
+use yii\data\ArrayDataProvider;
 
 //ChartAsset::register($this);
 
@@ -18,14 +19,14 @@ use \yii\helpers\Html;
  * @var AppropriationScheme $animalOnScheme
  * @var AppropriationScheme $actionsToday
  * @var AnimalHistory[] $history
- * @var bool $closeScheme
+ * @var ArrayDataProvider $dataProvider
  */
 
 AnimalAsset::register($this);
 
 $this->params['breadcrumbs'][] = [
     'label' => Yii::t('app/animal', "ANIMAL_LIST"),
-    'url' => Url::toRoute(['/animal/index'])
+    'url'   => Url::toRoute(['/animal/index'])
 ];
 
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app/animal', "ANIMAL_DETAIL")];
@@ -87,26 +88,26 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app/animal', "ANIMAL_DETAIL
                                     "diagnoses.name") ?></span>
                         </li>
                     <?php endif; ?>
-                    <?php if ($animalOnScheme) : ?>
+                    <?php /*if ($animalOnScheme) : */?><!--
                         <li class="list-group-item">
                             <b>Схема лечения</b>
 
                             <?php
-                            echo Html::a(
+/*                            echo Html::a(
                                 '<i class="fa fa-trash-o"></i>',
                                 Url::toRoute(['animal/remove-from-scheme', 'id' => $animalOnScheme->id]),
                                 [
                                     'class' => 'pull-right label label-success',
                                     'style' => 'margin-left: 5px',
-                                    'data' => ['confirm' => 'Вы действительно хотите убрать животное со схемы?']
+                                    'data'  => ['confirm' => 'Вы действительно хотите убрать животное со схемы?']
                                 ]
                             );
 
-                            ?>
-                            <span class="pull-right label label-danger"><?= ArrayHelper::getValue($animalOnScheme,
-                                    'scheme.name') ?></span>
+                            */?>
+                            <span class="pull-right label label-danger"><?/*= ArrayHelper::getValue($animalOnScheme,
+                                    'scheme.name') */?></span>
                         </li>
-                    <?php endif; ?>
+                    --><?php /*endif; */?>
                 </ul>
 
                 <a href="#" class="btn btn-primary btn-block"><b>Follow</b></a>
@@ -186,12 +187,12 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app/animal', "ANIMAL_DETAIL
 
                 <div class="tab-pane" id="scheme">
                     <?= $this->render('/animal/tabs/scheme', [
-                        'animal' => $model,
-                        'schemeList' => $schemeList,
+                        'animal'              => $model,
+                        'schemeList'          => $schemeList,
                         'appropriationScheme' => $appropriationScheme,
-                        'animalOnScheme' => $animalOnScheme,
-                        'actionsToday' => $actionsToday,
-                        'closeScheme' => $closeScheme,
+                        'animalOnScheme'      => $animalOnScheme,
+                        'actionsToday'        => $actionsToday,
+                        'dataProvider'        => $dataProvider,
                     ]) ?>
                 </div>
 

@@ -253,16 +253,17 @@ class Animal extends ActiveRecord
     /**
      * Проверяем стоит ли животное на схеме
      *
-     * @return array|null|ActiveRecord
+     * @return array|ActiveRecord[]
      */
     public function onScheme()
     {
         return AppropriationScheme::find()
+            ->joinWith(['scheme'])
             ->where([
                 'animal_id' => $this->id,
                 'status' => AppropriationScheme::STATUS_IN_PROGRESS,
             ])
-            ->one();
+            ->all();
     }
 
     /**

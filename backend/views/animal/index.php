@@ -153,10 +153,16 @@ echo GridView::widget([
         [
             'label' => 'Схема',
             'content' => function (Animal $model) {
-                /** @var AppropriationScheme $scheme */
-                $appropriationScheme = $model->onScheme();
-                return '<span class="label label-primary">' . ArrayHelper::getValue($appropriationScheme,
-                        "scheme.name") . '</span>';
+                /** @var AppropriationScheme[] $appropriationSchemes */
+                $appropriationSchemes = $model->onScheme();
+
+                $result = '';
+                foreach ($appropriationSchemes as $appropriationScheme) {
+                    $result .= '<span class="label label-primary">' . ArrayHelper::getValue($appropriationScheme,
+                            "scheme.name") . '</span><br>';
+                }
+
+                return $result;
             }
         ],
         [

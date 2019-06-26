@@ -8,7 +8,6 @@ use backend\models\forms\HealthForm;
 use backend\models\forms\UploadForm;
 use backend\models\search\AnimalSearch;
 use backend\models\search\AnimalSickSearch;
-use backend\modules\scheme\models\ActionHistory;
 use backend\modules\scheme\models\AnimalHistory;
 use backend\modules\scheme\models\Diagnosis;
 use common\helpers\Excel\ExcelHelper;
@@ -24,7 +23,9 @@ use common\models\Animal;
 use common\models\Cow;
 use common\models\Color;
 use yii\data\ActiveDataProvider;
+use yii\data\ArrayDataProvider;
 use yii\db\ActiveQuery;
+use yii\db\Exception;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use yii\web\NotFoundHttpException;
@@ -61,7 +62,7 @@ class AnimalController extends BackendController
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
-            "searchModel" => $searchModel,
+            "searchModel"  => $searchModel,
             "dataProvider" => $dataProvider,
         ]);
 
@@ -170,6 +171,7 @@ class AnimalController extends BackendController
      * Удаление животного
      *
      * @param $id
+     *
      * @return \yii\web\Response
      * @throws \Throwable
      * @throws \yii\db\StaleObjectException
@@ -196,37 +198,25 @@ class AnimalController extends BackendController
         /** @var Animal $model */
         $model = Animal::findOne($id);
 
-
         $schemeList = [];
         if ($model) {
             $schemeList = $model->getListSchemes();
             $schemeList = ArrayHelper::map($schemeList, "id", "name");
         }
 
-        /** @var AppropriationScheme $animalOnScheme */
+        /** @var AppropriationScheme[] $animalOnScheme */
         $animalOnScheme = $model->onScheme();
 
-        $closeScheme = false;
         $actionsToday = [];
         if ($animalOnScheme) {
-            $actionsToday = $model->getActionsToday($animalOnScheme);
-
-            $existNewActions = ActionHistory::find()
-                ->where([
-                    'appropriation_scheme_id' => $animalOnScheme->id,
-                    'status' => ActionHistory::STATUS_NEW
-                ])
-                ->exists();
-
-            if (!$existNewActions) {
-                $closeScheme = true;
-            }
+//            $actionsToday = $model->getActionsToday($animalOnScheme);
         }
 
+        $dataProvider = new ArrayDataProvider(['allModels' => $animalOnScheme]);
 
         $appropriationScheme = new AppropriationScheme([
             'animal_id' => $id,
-            'status' => AppropriationScheme::STATUS_IN_PROGRESS,
+            'status'    => AppropriationScheme::STATUS_IN_PROGRESS,
         ]);
 
         /** @var AnimalHistory[] $history */
@@ -243,7 +233,7 @@ class AnimalController extends BackendController
                 'animalOnScheme',
                 'actionsToday',
                 'history',
-                'closeScheme'
+                'dataProvider'
             )
         );
     }
@@ -264,6 +254,20 @@ class AnimalController extends BackendController
         try {
             $isLoading = $model->load(Yii::$app->request->post());
             if ($isLoading && $model->validate()) {
+
+                $appropriationScheme = AppropriationScheme::find()
+                    ->where([
+                        'animal_id'   => $model->animal_id,
+                        'scheme_id'   => $model->scheme_id,
+                        'status'      => AppropriationScheme::STATUS_IN_PROGRESS,
+                        'finished_at' => null
+                    ])
+                    ->one();
+                
+                if ($appropriationScheme) {
+                    throw new Exception('Животное уже стоит на этой схеме лечения');
+                }
+
                 $model->save();
                 $model->createActionHistory();
             }
@@ -485,11 +489,11 @@ class AnimalController extends BackendController
         $fathers = [];
 
         return $this->render('animal-add', [
-            "action" => $action,
-            "url" => $url,
-            "model" => $model,
-            "groups" => $groups,
-            "colors" => $colors,
+            "action"  => $action,
+            "url"     => $url,
+            "model"   => $model,
+            "groups"  => $groups,
+            "colors"  => $colors,
             "mothers" => $mothers,
             "fathers" => $fathers,
         ]);
@@ -581,7 +585,7 @@ class AnimalController extends BackendController
                     if ($animal) {
                         $animal->updateAttributes([
                             'health_status' => $model->health_status,
-                            'date_health' => (new \DateTime($model->date_health))->format('Y-m-d H:i:s'),
+                            'date_health'   => (new \DateTime($model->date_health))->format('Y-m-d H:i:s'),
                         ]);
 
                         $userId = Yii::$app->getUser()->getIdentity()->getId();
@@ -590,9 +594,9 @@ class AnimalController extends BackendController
 
                         /** @var AnimalHistory $newAnimalHistory */
                         $newAnimalHistory = new AnimalHistory([
-                            'animal_id' => $animal->id,
-                            'user_id' => $userId,
-                            'date' => (new \DateTime('now',
+                            'animal_id'   => $animal->id,
+                            'user_id'     => $userId,
+                            'date'        => (new \DateTime('now',
                                 new \DateTimeZone('Europe/Samara')))->format('Y-m-d H:i:s'),
                             'action_type' => AnimalHistory::ACTION_TYPE_SET_HEALTH_STATUS,
                             'action_text' => "Поставил статус \"$health_status\""
@@ -635,15 +639,15 @@ class AnimalController extends BackendController
                         $dateHealth = (new \DateTime($model->date_health))->format('Y-m-d H:i:s');
 
                         $animal->updateAttributes([
-                            'diagnosis' => ($model->health_status == AppropriationScheme::RESULT_STATUS_HEALTHY) ? null : $animal->diagnosis,
+                            'diagnosis'     => ($model->health_status == AppropriationScheme::RESULT_STATUS_HEALTHY) ? null : $animal->diagnosis,
                             'health_status' => $model->health_status - 1,
-                            'date_health' => $dateHealth,
+                            'date_health'   => $dateHealth,
                         ]);
 
                         AppropriationScheme::findOne($model->appropriation_scheme_id)
                             ->updateAttributes([
-                                'status' => $model->health_status,
-                                'comment' => $model->comment,
+                                'status'      => $model->health_status,
+                                'comment'     => $model->comment,
                                 'finished_at' => $dateHealth
                             ]);
 
@@ -653,9 +657,9 @@ class AnimalController extends BackendController
 
                         /** @var AnimalHistory $newAnimalHistory */
                         $newAnimalHistory = new AnimalHistory([
-                            'animal_id' => $animal->id,
-                            'user_id' => $userId,
-                            'date' => (new \DateTime('now',
+                            'animal_id'   => $animal->id,
+                            'user_id'     => $userId,
+                            'date'        => (new \DateTime('now',
                                 new \DateTimeZone('Europe/Samara')))->format('Y-m-d H:i:s'),
                             'action_type' => AnimalHistory::ACTION_TYPE_CLOSE_SCHEME,
                             'action_text' => "Выписал животное со статусом \"$health_status\""
@@ -695,7 +699,7 @@ class AnimalController extends BackendController
                     if ($animal) {
                         $animal->updateAttributes([
                             'health_status' => $model->health_status,
-                            'diagnosis' => $model->diagnosis,
+                            'diagnosis'     => $model->diagnosis,
                         ]);
 
                         $userId = Yii::$app->getUser()->getIdentity()->getId();
@@ -709,9 +713,9 @@ class AnimalController extends BackendController
 
                         /** @var AnimalHistory $newAnimalHistory */
                         $newAnimalHistory = new AnimalHistory([
-                            'animal_id' => $animal->id,
-                            'user_id' => $userId,
-                            'date' => (new \DateTime('now',
+                            'animal_id'   => $animal->id,
+                            'user_id'     => $userId,
+                            'date'        => (new \DateTime('now',
                                 new \DateTimeZone('Europe/Samara')))->format('Y-m-d H:i:s'),
                             'action_type' => AnimalHistory::ACTION_TYPE_SET_DIAGNOSIS,
                             'action_text' => "Поставил диагноз \"$diagnosisName\""
@@ -777,7 +781,7 @@ class AnimalController extends BackendController
         $animals = Animal::find()
             ->alias('a')
             ->with([
-                'diagnoses' => function (ActiveQuery $query) {
+                'diagnoses'           => function (ActiveQuery $query) {
                     $query->alias('d');
                 },
                 'appropriationScheme' => function (ActiveQuery $query) {
@@ -817,7 +821,17 @@ class AnimalController extends BackendController
             $sheet->setCellValue("F$offset",
                 (new \DateTime(ArrayHelper::getValue($animal,
                     "appropriationScheme.started_at")))->format('d.m.Y'));
-            $sheet->setCellValue("G$offset", ArrayHelper::getValue($animal, "appropriationScheme.scheme.name"));
+
+
+            /** @var AppropriationScheme[] $appropriationSchemes */
+            $appropriationSchemes = $animal->onScheme();
+
+            $appropriationSchemesResult = '';
+            foreach ($appropriationSchemes as $appropriationScheme) {
+                $appropriationSchemesResult .= ArrayHelper::getValue($appropriationScheme, "scheme.name") . "\n";
+            }
+
+            $sheet->setCellValue("G$offset", $appropriationSchemesResult);
             $sheet->setCellValue("H$offset",
                 count(ArrayHelper::getValue($animal, "appropriationScheme.scheme.schemeDays")));
 
@@ -827,6 +841,7 @@ class AnimalController extends BackendController
         $end = $offset + 1;
         $spreadsheet->getActiveSheet()->getStyle("A4:H$end")->getAlignment()->setWrapText(true);
         $spreadsheet->getActiveSheet()->getStyle("A4:H$end")->getFont()->setBold(false)->setSize(10);
+        $spreadsheet->getActiveSheet()->getColumnDimension('G')->setAutoSize(true);
 
         $sheet->setTitle('Список больных животных');
 
