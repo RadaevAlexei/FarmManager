@@ -65,6 +65,12 @@ $this->params['breadcrumbs'][] = $this->title;
             }
         ],
         'count',
-        'volume'
+        'volume',
+        [
+            'label'   => 'Общий объём',
+            'content' => function (Storage $model) {
+                return $model->count * $model->volume;
+            }
+        ],
     ]
 ]);
