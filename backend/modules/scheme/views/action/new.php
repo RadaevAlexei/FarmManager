@@ -6,12 +6,15 @@ use \yii\helpers\Url;
 use backend\modules\scheme\models\Action;
 use \backend\modules\scheme\models\ActionList;
 use \backend\modules\scheme\assets\ActionAsset;
+use common\models\TypeField;
+use backend\modules\pharmacy\models\Preparation;
 
 /**
  * @var Action $model
  * @var array $typeFieldList
  * @var ActionList[] $actionList
  * @var integer $typeList
+ * @var Preparation[] $preparationList
  */
 
 ActionAsset::register($this);
@@ -61,6 +64,19 @@ $this->title = Yii::t('app/action', 'ACTION_NEW');
                         'id'     => 'selectList',
                         'class'  => 'form-control',
                         'prompt' => 'Выберите список'
+                    ])
+                ?>
+            </div>
+        </div>
+
+        <div class="form-group <?= ($model->type == TypeField::TYPE_NUMBER ? "" : "hidden") ?>"
+             id="preparationListBlock">
+            <div class="col-sm-12">
+                <?= $form->field($model, 'preparation_id')->dropDownList(
+                    $preparationList,
+                    [
+                        'class' => 'form-control',
+                        'prompt' => 'Какой препарат привязать к этому действию?'
                     ])
                 ?>
             </div>

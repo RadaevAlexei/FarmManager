@@ -2,13 +2,12 @@
 
 namespace backend\modules\scheme\controllers;
 
+use Yii;
+use backend\modules\pharmacy\models\Preparation;
 use backend\modules\scheme\models\Action;
 use backend\modules\scheme\models\ActionList;
 use backend\modules\scheme\models\search\ActionSearch;
 use common\models\TypeField;
-use Yii;
-use backend\modules\scheme\models\GroupsAction;
-use backend\modules\scheme\models\search\GroupsActionSearch;
 use \backend\controllers\BackendController;
 use yii\data\ActiveDataProvider;
 use yii\helpers\ArrayHelper;
@@ -50,8 +49,10 @@ class ActionController extends BackendController
         $actionList =  ArrayHelper::map(ActionList::find()->all(), "id", "name");
         $typeList = TypeField::TYPE_LIST;
 
+        $preparationList = ArrayHelper::map(Preparation::getAllList(), "id", "name");
+
         return $this->render('new',
-            compact('model', 'typeFieldList', 'actionList', 'typeList')
+            compact('model', 'typeFieldList', 'actionList', 'typeList', 'preparationList')
         );
     }
 
@@ -94,9 +95,12 @@ class ActionController extends BackendController
 
         $actionList =  ArrayHelper::map(ActionList::find()->all(), "id", "name");
         $typeList = TypeField::TYPE_LIST;
+        $typeNumber = TypeField::TYPE_NUMBER;
+
+        $preparationList = ArrayHelper::map(Preparation::getAllList(), "id", "name");
 
         return $this->render('edit',
-            compact('model', 'typeFieldList', 'actionList', 'typeList')
+            compact('model', 'typeFieldList', 'actionList', 'typeList', 'typeNumber', 'preparationList')
         );
     }
 
@@ -128,10 +132,12 @@ class ActionController extends BackendController
     }
 
     /**
-     * @param $id
      * Удаление действия
      *
+     * @param $id
      * @return \yii\web\Response
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
      */
     public function actionDelete($id)
     {

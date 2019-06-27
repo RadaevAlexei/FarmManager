@@ -23,14 +23,23 @@ class Measure
     public static function getList()
     {
         return [
-            self::TYPE_SYRINGE  => 'Шприц',
-            self::TYPE_BOTTLE   => 'Флакон',
+            self::TYPE_SYRINGE => 'Шприц',
+            self::TYPE_BOTTLE => 'Флакон',
             self::TYPE_CANISTER => 'Канистра',
             self::TYPE_KILOGRAM => 'Килограмм',
-            self::TYPE_DOSE     => 'Доза',
-            self::TYPE_LITER    => 'Литр',
-            self::TYPE_PIECE    => 'Штука',
-            self::TYPE_BARREL   => 'Бочка',
+            self::TYPE_DOSE => 'Доза',
+            self::TYPE_LITER => 'Литр',
+            self::TYPE_PIECE => 'Штука',
+            self::TYPE_BARREL => 'Бочка',
         ];
+    }
+
+    /**
+     * @param $value
+     * @return mixed
+     */
+    public static function getName($value)
+    {
+        return self::getList()[$value];
     }
 }

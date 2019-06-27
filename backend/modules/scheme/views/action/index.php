@@ -55,6 +55,12 @@ $this->params['breadcrumbs'][] = $this->title;
             }
         ],
         [
+            'attribute' => 'preparation_id',
+            'value'     => function (Action $model) {
+                return ArrayHelper::getValue($model, "preparation.name");
+            }
+        ],
+        [
             'class'    => 'yii\grid\ActionColumn',
             'header'   => Yii::t('app/action', 'ACTIONS'),
             'template' => '<div class="btn-group">{update} {delete} </div>',

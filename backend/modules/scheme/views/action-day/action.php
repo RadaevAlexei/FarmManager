@@ -9,6 +9,8 @@ use backend\modules\scheme\assets\ActionDayAsset;
 use \yii\bootstrap\ActiveForm;
 use \kartik\select2\Select2;
 use \common\models\TypeList;
+use \backend\modules\pharmacy\models\Stock;
+use \common\models\Measure;
 
 /**
  * @var ActionHistory $actionHistory
@@ -67,7 +69,7 @@ if ($type === TypeField::TYPE_TEXT) { ?>
 <?php } else {
     if ($type === TypeField::TYPE_NUMBER) { ?>
         <div class="form-group">
-            <div class="col-sm-6" style="margin-top: 20px">
+            <div class="col-sm-2" style="margin-top: 20px">
                 <label><?= ArrayHelper::getValue($actionHistory, "action.name") ?></label>
                 <div class="input-group">
                     <div class="input-group-btn">
@@ -84,7 +86,44 @@ if ($type === TypeField::TYPE_TEXT) { ?>
                     <?= Html::hiddenInput('ExecuteForm[type]', TypeField::TYPE_NUMBER, ['disabled' => $disabled]) ?>
                 </div>
             </div>
-            <div class="col-sm-6" style="margin-top: 20px">
+            <div class="col-sm-2" style="margin-top: 20px">
+                <label>Препарат</label>
+                <?= Html::textInput('ExecuteForm[preparation_name]',
+                    ArrayHelper::getValue($actionHistory, "action.preparation.name"), [
+                        'class' => 'form-control',
+                        'disabled' => true,
+                    ]) ?>
+            </div>
+            <div class="col-sm-2" style="margin-top: 20px">
+                <label>Склад</label>
+                <?= Html::dropDownList('ExecuteForm[stock_id]',
+                    [],
+                    ArrayHelper::map(Stock::getAllList(), "id", "name"),
+                    [
+                        'class' => 'form-control',
+                        'prompt' => 'Из какого склада списать?',
+                    ]
+                ) ?>
+            </div>
+            <div class="col-sm-2" style="margin-top: 20px">
+                <label>Объём</label>
+                <?= Html::textInput('ExecuteForm[volume]',
+                    ArrayHelper::getValue($actionHistory, "action.preparation.volume"), [
+                        'class' => 'form-control',
+                        'disabled' => true,
+                    ]
+                ) ?>
+            </div>
+            <div class="col-sm-2" style="margin-top: 20px">
+                <label>Единица измерения</label>
+                <?= Html::textInput('ExecuteForm[measure]',
+                    Measure::getName(ArrayHelper::getValue($actionHistory, "action.preparation.measure")), [
+                        'class' => 'form-control',
+                        'disabled' => true,
+                    ]
+                ) ?>
+            </div>
+            <div class="col-sm-2" style="margin-top: 20px">
                 <?= $this->render('date', [
                     'label' => 'Дата выполнения:',
                     'name' => 'ExecuteForm[execute_at]',
