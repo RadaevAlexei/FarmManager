@@ -48,11 +48,12 @@ class ActionController extends BackendController
 
         $actionList =  ArrayHelper::map(ActionList::find()->all(), "id", "name");
         $typeList = TypeField::TYPE_LIST;
+        $typeNumber = TypeField::TYPE_NUMBER;
 
         $preparationList = ArrayHelper::map(Preparation::getAllList(), "id", "name");
 
         return $this->render('new',
-            compact('model', 'typeFieldList', 'actionList', 'typeList', 'preparationList')
+            compact('model', 'typeFieldList', 'actionList', 'typeList', 'typeNumber', 'preparationList')
         );
     }
 

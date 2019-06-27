@@ -14,6 +14,7 @@ use backend\modules\pharmacy\models\Preparation;
  * @var array $typeFieldList
  * @var ActionList[] $actionList
  * @var integer $typeList
+ * @var integer $typeNumber
  * @var Preparation[] $preparationList
  */
 
@@ -26,8 +27,8 @@ $this->title = Yii::t('app/action', 'ACTION_NEW');
 
     <?php $form = ActiveForm::begin([
         'action' => Url::toRoute(['action/create']),
-        'id'     => 'action-form',
-        'class'  => 'form-horizontal'
+        'id' => 'action-form',
+        'class' => 'form-horizontal'
     ]); ?>
     <div class="box-body">
 
@@ -35,7 +36,7 @@ $this->title = Yii::t('app/action', 'ACTION_NEW');
             <div class="col-sm-12">
                 <?= $form->field($model, 'name')->textInput([
                     'autofocus' => true,
-                    'class'     => 'form-control'
+                    'class' => 'form-control'
                 ]) ?>
             </div>
         </div>
@@ -45,11 +46,12 @@ $this->title = Yii::t('app/action', 'ACTION_NEW');
                 <?= $form->field($model, 'type')->dropDownList(
                     $typeFieldList,
                     [
-                        'id'     => 'selectTypeField',
-                        'class'  => 'form-control',
+                        'id' => 'selectTypeField',
+                        'class' => 'form-control',
                         'prompt' => 'Выберите тип поля',
-                        'data'   => [
-                            'type-list' => $typeList
+                        'data' => [
+                            'type-list' => $typeList,
+                            'type-number' => $typeNumber,
                         ]
                     ])
                 ?>
@@ -61,8 +63,8 @@ $this->title = Yii::t('app/action', 'ACTION_NEW');
                 <?= $form->field($model, 'action_list_id')->dropDownList(
                     $actionList,
                     [
-                        'id'     => 'selectList',
-                        'class'  => 'form-control',
+                        'id' => 'selectList',
+                        'class' => 'form-control',
                         'prompt' => 'Выберите список'
                     ])
                 ?>
