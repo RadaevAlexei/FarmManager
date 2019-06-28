@@ -16,26 +16,24 @@ use yii\data\ArrayDataProvider;
  * @var Animal $model
  * @var Scheme[] $schemeList
  * @var AppropriationScheme $appropriationScheme
- * @var AppropriationScheme $animalOnScheme
- * @var AppropriationScheme $actionsToday
  * @var AnimalHistory[] $history
  * @var ArrayDataProvider $dataProvider
  */
 
 AnimalAsset::register($this);
 
+$this->title = 'Детальная карточка животного';
 $this->params['breadcrumbs'][] = [
     'label' => Yii::t('app/animal', "ANIMAL_LIST"),
-    'url' => Url::toRoute(['/animal/index'])
+    'url'   => Url::toRoute(['/animal/index'])
 ];
 
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app/animal', "ANIMAL_DETAIL")];
+$this->params['breadcrumbs'][] = ['label' => $this->title];
 ?>
 
 <div class="row">
     <div class="col-md-3">
 
-        <!-- Profile Image -->
         <div class="box box-warning">
             <div class="box-body box-profile" style="padding: 10px 0 10px 0px">
                 <div class="col-md-12 box-primary no-padding no-margin"
@@ -90,49 +88,6 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app/animal', "ANIMAL_DETAIL
                         </li>
                     <?php endif; ?>
                 </ul>
-
-                <a href="#" class="btn btn-primary btn-block"><b>Follow</b></a>
-            </div>
-            <!-- /.box-body -->
-        </div>
-        <!-- /.box -->
-
-        <!-- About Me Box -->
-        <div class="box box-primary">
-            <div class="box-header with-border">
-                <h3 class="box-title">About Me</h3>
-            </div>
-            <!-- /.box-header -->
-            <div class="box-body">
-                <strong><i class="fa fa-book margin-r-5"></i> Education</strong>
-
-                <p class="text-muted">
-                    B.S. in Computer Science from the University of Tennessee at Knoxville
-                </p>
-
-                <hr>
-
-                <strong><i class="fa fa-map-marker margin-r-5"></i> Location</strong>
-
-                <p class="text-muted">Malibu, California</p>
-
-                <hr>
-
-                <strong><i class="fa fa-pencil margin-r-5"></i> Skills</strong>
-
-                <p>
-                    <span class="label label-danger">UI Design</span>
-                    <span class="label label-success">Coding</span>
-                    <span class="label label-info">Javascript</span>
-                    <span class="label label-warning">PHP</span>
-                    <span class="label label-primary">Node.js</span>
-                </p>
-
-                <hr>
-
-                <strong><i class="fa fa-file-text-o margin-r-5"></i> Notes</strong>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam fermentum enim neque.</p>
             </div>
         </div>
     </div>
@@ -140,40 +95,38 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app/animal', "ANIMAL_DETAIL
     <div class="col-md-9">
         <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
-                <li class="active"><a href="#info" data-toggle="tab" aria-expanded="true">Основная информация</a></li>
-                <li class=""><a href="#calvings" data-toggle="tab" aria-expanded="true">Отёлы</a></li>
-                <li class=""><a href="#inseminations" data-toggle="tab" aria-expanded="true">Осеменения</a></li>
-                <li class=""><a href="#scheme" data-toggle="tab" aria-expanded="true">Схема лечения</a></li>
+<!--                <li class="active"><a href="#info" data-toggle="tab" aria-expanded="true">Основная информация</a></li>-->
+                <!--                <li class=""><a href="#calvings" data-toggle="tab" aria-expanded="true">Отёлы</a></li>-->
+                <!--                <li class=""><a href="#inseminations" data-toggle="tab" aria-expanded="true">Осеменения</a></li>-->
+                <li class="active"><a href="#scheme" data-toggle="tab" aria-expanded="true">Схема лечения</a></li>
                 <li class=""><a href="#animal-history" data-toggle="tab" aria-expanded="true">Амбулаторная карта
                         животного</a></li>
             </ul>
             <div class="tab-content">
 
-                <div class="active tab-pane" id="info">
-                    <?= $this->render('/animal/tabs/info', [
+                <!--<div class="tab-pane" id="info">
+                    <?/*= $this->render('/animal/tabs/info', [
                         "model" => $model
-                    ]) ?>
-                </div>
+                    ]) */?>
+                </div>-->
 
-                <div class="tab-pane" id="calvings">
-                    <?= $this->render('/animal/tabs/calvings', [
+                <!--<div class="tab-pane" id="calvings">
+                    <? /*= $this->render('/animal/tabs/calvings', [
 
-                    ]) ?>
+                    ]) */ ?>
                 </div>
 
                 <div class="tab-pane" id="inseminations">
-                    <?= $this->render('/animal/tabs/inseminations', [
-                    ]) ?>
-                </div>
+                    <? /*= $this->render('/animal/tabs/inseminations', [
+                    ]) */ ?>
+                </div>-->
 
-                <div class="tab-pane" id="scheme">
+                <div class="active tab-pane" id="scheme">
                     <?= $this->render('/animal/tabs/scheme', [
-                        'animal' => $model,
-                        'schemeList' => $schemeList,
+                        'animal'              => $model,
+                        'schemeList'          => $schemeList,
                         'appropriationScheme' => $appropriationScheme,
-                        'animalOnScheme' => $animalOnScheme,
-                        'actionsToday' => $actionsToday,
-                        'dataProvider' => $dataProvider,
+                        'dataProvider'        => $dataProvider,
                     ]) ?>
                 </div>
 
@@ -182,7 +135,6 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app/animal', "ANIMAL_DETAIL
                         'history' => $history
                     ]) ?>
                 </div>
-
             </div>
         </div>
     </div>

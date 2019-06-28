@@ -11,14 +11,19 @@ $(function () {
     });
 
     $(document).on("click", "#close-form-button", function (event) {
+        event.preventDefault();
+
         $.ajax({
             type: "post",
             data: {
-                action_list_id: 11,
-                name: 1
+                animal_id: $(this).data("animal_id"),
+                appropriation_scheme_id: $(this).data("appropriation_scheme_id")
             },
             url: $(this).data("url"),
-            done: function (data, status, response) {
+            success: function (data, status, response) {
+                $("#exampleModal").find(".modal-body").html(data);
+                $("#exampleModal").modal("show");
+                $("#closeschemeform-date_health").datepicker();
             }
         });
     });

@@ -3,6 +3,7 @@
 namespace common\models;
 
 use backend\modules\scheme\models\ActionHistory;
+use backend\modules\scheme\models\AnimalHistory;
 use backend\modules\scheme\models\AppropriationScheme;
 use backend\modules\scheme\models\Diagnosis;
 use backend\modules\scheme\models\Scheme;
@@ -514,5 +515,18 @@ class Animal extends ActiveRecord
     public function isSick()
     {
         return $this->health_status === self::HEALTH_STATUS_SICK;
+    }
+
+    /**
+     * Амбулаторная карта животного
+     *
+     * @return array|ActiveRecord[]
+     */
+    public function getHistory()
+    {
+        return AnimalHistory::find()
+            ->where(['animal_id' => $this->id])
+            ->orderBy(['date' => SORT_DESC])
+            ->all();
     }
 }

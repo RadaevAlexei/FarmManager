@@ -19,8 +19,6 @@ use \yii\data\ArrayDataProvider;
  * @var Animal $animal
  * @var Scheme[] $schemeList
  * @var AppropriationScheme $appropriationScheme
- * @var AppropriationScheme $animalOnScheme
- * @var ActionHistory[] $actionsToday
  * @var ArrayDataProvider $dataProvider
  */
 
@@ -36,8 +34,8 @@ $animalDiagnosisForm = new AnimalDiagnosisForm();
     <?php $formHealth = ActiveForm::begin([
         'action' => Url::toRoute(['update-health']),
         'method' => 'post',
-        'id' => 'update-health-form',
-        'class' => 'form-horizontal',
+        'id'     => 'update-health-form',
+        'class'  => 'form-horizontal',
     ]); ?>
     <div class="box-body">
         <div class="form-group">
@@ -45,25 +43,25 @@ $animalDiagnosisForm = new AnimalDiagnosisForm();
             <?= $formHealth->field($healthModel, 'health_status')->dropDownList(
                 Animal::getHealthStatusList(),
                 [
-                    'id' => 'health_status_list',
+                    'id'     => 'health_status_list',
                     'prompt' => 'Выберите статус здоровья',
-                    'class' => 'form-control',
-                    'value' => $animal->health_status,
+                    'class'  => 'form-control',
+                    'value'  => $animal->health_status,
                 ]
             ) ?>
         </div>
         <div class="form-group">
             <?= $formHealth->field($healthModel, 'date_health')->widget(DatePicker::class, [
-                'language' => 'ru',
+                'language'   => 'ru',
                 'dateFormat' => 'dd.MM.yyyy',
-                'options' => ['class' => 'form-control', 'autocomplete' => 'off']
+                'options'    => ['class' => 'form-control', 'autocomplete' => 'off']
             ]) ?>
         </div>
     </div>
     <div class="box-footer">
         <?= Html::submitButton('Сменить состояние здоровья', [
             'class' => 'btn btn-primary',
-            'data' => ['confirm' => 'Вы действительно хотите сменить состояние здоровья?']
+            'data'  => ['confirm' => 'Вы действительно хотите сменить состояние здоровья?']
         ]) ?>
     </div>
     <?php ActiveForm::end() ?>
@@ -78,8 +76,8 @@ $animalDiagnosisForm = new AnimalDiagnosisForm();
         <?php $formDiagnosis = ActiveForm::begin([
             'action' => Url::toRoute(['update-diagnoses']),
             'method' => 'post',
-            'id' => 'update-diagnoses-form',
-            'class' => 'form-horizontal',
+            'id'     => 'update-diagnoses-form',
+            'class'  => 'form-horizontal',
         ]); ?>
         <div class="box-body">
             <div class="form-group">
@@ -91,8 +89,8 @@ $animalDiagnosisForm = new AnimalDiagnosisForm();
                     ArrayHelper::map(Diagnosis::getAllList(), "id", "name"),
                     [
                         'prompt' => 'Выберите диагноз',
-                        'class' => ['form-control'],
-                        'value' => $animal->diagnosis,
+                        'class'  => ['form-control'],
+                        'value'  => $animal->diagnosis,
                     ]
                 ) ?>
             </div>
@@ -100,25 +98,13 @@ $animalDiagnosisForm = new AnimalDiagnosisForm();
         <div class="box-footer">
             <?= Html::submitButton('Поставить диагноз', [
                 'class' => 'btn btn-primary',
-                'data' => ['confirm' => 'Вы действительно хотите поставить такой диагноз?']
+                'data'  => ['confirm' => 'Вы действительно хотите поставить такой диагноз?']
             ]) ?>
         </div>
         <?php ActiveForm::end() ?>
     </div>
 
 <?php endif; ?>
-
-<?php if ($animalOnScheme) :
-
-    /*echo $this->render('/animal/tabs/close-scheme', [
-        'appropriationScheme' => $animalOnScheme,
-        'animal'              => $animal,
-    ]);*/
-    /*echo $this->render('/animal/tabs/actions-today', [
-        'actionsToday' => $actionsToday
-    ]);*/
-
-endif; ?>
 
 <div class="box box-success">
     <div class="box-header with-border" style="background-color: #0ead0e78">
@@ -127,9 +113,9 @@ endif; ?>
 
     <?php $form = ActiveForm::begin([
         'action' => Url::toRoute(['appropriation-scheme']),
-        'id' => 'animal-form',
+        'id'     => 'animal-form',
         'method' => 'post',
-        'class' => 'form-horizontal'
+        'class'  => 'form-horizontal'
     ]); ?>
     <div class="box-body">
 
@@ -139,10 +125,10 @@ endif; ?>
                 <?= $form->field($appropriationScheme, 'status')->hiddenInput()->label(false); ?>
 
                 <?= $form->field($appropriationScheme, 'started_at')->widget(DatePicker::class, [
-                    'language' => 'ru',
+                    'language'   => 'ru',
                     'dateFormat' => 'yyyy-MM-dd',
-                    'options' => [
-                        'class' => 'form-control',
+                    'options'    => [
+                        'class'        => 'form-control',
                         'autocomplete' => 'off'
                     ]
                 ]) ?>
@@ -154,7 +140,7 @@ endif; ?>
                 <?= $form->field($appropriationScheme, 'scheme_id')->dropDownList(
                     $schemeList,
                     [
-                        'class' => 'form-control',
+                        'class'  => 'form-control',
                         'prompt' => 'Выберите схему'
                     ]
                 ) ?>
@@ -165,7 +151,7 @@ endif; ?>
     <div class="box-footer">
         <?= Html::submitButton('Поставить на схему', [
             'class' => 'btn btn-primary',
-            'data' => ['confirm' => 'Вы действительно хотите поставить на эту схему?']
+            'data'  => ['confirm' => 'Вы действительно хотите поставить на эту схему?']
         ]) ?>
     </div>
     <?php ActiveForm::end(); ?>
@@ -179,21 +165,21 @@ endif; ?>
 
     <div class="box-body">
         <?php echo GridView::widget([
-            'formatter' => [
-                'class' => 'yii\i18n\Formatter',
+            'formatter'    => [
+                'class'       => 'yii\i18n\Formatter',
                 'nullDisplay' => '',
             ],
             "dataProvider" => $dataProvider,
-            'summary' => false,
+            'summary'      => false,
             'tableOptions' => [
                 'style' => 'display:block; width:100%; overflow-x:auto',
                 'class' => 'table table-striped',
             ],
-            'columns' => [
+            'columns'      => [
                 ['class' => 'yii\grid\SerialColumn'],
                 [
                     'attribute' => 'scheme_id',
-                    'content' => function (AppropriationScheme $model) {
+                    'content'   => function (AppropriationScheme $model) {
                         return Html::a(
                             ArrayHelper::getValue($model, "scheme.name"),
                             Url::toRoute(['scheme/scheme/edit/', 'id' => $model->scheme_id]),
@@ -202,34 +188,40 @@ endif; ?>
                     }
                 ],
                 [
-                    'class' => 'yii\grid\ActionColumn',
-                    'header' => '',
+                    'class'    => 'yii\grid\ActionColumn',
+                    'header'   => '',
                     'template' => '<div class="btn-group">{close-scheme} {delete}</div>',
-                    'buttons' => [
+                    'buttons'  => [
                         'close-scheme' => function ($url, AppropriationScheme $model) {
-                            $existNewActions = ActionHistory::find()
-                                ->where([
-                                    'appropriation_scheme_id' => $model->id,
-                                    'status' => ActionHistory::STATUS_NEW
-                                ])
-                                ->exists();
+//                            $existNewActions = ActionHistory::find()
+//                                ->where([
+//                                    'appropriation_scheme_id' => $model->id,
+//                                    'status'                  => ActionHistory::STATUS_NEW
+//                                ])
+//                                ->exists();
 
                             return Html::button('Завершить схему', [
-                                'id' => 'close-form-button',
-                                'class' => 'btn btn-warning',
-                                'data' => [
-                                    'url' => Url::toRoute(['animal/close-scheme-form', 'id' => $model->id])
-                                ]
-//                                'disabled' => $existNewActions ? true : false,
+                                'id'       => 'close-form-button',
+                                'class'    => 'btn btn-warning',
+                                'data'     => [
+                                    'toggle'                  => 'modal',
+                                    'url'                     => Url::toRoute([
+                                        'animal/close-scheme-form',
+                                        'id' => $model->id
+                                    ]),
+                                    'animal_id'               => $model->animal_id,
+                                    'appropriation_scheme_id' => $model->id,
+                                ],
+                                'disabled' => true,
                             ]);
                         },
-                        'delete' => function ($url, $model) {
+                        'delete'       => function ($url, $model) {
                             return Html::a(
                                 '<span class="glyphicon glyphicon-trash"></span>',
                                 Url::toRoute(['animal/remove-from-scheme', 'id' => $model->id]),
                                 [
                                     'class' => 'btn btn-danger',
-                                    'data' => ['confirm' => 'Вы действительно хотите убрать животное со схемы?']
+                                    'data'  => ['confirm' => 'Вы действительно хотите убрать животное со схемы?']
                                 ]
                             );
                         },
@@ -237,5 +229,22 @@ endif; ?>
                 ]
             ]
         ]); ?>
+    </div>
+</div>
+
+<!-- Модальное окно завершения схемы -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #0ead0e78">
+                <h5 class="modal-title" id="exampleModalLabel">Завершение схемы - выписка</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+            </div>
+        </div>
     </div>
 </div>

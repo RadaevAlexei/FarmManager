@@ -29,6 +29,7 @@ use yii\db\Exception;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
 use yii\web\UploadedFile;
 
 /**
@@ -204,15 +205,9 @@ class AnimalController extends BackendController
             $schemeList = ArrayHelper::map($schemeList, "id", "name");
         }
 
-        /** @var AppropriationScheme[] $animalOnScheme */
-        $animalOnScheme = $model->onScheme();
-
-        $actionsToday = [];
-        if ($animalOnScheme) {
-//            $actionsToday = $model->getActionsToday($animalOnScheme);
-        }
-
-        $dataProvider = new ArrayDataProvider(['allModels' => $animalOnScheme]);
+        /** @var AppropriationScheme[] $animalOnSchemes */
+        $animalOnSchemes = $model->onScheme();
+        $dataProvider = new ArrayDataProvider(['allModels' => $animalOnSchemes]);
 
         $appropriationScheme = new AppropriationScheme([
             'animal_id' => $id,
@@ -220,18 +215,13 @@ class AnimalController extends BackendController
         ]);
 
         /** @var AnimalHistory[] $history */
-        $history = AnimalHistory::find()
-            ->where(['animal_id' => $model->id])
-            ->orderBy(['date' => SORT_DESC])
-            ->all();
+        $history = $model->getHistory();
 
         return $this->render('new-detail',
             compact(
                 'model',
                 'schemeList',
                 'appropriationScheme',
-                'animalOnScheme',
-                'actionsToday',
                 'history',
                 'dataProvider'
             )
@@ -617,11 +607,23 @@ class AnimalController extends BackendController
         }
     }
 
+    /**
+     * @return string
+     */
     public function actionCloseSchemeForm()
     {
-        return $this->renderAjax('tabs/close-scheme', [
+        $response = Yii::$app->response;
+        $post = Yii::$app->request->post();
 
-        ]);
+        $animalId = ArrayHelper::getValue($post, "animal_id");
+        $appropriationSchemeId = ArrayHelper::getValue($post, "appropriation_scheme_id");
+
+        $animal = Animal::findOne($animalId);
+        $appropriationScheme = AppropriationScheme::findOne($appropriationSchemeId);
+
+        $response->format = Response::FORMAT_HTML;
+
+        return $this->renderPartial('tabs/close-scheme', compact('animal', 'appropriationScheme'));
     }
 
     /**
