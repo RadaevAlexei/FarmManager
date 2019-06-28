@@ -82,7 +82,7 @@ use \yii\helpers\Url;
                         'icon'  => 'users',
                         'url'   => Url::toRoute(['/group/index'])
                     ],*/
-                    [
+                    /*[
                         'label' => 'Переводы',
                         'icon'  => 'users',
                         'url'   => Url::toRoute(['/transfer/index'])
@@ -91,7 +91,7 @@ use \yii\helpers\Url;
                         'label' => 'Перевески',
                         'icon'  => 'users',
                         'url'   => Url::toRoute(['/suspension/index'])
-                    ],
+                    ],*/
 
                     ['label' => 'Амбулаторный журнал', 'options' => ['class' => 'header']],
                     [
@@ -181,11 +181,11 @@ use \yii\helpers\Url;
                         'icon'  => 'users',
                         'url'   => Url::toRoute(['/animal/sick-index'])
                     ],
-                    [
+                    /*[
                         'label' => 'Календарь',
                         'icon'  => 'users',
                         'url'   => Url::toRoute(['/scheme/calendar/index'])
-                    ],
+                    ],*/
                 ],
             ]
         ) ?>
