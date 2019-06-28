@@ -10,4 +10,17 @@ $(function () {
         }
     });
 
+    $(document).on("click", "#close-form-button", function (event) {
+        $.ajax({
+            type: "post",
+            data: {
+                action_list_id: 11,
+                name: 1
+            },
+            url: $(this).data("url"),
+            done: function (data, status, response) {
+            }
+        });
+    });
+
 });
