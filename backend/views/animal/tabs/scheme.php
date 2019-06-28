@@ -204,9 +204,9 @@ endif; ?>
                 [
                     'class'    => 'yii\grid\ActionColumn',
                     'header'   => '',
-                    'template' => '<div class="btn-group">{disabled} {delete}</div>',
+                    'template' => '<div class="btn-group">{close-scheme} {delete}</div>',
                     'buttons'  => [
-                        'disabled' => function ($url, AppropriationScheme $model) {
+                        'close-scheme' => function ($url, AppropriationScheme $model) {
                             $existNewActions = ActionHistory::find()
                                 ->where([
                                     'appropriation_scheme_id' => $model->id,
