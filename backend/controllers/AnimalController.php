@@ -63,7 +63,7 @@ class AnimalController extends BackendController
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
-            "searchModel" => $searchModel,
+            "searchModel"  => $searchModel,
             "dataProvider" => $dataProvider,
         ]);
 
@@ -211,7 +211,7 @@ class AnimalController extends BackendController
 
         $appropriationScheme = new AppropriationScheme([
             'animal_id' => $id,
-            'status' => AppropriationScheme::STATUS_IN_PROGRESS,
+            'status'    => AppropriationScheme::STATUS_IN_PROGRESS,
         ]);
 
         /** @var AnimalHistory[] $history */
@@ -247,9 +247,9 @@ class AnimalController extends BackendController
 
                 $appropriationScheme = AppropriationScheme::find()
                     ->where([
-                        'animal_id' => $model->animal_id,
-                        'scheme_id' => $model->scheme_id,
-                        'status' => AppropriationScheme::STATUS_IN_PROGRESS,
+                        'animal_id'   => $model->animal_id,
+                        'scheme_id'   => $model->scheme_id,
+                        'status'      => AppropriationScheme::STATUS_IN_PROGRESS,
                         'finished_at' => null
                     ])
                     ->one();
@@ -479,11 +479,11 @@ class AnimalController extends BackendController
         $fathers = [];
 
         return $this->render('animal-add', [
-            "action" => $action,
-            "url" => $url,
-            "model" => $model,
-            "groups" => $groups,
-            "colors" => $colors,
+            "action"  => $action,
+            "url"     => $url,
+            "model"   => $model,
+            "groups"  => $groups,
+            "colors"  => $colors,
             "mothers" => $mothers,
             "fathers" => $fathers,
         ]);
@@ -575,7 +575,7 @@ class AnimalController extends BackendController
                     if ($animal) {
                         $animal->updateAttributes([
                             'health_status' => $model->health_status,
-                            'date_health' => (new \DateTime($model->date_health))->format('Y-m-d H:i:s'),
+                            'date_health'   => (new \DateTime($model->date_health))->format('Y-m-d H:i:s'),
                         ]);
 
                         $userId = Yii::$app->getUser()->getIdentity()->getId();
@@ -584,9 +584,9 @@ class AnimalController extends BackendController
 
                         /** @var AnimalHistory $newAnimalHistory */
                         $newAnimalHistory = new AnimalHistory([
-                            'animal_id' => $animal->id,
-                            'user_id' => $userId,
-                            'date' => (new \DateTime('now',
+                            'animal_id'   => $animal->id,
+                            'user_id'     => $userId,
+                            'date'        => (new \DateTime('now',
                                 new \DateTimeZone('Europe/Samara')))->format('Y-m-d H:i:s'),
                             'action_type' => AnimalHistory::ACTION_TYPE_SET_HEALTH_STATUS,
                             'action_text' => "Поставил статус \"$health_status\""
@@ -647,28 +647,46 @@ class AnimalController extends BackendController
                     if ($animal) {
                         $dateHealth = (new \DateTime($model->date_health))->format('Y-m-d H:i:s');
 
-                        $animal->updateAttributes([
-                            'diagnosis' => ($model->health_status == AppropriationScheme::RESULT_STATUS_HEALTHY) ? null : $animal->diagnosis,
-                            'health_status' => $model->health_status - 1,
-                            'date_health' => $dateHealth,
-                        ]);
-
                         AppropriationScheme::findOne($model->appropriation_scheme_id)
                             ->updateAttributes([
-                                'status' => $model->health_status,
-                                'comment' => $model->comment,
+                                'status'      => $model->health_status,
+                                'comment'     => $model->comment,
                                 'finished_at' => $dateHealth
                             ]);
 
-                        $userId = Yii::$app->getUser()->getIdentity()->getId();
+                        $updateParameters = [
+                            'health_status' => $model->health_status - 1,
+                            'date_health'   => $dateHealth,
+                        ];
 
+                        // Если мы выписываем её здоровой
+                        if ($model->health_status == AppropriationScheme::RESULT_STATUS_HEALTHY) {
+                            if (!$animal->onScheme()) {
+                                $diagnosis = null;
+                                $healthStatus = Animal::HEALTH_STATUS_HEALTHY;
+                            } else {
+                                $diagnosis = $animal->diagnosis;
+                                $healthStatus = $animal->health_status;
+                            }
+                        } else {
+                            $diagnosis = $animal->diagnosis;
+                            $healthStatus = $animal->health_status;
+                        }
+
+                        $updateParameters = array_merge($updateParameters, [
+                            'diagnosis'     => $diagnosis,
+                            'health_status' => $healthStatus,
+                        ]);
+                        $animal->updateAttributes($updateParameters);
+
+                        $userId = Yii::$app->getUser()->getIdentity()->getId();
                         $health_status = $animal->getHealthStatus();
 
                         /** @var AnimalHistory $newAnimalHistory */
                         $newAnimalHistory = new AnimalHistory([
-                            'animal_id' => $animal->id,
-                            'user_id' => $userId,
-                            'date' => (new \DateTime('now',
+                            'animal_id'   => $animal->id,
+                            'user_id'     => $userId,
+                            'date'        => (new \DateTime('now',
                                 new \DateTimeZone('Europe/Samara')))->format('Y-m-d H:i:s'),
                             'action_type' => AnimalHistory::ACTION_TYPE_CLOSE_SCHEME,
                             'action_text' => "Выписал животное со статусом \"$health_status\""
@@ -708,7 +726,7 @@ class AnimalController extends BackendController
                     if ($animal) {
                         $animal->updateAttributes([
                             'health_status' => $model->health_status,
-                            'diagnosis' => $model->diagnosis,
+                            'diagnosis'     => $model->diagnosis,
                         ]);
 
                         $userId = Yii::$app->getUser()->getIdentity()->getId();
@@ -722,9 +740,9 @@ class AnimalController extends BackendController
 
                         /** @var AnimalHistory $newAnimalHistory */
                         $newAnimalHistory = new AnimalHistory([
-                            'animal_id' => $animal->id,
-                            'user_id' => $userId,
-                            'date' => (new \DateTime('now',
+                            'animal_id'   => $animal->id,
+                            'user_id'     => $userId,
+                            'date'        => (new \DateTime('now',
                                 new \DateTimeZone('Europe/Samara')))->format('Y-m-d H:i:s'),
                             'action_type' => AnimalHistory::ACTION_TYPE_SET_DIAGNOSIS,
                             'action_text' => "Поставил диагноз \"$diagnosisName\""
@@ -790,7 +808,7 @@ class AnimalController extends BackendController
         $animals = Animal::find()
             ->alias('a')
             ->with([
-                'diagnoses' => function (ActiveQuery $query) {
+                'diagnoses'           => function (ActiveQuery $query) {
                     $query->alias('d');
                 },
                 'appropriationScheme' => function (ActiveQuery $query) {

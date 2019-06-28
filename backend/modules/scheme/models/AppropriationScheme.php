@@ -207,4 +207,18 @@ class AppropriationScheme extends ActiveRecord
     {
         return $this->hasMany(ActionHistory::class, ['appropriation_scheme_id' => 'id']);
     }
+
+    /**
+     * Получение списка невыполненных действий для текущего применения схемы
+     * @return bool
+     */
+    public function getListNewActions()
+    {
+        return ActionHistory::find()
+            ->where([
+                'appropriation_scheme_id' => $this->id,
+                'status'                  => ActionHistory::STATUS_NEW
+            ])
+            ->exists();
+    }
 }

@@ -193,13 +193,6 @@ $animalDiagnosisForm = new AnimalDiagnosisForm();
                     'template' => '<div class="btn-group">{close-scheme} {delete}</div>',
                     'buttons'  => [
                         'close-scheme' => function ($url, AppropriationScheme $model) {
-//                            $existNewActions = ActionHistory::find()
-//                                ->where([
-//                                    'appropriation_scheme_id' => $model->id,
-//                                    'status'                  => ActionHistory::STATUS_NEW
-//                                ])
-//                                ->exists();
-
                             return Html::button('Завершить схему', [
                                 'id'       => 'close-form-button',
                                 'class'    => 'btn btn-warning',
@@ -212,12 +205,12 @@ $animalDiagnosisForm = new AnimalDiagnosisForm();
                                     'animal_id'               => $model->animal_id,
                                     'appropriation_scheme_id' => $model->id,
                                 ],
-                                'disabled' => true,
+                                'disabled' => $model->getListNewActions() ? true : false,
                             ]);
                         },
                         'delete'       => function ($url, $model) {
                             return Html::a(
-                                '<span class="glyphicon glyphicon-trash"></span>',
+                                'Убрать со схемы',
                                 Url::toRoute(['animal/remove-from-scheme', 'id' => $model->id]),
                                 [
                                     'class' => 'btn btn-danger',
