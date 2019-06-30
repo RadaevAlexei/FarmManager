@@ -90,6 +90,8 @@ if ($type === TypeField::TYPE_TEXT) : ?>
                 </div>
                 <div class="col-sm-2" style="margin-top: 20px">
                     <label>Препарат</label>
+                    <?= Html::hiddenInput('ExecuteForm[preparation_id]',
+                        ArrayHelper::getValue($actionHistory, "action.preparation.id")) ?>
                     <?= Html::textInput('ExecuteForm[preparation_name]',
                         ArrayHelper::getValue($actionHistory, "action.preparation.name"), [
                             'class'    => 'form-control',
@@ -109,6 +111,8 @@ if ($type === TypeField::TYPE_TEXT) : ?>
                 </div>
                 <div class="col-sm-2" style="margin-top: 20px">
                     <label>Объём</label>
+                    <?= Html::hiddenInput('ExecuteForm[preparation_volume]',
+                        ArrayHelper::getValue($actionHistory, "action.preparation.volume")) ?>
                     <?= Html::textInput('ExecuteForm[volume]',
                         ArrayHelper::getValue($actionHistory, "action.preparation.volume"), [
                             'class'    => 'form-control',

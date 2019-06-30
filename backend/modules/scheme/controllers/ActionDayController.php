@@ -2,6 +2,9 @@
 
 namespace backend\modules\scheme\controllers;
 
+use backend\modules\pharmacy\models\CashBook;
+use backend\modules\pharmacy\models\Preparation;
+use backend\modules\pharmacy\models\Storage;
 use backend\modules\scheme\models\ActionListItem;
 use backend\modules\scheme\models\AnimalHistory;
 use common\models\TypeField;
@@ -58,7 +61,7 @@ class ActionDayController extends BackendController
 
         /** @var ArrayDataProvider $dataProvider */
         $dataProvider = $searchModel->search(array_merge(Yii::$app->request->queryParams, [
-            'day' => $filterDate,
+            'day'     => $filterDate,
             'overdue' => false
         ]));
 
@@ -77,7 +80,7 @@ class ActionDayController extends BackendController
 
         /** @var ArrayDataProvider $dataProvider */
         $dataProvider = $searchModel->search(array_merge(Yii::$app->request->queryParams, [
-            'day' => (new \DateTime('-1 days', new \DateTimeZone('Europe/Samara')))
+            'day'     => (new \DateTime('-1 days', new \DateTimeZone('Europe/Samara')))
                 ->setTime(23, 59, 59)
                 ->format('Y-m-d H:i:s'),
             'overdue' => true
@@ -102,6 +105,7 @@ class ActionDayController extends BackendController
      * Скачивание списка дел на сегодня
      *
      * @param null $filterDate
+     *
      * @return \yii\console\Response|\yii\web\Response
      * @throws \PhpOffice\PhpSpreadsheet\Exception
      * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
@@ -152,7 +156,7 @@ class ActionDayController extends BackendController
             ])
             ->where([
                 'ah.scheme_day_at' => $date->format('Y-m-d'),
-                'ah.status' => ActionHistory::STATUS_NEW
+                'ah.status'        => ActionHistory::STATUS_NEW
             ])
             ->all();
 
@@ -195,6 +199,7 @@ class ActionDayController extends BackendController
     /**
      * @param $scheme_id
      * @param bool $disable
+     *
      * @return string
      */
     public function actionDetails($scheme_id, $disable = false)
@@ -204,7 +209,7 @@ class ActionDayController extends BackendController
             ->select(['ah.*', 'as.scheme_id', 'as.animal_id'])
             ->joinWith([
                 'groupsAction',
-                'action' => function (ActiveQuery $query) {
+                'action'              => function (ActiveQuery $query) {
                     $query->alias('ac');
                     $query->joinWith([
                         'actionList' => function (ActiveQuery $query) {
@@ -228,7 +233,7 @@ class ActionDayController extends BackendController
                 },
             ])
             ->where([
-                'ah.status' => ActionHistory::STATUS_NEW,
+                'ah.status'        => ActionHistory::STATUS_NEW,
                 'ah.scheme_day_at' => (new \DateTime('now', new \DateTimeZone('Europe/Samara')))->format('Y-m-d')
             ])
             ->orderBy(['animal_id' => SORT_ASC])
@@ -263,7 +268,7 @@ class ActionDayController extends BackendController
             ->select(['ah.*', 'as.scheme_id', 'as.animal_id'])
             ->joinWith([
                 'groupsAction',
-                'action' => function (ActiveQuery $query) {
+                'action'              => function (ActiveQuery $query) {
                     $query->alias('ac');
                     $query->joinWith([
                         'actionList' => function (ActiveQuery $query) {
@@ -323,6 +328,7 @@ class ActionDayController extends BackendController
     /**
      * @param $id
      * @param bool $overdue
+     *
      * @return \yii\web\Response
      * @throws \Throwable
      * @throws \yii\db\Exception
@@ -333,7 +339,7 @@ class ActionDayController extends BackendController
         $actionHistory = ActionHistory::find()
             ->alias('ah')
             ->joinWith([
-                'action' => function (ActiveQuery $query) {
+                'action'              => function (ActiveQuery $query) {
                     $query->alias('ac');
                 },
                 'appropriationScheme' => function (ActiveQuery $query) {
@@ -361,16 +367,25 @@ class ActionDayController extends BackendController
                 throw new \Exception();
             }
 
-
             $post = Yii::$app->request->post("ExecuteForm");
+
             $value = ArrayHelper::getValue($post, "value");
+            $preparationId = ArrayHelper::getValue($post, "preparation_id");
+            $preparationVolume = ArrayHelper::getValue($post, "preparation_volume");
+            $stockId = ArrayHelper::getValue($post, "stock_id");
+            $executeAt = ArrayHelper::getValue($post, "execute_at");
 
             if (empty($value)) {
                 throw new \Exception('Заполните значение');
             }
+            if (empty($stockId)) {
+                throw new \Exception('Выберите склад!');
+            }
+            if (empty($executeAt)) {
+                throw new \Exception('Выберите дату!');
+            }
 
             $type = ArrayHelper::getValue($post, "type");
-            $executeAt = ArrayHelper::getValue($post, "execute_at");
 
             $actionHistory->setValueByType($type, $value, $executeAt);
 
@@ -389,21 +404,45 @@ class ActionDayController extends BackendController
                 } else {
                     $value = json_encode($value);
                 }
+                $actionText = "Ввел \"$actionName\"=$value для \"$animalName\"";
             } else {
-                $value = "\"$value\"";
+                if ($type == TypeField::TYPE_NUMBER && !empty($preparationId)) {
+                    $preparation = Preparation::findOne($preparationId);
+                    $preparationName = ArrayHelper::getValue($preparation, "name");
+                    $actionText = "Потратил на животное \"$animalName\" - \"$value\"шт препарата - \"$preparationName\", объёмом \"$preparationVolume\"";
+
+                    // Вычесть из склада
+                    Storage::substractPreparation($preparationId, $stockId, $preparationVolume, $value);
+
+                    // Добавить в расход
+                    $cashBook = new CashBook();
+                    $cashBook->user_id = Yii::$app->getUser()->id;
+                    $cashBook->type = CashBook::TYPE_KREDIT;
+                    $cashBook->date = $executeAt;
+                    $cashBook->preparation_id = $preparationId;
+                    $cashBook->stock_id = $stockId;
+                    $cashBook->count = $value;
+                    $cashBook->volume = $preparationVolume;
+                    $cashBook->total_price_with_vat = $value * $preparation->price;
+                    $cashBook->total_price_without_vat = $cashBook->total_price_with_vat;
+                    $cashBook->vat_percent = 0;
+                    $cashBook->save();
+                } else {
+                    $value = "\"$value\"";
+                    $actionText = "Ввел \"$actionName\"=$value для \"$animalName\"";
+                }
             }
 
             /** @var AnimalHistory $newAnimalHistory */
             $newAnimalHistory = new AnimalHistory([
-                'animal_id' => ArrayHelper::getValue($actionHistory, "appropriationScheme.animal.id"),
-                'user_id' => $userId,
-                'date' => $executeAt,
+                'animal_id'   => ArrayHelper::getValue($actionHistory, "appropriationScheme.animal.id"),
+                'user_id'     => $userId,
+                'date'        => $executeAt,
                 'action_type' => AnimalHistory::ACTION_TYPE_EXECUTE_ACTION,
-                'action_text' => "Ввел \"$actionName\"=$value для \"$animalName\""
+                'action_text' => $actionText
             ]);
 
             $newAnimalHistory->save();
-
             $transaction->commit();
 
             \Yii::$app->session->setFlash('success', 'Успешное выполнение действия');
