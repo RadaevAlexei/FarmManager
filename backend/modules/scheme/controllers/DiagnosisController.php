@@ -2,6 +2,7 @@
 
 namespace backend\modules\scheme\controllers;
 
+use common\models\Animal;
 use Yii;
 use backend\modules\scheme\models\Diagnosis;
 use backend\controllers\BackendController;
@@ -120,11 +121,25 @@ class DiagnosisController extends BackendController
 	 */
 	public function actionDelete($id)
 	{
-		/** @var Diagnosis $model */
-		$model = Diagnosis::findOne($id);
-		$model->delete();
-		Yii::$app->session->setFlash('success', Yii::t('app/diagnosis', 'DIAGNOSIS_DELETE_SUCCESS'));
+        $transaction = Yii::$app->db->beginTransaction();
 
-		return $this->redirect(['index']);
+        try {
+            if (Animal::find()->where(['diagnosis' => $id])->exists()) {
+                throw new \Exception('Этот диагноз удалить нельзя, потому что он используется и поставлен у животных');
+            }
+
+            /** @var Diagnosis $model */
+            $model = Diagnosis::findOne($id);
+            $model->delete();
+            $transaction->commit();
+
+            \Yii::$app->session->setFlash('success', 'Успешное удаление диагноза');
+            return $this->redirect(['index']);
+        } catch (\Exception $exception) {
+            $transaction->rollBack();
+            \Yii::$app->session->setFlash('error', $exception->getMessage());
+            return $this->redirect(['index']);
+        }
+
 	}
 }
