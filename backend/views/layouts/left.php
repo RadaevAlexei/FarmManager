@@ -181,6 +181,11 @@ use \yii\helpers\Url;
                         'icon'  => 'users',
                         'url'   => Url::toRoute(['/animal/sick-index'])
                     ],
+                    [
+                        'label' => 'Список животных в ожидании',
+                        'icon'  => 'users',
+                        'url'   => Url::toRoute(['/animal/awaiting-index'])
+                    ],
                     /*[
                         'label' => 'Календарь',
                         'icon'  => 'users',

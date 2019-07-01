@@ -8,6 +8,7 @@ use backend\models\forms\HealthForm;
 use backend\models\forms\UploadForm;
 use backend\models\search\AnimalSearch;
 use backend\models\search\AnimalSickSearch;
+use backend\models\search\AwaitingAnimalSearch;
 use backend\modules\scheme\models\AnimalHistory;
 use backend\modules\scheme\models\Diagnosis;
 use common\helpers\Excel\ExcelHelper;
@@ -656,7 +657,6 @@ class AnimalController extends BackendController
                             ]);
 
                         $updateParameters = [
-                            'health_status' => $model->health_status - 1,
                             'date_health'   => $dateHealth,
                         ];
 
@@ -671,7 +671,7 @@ class AnimalController extends BackendController
                             }
                         } else {
                             $diagnosis = $animal->diagnosis;
-                            $healthStatus = $animal->health_status;
+                            $healthStatus = $model->health_status - 1;
                         }
 
                         $updateParameters = array_merge($updateParameters, [
@@ -776,6 +776,23 @@ class AnimalController extends BackendController
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('sick/index',
+            compact('searchModel', 'dataProvider')
+        );
+    }
+
+    /**
+     * Список животных в ожидании
+     * @return string
+     */
+    public function actionAwaitingIndex()
+    {
+        /** @var AwaitingAnimalSearch $searchModel */
+        $searchModel = new AwaitingAnimalSearch();
+
+        /** @var ActiveDataProvider $dataProvider */
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        return $this->render('awaiting/index',
             compact('searchModel', 'dataProvider')
         );
     }
