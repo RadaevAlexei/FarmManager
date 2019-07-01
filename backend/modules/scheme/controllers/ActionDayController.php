@@ -378,9 +378,6 @@ class ActionDayController extends BackendController
             if (empty($value)) {
                 throw new \Exception('Заполните значение');
             }
-            if (empty($stockId)) {
-                throw new \Exception('Выберите склад!');
-            }
             if (empty($executeAt)) {
                 throw new \Exception('Выберите дату!');
             }
@@ -407,6 +404,11 @@ class ActionDayController extends BackendController
                 $actionText = "Ввел \"$actionName\"=$value для \"$animalName\"";
             } else {
                 if ($type == TypeField::TYPE_NUMBER && !empty($preparationId)) {
+
+                    if (empty($stockId)) {
+                        throw new \Exception('Выберите склад!');
+                    }
+
                     $preparation = Preparation::findOne($preparationId);
                     $preparationName = ArrayHelper::getValue($preparation, "name");
                     $actionText = "Потратил на животное \"$animalName\" - \"$value\"шт препарата - \"$preparationName\", объёмом \"$preparationVolume\"";
