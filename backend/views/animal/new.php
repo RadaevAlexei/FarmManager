@@ -51,9 +51,10 @@ $this->title = Yii::t('app/animal', 'ANIMAL_NEW');
 
         <div class="form-group">
             <div class="col-sm-12">
-                <?= $form->field($model, 'birthday')->widget(DatePicker::className(), [
+                <?= $form->field($model, 'birthday')->widget(DatePicker::class, [
                     'language'   => 'ru',
-                    'dateFormat' => 'yyyy-MM-dd',
+                    'dateFormat' => 'dd.MM.yyyy',
+                    'options'    => ['class' => 'form-control', 'autocomplete' => 'off']
                 ]) ?>
             </div>
         </div>

@@ -29,7 +29,7 @@ class UserController extends BackendController
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
-            "searchModel"  => $searchModel,
+            "searchModel" => $searchModel,
             "dataProvider" => $dataProvider,
         ]);
     }
@@ -86,6 +86,7 @@ class UserController extends BackendController
 
         if ($isLoading && $model->validate()) {
             try {
+                $model->birthday = (new \DateTime($model->birthday))->format('Y-m-d H:i:s');
                 $model->save();
                 Yii::$app->session->setFlash('success', Yii::t('app/user', 'USER_CREATE_SUCCESS'));
             } catch (\yii\db\Exception $exception) {
@@ -129,6 +130,7 @@ class UserController extends BackendController
         $isLoading = $model->load(Yii::$app->request->post());
 
         if ($isLoading && $model->validate()) {
+            $model->birthday = (new \DateTime($model->birthday))->format('Y-m-d H:i:s');
             $model->save();
             Yii::$app->session->setFlash('success', Yii::t('app/user', 'USER_EDIT_SUCCESS'));
             return $this->redirect(["user/index"]);

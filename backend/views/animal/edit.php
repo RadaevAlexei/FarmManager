@@ -54,7 +54,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="col-sm-12">
                     <?= $form->field($model, 'birthday')->widget(DatePicker::class, [
                         'language'   => 'ru',
-                        'dateFormat' => 'yyyy-MM-dd',
+                        'dateFormat' => 'dd.MM.yyyy',
+                        'options'    => ['class' => 'form-control', 'autocomplete' => 'off']
                     ]) ?>
                 </div>
             </div>

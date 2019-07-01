@@ -64,15 +64,8 @@ $this->params['breadcrumbs'][] = $this->title;
         [
             'class'  => 'yii\grid\ActionColumn',
             'header' => Yii::t('app/user', 'ACTIONS'),
-            'template' => '<div class="btn-group"> {detail} {update} {delete} </div>',
+            'template' => '<div class="btn-group">{update} {delete} </div>',
             'buttons'  => [
-                'detail'   => function ($url, $model) {
-                    return Html::a(
-                        '<span class="glyphicon glyphicon-eye-open"></span>',
-                        Url::toRoute(['user/detail', 'id' => $model->id]),
-                        ['class' => 'btn btn-success']
-                    );
-                },
                 'update' => function ($url, $model) {
                     return Html::a(
                         '<span class="glyphicon glyphicon-edit"></span>',

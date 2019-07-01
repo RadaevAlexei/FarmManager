@@ -375,11 +375,14 @@ class ActionDayController extends BackendController
             $stockId = ArrayHelper::getValue($post, "stock_id");
             $executeAt = ArrayHelper::getValue($post, "execute_at");
 
+
             if (empty($value)) {
                 throw new \Exception('Заполните значение');
             }
             if (empty($executeAt)) {
                 throw new \Exception('Выберите дату!');
+            } else {
+                $executeAt = (new \DateTime($executeAt))->format('Y-m-d H:i:s');
             }
 
             $type = ArrayHelper::getValue($post, "type");

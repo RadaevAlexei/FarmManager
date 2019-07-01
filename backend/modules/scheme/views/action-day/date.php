@@ -21,7 +21,7 @@ use \yii\jui\DatePicker;
         'name' => $name,
         'value' => $date,
         'language' => 'ru',
-        'dateFormat' => 'yyyy-MM-dd',
+        'dateFormat' => 'dd.MM.yyyy',
         'options' => $options
     ]) ?>
 </div>

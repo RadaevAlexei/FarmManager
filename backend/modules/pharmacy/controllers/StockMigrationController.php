@@ -59,6 +59,8 @@ class StockMigrationController extends BackendController
 
     /**
      * @return \yii\web\Response
+     * @throws \Throwable
+     * @throws \yii\db\Exception
      */
     public function actionCreateMigration()
     {
@@ -117,6 +119,7 @@ class StockMigrationController extends BackendController
                     $storageFrom->delete();
                 }
 
+                $model->date = (new \DateTime($model->date))->format('Y-m-d H:i:s');
                 $model->save();
                 $transaction->commit();
                 Yii::$app->session->setFlash('success', 'Успешное перемещение');
