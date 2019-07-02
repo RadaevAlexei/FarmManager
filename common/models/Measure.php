@@ -16,6 +16,7 @@ class Measure
     const TYPE_LITER = 6;
     const TYPE_PIECE = 7;
     const TYPE_BARREL = 8;
+    const TYPE_PACK = 9;
 
     /**
      * @return array
@@ -31,6 +32,7 @@ class Measure
             self::TYPE_LITER => 'Литр',
             self::TYPE_PIECE => 'Штука',
             self::TYPE_BARREL => 'Бочка',
+            self::TYPE_PACK => 'Упаковка',
         ];
     }
 
