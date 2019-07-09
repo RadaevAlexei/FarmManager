@@ -97,5 +97,8 @@ return [
         'pharmacy' => [
             'class' => 'backend\modules\pharmacy\Module'
         ],
+        'reproduction' => [
+            'class' => 'backend\modules\reproduction\Module'
+        ],
     ],
 ];

@@ -98,4 +98,12 @@ class Color extends ActiveRecord
         $colors = Color::find()->select('id')->column();
         return $colors;
     }
+
+    /**
+     * @return array|ActiveRecord[]
+     */
+    public static function getAllList()
+    {
+        return Color::find()->all();
+    }
 }
