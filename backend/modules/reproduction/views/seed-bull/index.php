@@ -39,6 +39,12 @@ $this->params['breadcrumbs'][] = $this->title;
     'columns' => [
         ['class' => 'yii\grid\SerialColumn'],
         'nickname',
+        [
+            'attribute' => 'birthday',
+            'content' => function (SeedBull $model) {
+                return (new DateTime($model->birthday))->format('d.m.Y');
+            }
+        ],
         'number_1',
         'number_2',
         'number_3',
@@ -55,9 +61,9 @@ $this->params['breadcrumbs'][] = $this->title;
             }
         ],
         [
-            'attribute' => 'color',
+            'attribute' => 'color_id',
             'content' => function (SeedBull $model) {
-                return ArrayHelper::getValue($model->getColor(), "name");
+                return ArrayHelper::getValue($model->color, "name");
             }
         ],
         [

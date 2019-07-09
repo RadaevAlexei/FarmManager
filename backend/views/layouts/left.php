@@ -191,6 +191,12 @@ use \yii\helpers\Url;
                         'icon'  => 'users',
                         'url'   => Url::toRoute(['/scheme/calendar/index'])
                     ],*/
+                    ['label' => 'Воспроизводство', 'options' => ['class' => 'header']],
+                    [
+                        'label' => 'Список быков',
+                        'icon'  => 'users',
+                        'url'   => Url::toRoute(['/reproduction/seed-bull/index'])
+                    ],
                 ],
             ]
         ) ?>

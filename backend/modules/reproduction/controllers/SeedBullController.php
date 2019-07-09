@@ -8,7 +8,6 @@ use backend\modules\reproduction\models\SeedBull;
 use common\models\Breed;
 use common\models\Color;
 use common\models\ContractorSeed;
-use backend\modules\pharmacy\models\Preparation;
 use \backend\controllers\BackendController;
 use yii\data\ActiveDataProvider;
 use yii\helpers\ArrayHelper;
@@ -66,6 +65,7 @@ class SeedBullController extends BackendController
 		$isLoading = $model->load(Yii::$app->request->post());
 
 		if ($isLoading && $model->validate()) {
+		    $model->birthday = (new \DateTime($model->birthday))->format('Y-m-d H:i:s');
 			$model->save();
 			Yii::$app->session->setFlash('success', 'Успешное создание семени');
 
@@ -107,12 +107,13 @@ class SeedBullController extends BackendController
 	 */
 	public function actionUpdate($id)
 	{
-		/** @var Preparation $model */
+		/** @var SeedBull $model */
 		$model = SeedBull::findOne($id);
 
 		$isLoading = $model->load(Yii::$app->request->post());
 
 		if ($isLoading && $model->validate()) {
+            $model->birthday = (new \DateTime($model->birthday))->format('Y-m-d H:i:s');
 			$model->save();
 			Yii::$app->session->setFlash('success', 'Успешное обновление данных о семени');
 

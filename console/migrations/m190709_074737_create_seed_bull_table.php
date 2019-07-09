@@ -14,11 +14,12 @@ class m190709_074737_create_seed_bull_table extends Migration
     {
         $this->createTable('seed_bull', [
             'id' => $this->primaryKey(),
-            'nickname' => $this->string(255),
-            'number_1' => $this->string(255),
+            'nickname' => $this->string(255)->notNull(),
+            'birthday' => $this->dateTime(),
+            'number_1' => $this->string(255)->notNull(),
             'number_2' => $this->string(255),
             'number_3' => $this->string(255),
-            'contractor' => $this->integer(),
+            'contractor' => $this->integer()->notNull(),
             'breed' => $this->integer(),
             'color_id' => $this->integer(),
         ]);

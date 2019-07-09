@@ -22,10 +22,10 @@ class Breed
     public static function getList()
     {
         return [
-            self::BREED_1   => 'Порода',
-            self::BREED_2   => 'Порода',
-            self::BREED_3   => 'Порода',
-            self::BREED_4   => 'Порода',
+            self::BREED_1   => 'Порода 1',
+            self::BREED_2   => 'Порода 2',
+            self::BREED_3   => 'Порода 3',
+            self::BREED_4   => 'Порода 4',
         ];
     }
 

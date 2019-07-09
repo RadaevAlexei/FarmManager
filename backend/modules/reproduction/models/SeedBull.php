@@ -14,12 +14,14 @@ use yii\db\ActiveRecord;
  *
  * @property integer $id
  * @property string $nickname
+ * @property \DateTime $birthday
  * @property string $number_1
  * @property string $number_2
  * @property string $number_3
  * @property string $contractor
  * @property string $breed
  * @property string $color_id
+ * @property Color $color
  */
 class SeedBull extends ActiveRecord
 {
@@ -43,6 +45,7 @@ class SeedBull extends ActiveRecord
     {
         return [
             'nickname' => 'Кличка',
+            'birthday' => 'Дата Рождения',
             'number_1' => 'Номер 1',
             'number_2' => 'Номер 2',
             'number_3' => 'Номер 3',
@@ -58,11 +61,12 @@ class SeedBull extends ActiveRecord
     public function rules()
     {
         return [
-            [['name'], 'unique'],
-            [['name', 'number_1', 'number_2', 'number_3'], 'trim'],
-            [['name'], 'required'],
-            [['name'], 'string', 'max' => 255],
+            [['nickname'], 'unique'],
+            [['nickname', 'number_1', 'number_2', 'number_3'], 'trim'],
+            [['nickname', 'number_1', 'contractor'], 'required'],
+            [['nickname'], 'string', 'max' => 255],
             [['contractor', 'breed', 'color_id'], 'integer'],
+            [['birthday'], 'safe'],
         ];
     }
 

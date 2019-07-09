@@ -4,6 +4,7 @@ use \yii\bootstrap\ActiveForm;
 use \yii\helpers\Html;
 use \yii\helpers\Url;
 use backend\modules\reproduction\models\SeedBull;
+use yii\jui\DatePicker;
 
 /**
  * @var SeedBull $model
@@ -31,6 +32,17 @@ $this->title = 'Добавление быка';
                 <?= $form->field($model, 'nickname')->textInput([
                     'autofocus' => true,
                     'class' => 'form-control'
+                ]) ?>
+            </div>
+        </div>
+
+        <!--Дата рождения-->
+        <div class="form-group">
+            <div class="col-sm-12">
+                <?= $form->field($model, 'birthday')->widget(DatePicker::class, [
+                    'language'   => 'ru',
+                    'dateFormat' => 'dd.MM.yyyy',
+                    'options'    => ['class' => 'form-control', 'autocomplete' => 'off']
                 ]) ?>
             </div>
         </div>
@@ -87,7 +99,7 @@ $this->title = 'Добавление быка';
         <!--Масть-->
         <div class="form-group">
             <div class="col-sm-12">
-                <?= $form->field($model, 'color')->dropDownList($colorList, [
+                <?= $form->field($model, 'color_id')->dropDownList($colorList, [
                     'id' => 'select-color',
                     'class' => 'form-control',
                     'prompt' => 'Выберите масть',
