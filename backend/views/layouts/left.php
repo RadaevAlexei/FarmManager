@@ -197,6 +197,11 @@ use \yii\helpers\Url;
                         'icon'  => 'users',
                         'url'   => Url::toRoute(['/reproduction/seed-bull/index'])
                     ],
+                    [
+                        'label' => 'Управление Сосудами Дьюара',
+                        'icon'  => 'users',
+                        'url'   => Url::toRoute(['/reproduction/container-duara/index'])
+                    ],
                 ],
             ]
         ) ?>
