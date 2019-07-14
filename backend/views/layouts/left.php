@@ -202,6 +202,11 @@ use \yii\helpers\Url;
                         'icon'  => 'users',
                         'url'   => Url::toRoute(['/reproduction/container-duara/index'])
                     ],
+                    [
+                        'label' => 'Расход / Приход',
+                        'icon'  => 'users',
+                        'url'   => Url::toRoute(['/reproduction/seed-cash-book/index']),
+                    ],
                 ],
             ]
         ) ?>

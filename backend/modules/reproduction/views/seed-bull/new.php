@@ -106,6 +106,17 @@ $this->title = 'Добавление быка';
                 ]) ?>
             </div>
         </div>
+
+        <!--Цена за единицу-->
+        <div class="form-group">
+            <div class="col-sm-12">
+                <?= $form->field($model, 'price')->input('number', [
+                    'class' => 'form-control',
+                    'min'   => 0.01,
+                    'step'  => 0.01,
+                ]) ?>
+            </div>
+        </div>
     </div>
 
     <div class="box-footer">

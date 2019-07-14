@@ -18,13 +18,13 @@ $this->params['breadcrumbs'][] = $this->title;
 
 ?>
 
-<div class="form-group">
-    <?= Html::a(
-        'Создать быка',
-        Url::toRoute(['seed-bull/new']),
-        ['class' => 'btn btn-primary']
-    ) ?>
-</div>
+    <div class="form-group">
+        <?= Html::a(
+            'Создать быка',
+            Url::toRoute(['seed-bull/new']),
+            ['class' => 'btn btn-primary']
+        ) ?>
+    </div>
 
 <?php echo GridView::widget([
     "dataProvider" => $dataProvider,
@@ -66,6 +66,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 return ArrayHelper::getValue($model->color, "name");
             }
         ],
+        'price',
         [
             'class' => 'yii\grid\ActionColumn',
             'header' => 'Действия',

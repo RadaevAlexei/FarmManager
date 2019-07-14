@@ -1,28 +1,29 @@
 <?php
 
-namespace backend\modules\pharmacy\controllers;
+namespace backend\modules\reproduction\controllers;
 
-use backend\modules\pharmacy\models\Preparation;
-use backend\modules\pharmacy\models\search\CashBookSearch;
-use backend\modules\pharmacy\models\Storage;
 use Yii;
+use backend\modules\reproduction\models\SeedBull;
+use backend\modules\reproduction\models\SeedBullStorage;
+use backend\modules\reproduction\models\SeedCashBook;
+use backend\modules\reproduction\models\search\SeedCashBookSearch;
 use backend\modules\pharmacy\models\CashBook;
 use \backend\controllers\BackendController;
 use yii\data\ActiveDataProvider;
 
 /**
- * Class CashBookController
- * @package backend\modules\pharmacy\controllers
+ * Class SeedCashBookController
+ * @package backend\modules\reproduction\controllers
  */
-class CashBookController extends BackendController
+class SeedCashBookController extends BackendController
 {
     /**
      * Страничка с данными по приходу и расходу
      */
     public function actionIndex()
     {
-        /** @var CashBookSearch $searchModel */
-        $searchModel = new CashBookSearch();
+        /** @var SeedCashBookSearch $searchModel */
+        $searchModel = new SeedCashBookSearch();
 
         /** @var ActiveDataProvider $dataProvider */
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
@@ -32,10 +33,14 @@ class CashBookController extends BackendController
         );
     }
 
+    /**
+     * @param $type
+     * @return string
+     */
     public function actionNew($type)
     {
-        /** @var CashBook $model */
-        $model = new CashBook([
+        /** @var SeedCashBook $model */
+        $model = new SeedCashBook([
             'user_id' => Yii::$app->getUser()->id,
             'type'    => $type
         ]);
@@ -45,32 +50,32 @@ class CashBookController extends BackendController
         );
     }
 
-
+    /**
+     * @return \yii\web\Response
+     * @throws \yii\db\Exception
+     */
     public function actionCreate()
     {
-        /** @var CashBook $model */
-        $model = new CashBook();
+        /** @var SeedCashBook $model */
+        $model = new SeedCashBook();
 
         $isLoading = $model->load(Yii::$app->request->post());
 
         $model->date = (new \DateTime($model->date))->format('Y-m-d H:i:s');
-        $preparation = Preparation::findOne($model->preparation_id);
+        $seedBull = SeedBull::findOne($model->seed_bull_id);
         $totalPriceWithoutVat = 0;
         $totalPriceWithVat = 0;
-        $volume = 0;
-        if ($preparation) {
-            $totalPriceWithoutVat = $preparation->price * $model->count;
+        if ($seedBull) {
+            $totalPriceWithoutVat = $seedBull->price * $model->count;
             $vatPercent = 0;
             if ($model->type == CashBook::TYPE_DEBIT) {
                 $vatPercent = $model->vat_percent;
             }
             $model->vat_percent = $vatPercent;
             $totalPriceWithVat = $totalPriceWithoutVat * (1 + $vatPercent / 100);
-            $volume = $preparation->volume;
         }
         $model->total_price_without_vat = $totalPriceWithoutVat;
         $model->total_price_with_vat = $totalPriceWithVat;
-        $model->volume = $volume;
 
         $transaction = Yii::$app->db->beginTransaction();
 
@@ -78,11 +83,10 @@ class CashBookController extends BackendController
             if ($isLoading && $model->validate()) {
                 $model->save();
 
-                /** @var Storage $storage */
-                $storage = Storage::find()
-                    ->where(['=', 'preparation_id', $model->preparation_id])
-                    ->where(['=', 'stock_id', $model->stock_id])
-                    ->andFilterWhere(['=', 'volume', $preparation->volume])
+                /** @var SeedBullStorage $storage */
+                $storage = SeedBullStorage::find()
+                    ->where(['=', 'seed_bull_id', $model->seed_bull_id])
+                    ->where(['=', 'container_duara_id', $model->container_duara_id])
                     ->one();
 
                 if ($storage) {
@@ -90,11 +94,10 @@ class CashBookController extends BackendController
                         'count' => ($model->type == CashBook::TYPE_KREDIT) ? ($storage->count - $model->count) : ($storage->count + $model->count)
                     ]);
                 } else {
-                    $preparationStorage = new Storage();
-                    $preparationStorage->preparation_id = $model->preparation_id;
-                    $preparationStorage->stock_id = $model->stock_id;
-                    $preparationStorage->count = (($model->type == CashBook::TYPE_KREDIT) ? -$model->count : $model->count);
-                    $preparationStorage->volume = $model->volume;
+                    $preparationStorage = new SeedBullStorage();
+                    $preparationStorage->seed_bull_id = $model->seed_bull_id;
+                    $preparationStorage->container_duara_id = $model->container_duara_id;
+                    $preparationStorage->count = (($model->type == SeedCashBook::TYPE_KREDIT) ? -$model->count : $model->count);
                     $preparationStorage->save();
                 }
 

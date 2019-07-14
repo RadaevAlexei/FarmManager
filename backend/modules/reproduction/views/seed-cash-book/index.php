@@ -5,31 +5,31 @@ use \yii\data\ActiveDataProvider;
 use \yii\helpers\ArrayHelper;
 use \yii\helpers\Html;
 use \yii\helpers\Url;
-use \backend\modules\pharmacy\models\CashBook;
-use \backend\modules\pharmacy\models\search\CashBookSearch;
+use \backend\modules\reproduction\models\search\SeedCashBookSearch;
+use backend\modules\reproduction\models\SeedCashBook;
 
 $this->title = 'Приход/Расход';
 $this->params['breadcrumbs'][] = $this->title;
 
 /**
- * @var $searchModel CashBookSearch
+ * @var $searchModel SeedCashBookSearch
  * @var $dataProvider ActiveDataProvider
  */
 
 ?>
 
-    <div class="form-group">
-        <?= Html::a(
-            'Добавить приход',
-            Url::toRoute(['cash-book/new', 'type' => CashBook::TYPE_DEBIT]),
-            ['class' => 'btn btn-primary']
-        ) ?>
-        <?= Html::a(
-            'Добавить расход',
-            Url::toRoute(['cash-book/new', 'type' => CashBook::TYPE_KREDIT]),
-            ['class' => 'btn btn-primary']
-        ) ?>
-    </div>
+<div class="form-group">
+    <?= Html::a(
+        'Добавить приход',
+        Url::toRoute(['seed-cash-book/new', 'type' => SeedCashBook::TYPE_DEBIT]),
+        ['class' => 'btn btn-primary']
+    ) ?>
+    <?= Html::a(
+        'Добавить расход',
+        Url::toRoute(['seed-cash-book/new', 'type' => SeedCashBook::TYPE_KREDIT]),
+        ['class' => 'btn btn-primary']
+    ) ?>
+</div>
 
 <?php echo GridView::widget([
     "dataProvider" => $dataProvider,
@@ -44,9 +44,9 @@ $this->params['breadcrumbs'][] = $this->title;
     'columns'      => [
         ['class' => 'yii\grid\SerialColumn'],
         [
-            'label' => 'Наименование препарата',
+            'label' => 'Бык',
             'content'   => function ($model) {
-                return ArrayHelper::getValue($model, "preparation_name");
+                return ArrayHelper::getValue($model, "seed_bull_name");
             }
         ],
         [

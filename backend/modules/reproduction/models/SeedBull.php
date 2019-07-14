@@ -22,6 +22,7 @@ use yii\db\ActiveRecord;
  * @property string $breed
  * @property string $color_id
  * @property Color $color
+ * @property double $price
  */
 class SeedBull extends ActiveRecord
 {
@@ -52,6 +53,7 @@ class SeedBull extends ActiveRecord
             'contractor' => 'Поставщик семени',
             'breed' => 'Порода',
             'color_id' => 'Масть',
+            'price' => 'Цена за ед.',
         ];
     }
 
@@ -67,6 +69,7 @@ class SeedBull extends ActiveRecord
             [['nickname'], 'string', 'max' => 255],
             [['contractor', 'breed', 'color_id'], 'integer'],
             [['birthday'], 'safe'],
+            [['price'], 'double'],
         ];
     }
 
