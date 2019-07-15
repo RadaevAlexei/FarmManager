@@ -2,6 +2,7 @@
 
 namespace common\models;
 
+use backend\modules\reproduction\models\Insemination;
 use backend\modules\scheme\models\ActionHistory;
 use backend\modules\scheme\models\AnimalHistory;
 use backend\modules\scheme\models\AppropriationScheme;
@@ -525,6 +526,19 @@ class Animal extends ActiveRecord
     public function getHistory()
     {
         return AnimalHistory::find()
+            ->where(['animal_id' => $this->id])
+            ->orderBy(['date' => SORT_DESC])
+            ->all();
+    }
+
+    /**
+     * Получение истории осеменений животного
+     *
+     * @return array|ActiveRecord[]
+     */
+    public function getInseminations()
+    {
+        return Insemination::find()
             ->where(['animal_id' => $this->id])
             ->orderBy(['date' => SORT_DESC])
             ->all();

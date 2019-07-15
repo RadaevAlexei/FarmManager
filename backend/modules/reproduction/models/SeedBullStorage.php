@@ -34,9 +34,9 @@ class SeedBullStorage extends ActiveRecord
     public function attributeLabels()
     {
         return [
-            'seed_bull_id' => 'Бык',
+            'seed_bull_id'       => 'Бык',
             'container_duara_id' => 'Сосуд Дьюара',
-            'count' => 'Количество',
+            'count'              => 'Количество',
         ];
     }
 
@@ -68,19 +68,17 @@ class SeedBullStorage extends ActiveRecord
     }
 
     /**
-     * @param $preparation_id
-     * @param $stock_id
-     * @param $volume
+     * @param $seed_bull_id
+     * @param $container_duara_id
      * @param $count
      */
-    public static function substractPreparation($seed_bull_id, $container_duara_id, $volume, $count)
+    public static function substractSeedBull($seed_bull_id, $container_duara_id, $count)
     {
-        /** @var Storage $storageFrom */
-        $storageFrom = Storage::find()
+        /** @var SeedBullStorage $storageFrom */
+        $storageFrom = SeedBullStorage::find()
             ->where([
-                'preparation_id' => $preparation_id,
-                'stock_id' => $stock_id,
-                'volume' => $volume,
+                'seed_bull_id'       => $seed_bull_id,
+                'container_duara_id' => $container_duara_id,
             ])
             ->one();
 
@@ -89,11 +87,10 @@ class SeedBullStorage extends ActiveRecord
                 'count' => $storageFrom->count - $count
             ]);
         } else {
-            $storageFrom = new Storage([
-                'preparation_id' => $preparation_id,
-                'stock_id' => $stock_id,
-                'count' => -$count,
-                'volume' => $volume
+            $storageFrom = new SeedBullStorage([
+                'seed_bull_id'       => $seed_bull_id,
+                'container_duara_id' => $container_duara_id,
+                'count'              => -$count,
             ]);
             $storageFrom->save();
         }

@@ -9,6 +9,10 @@ use backend\models\forms\UploadForm;
 use backend\models\search\AnimalSearch;
 use backend\models\search\AnimalSickSearch;
 use backend\models\search\AwaitingAnimalSearch;
+use backend\modules\reproduction\models\Insemination;
+use backend\modules\reproduction\models\SeedBull;
+use backend\modules\reproduction\models\SeedBullStorage;
+use backend\modules\reproduction\models\SeedCashBook;
 use backend\modules\scheme\models\AnimalHistory;
 use backend\modules\scheme\models\Diagnosis;
 use common\helpers\Excel\ExcelHelper;
@@ -219,15 +223,64 @@ class AnimalController extends BackendController
         /** @var AnimalHistory[] $history */
         $history = $model->getHistory();
 
+        $inseminations = $model->getInseminations();
+        $inseminationDataProvider = new ArrayDataProvider(['allModels' => $inseminations]);
+
         return $this->render('new-detail',
             compact(
                 'model',
                 'schemeList',
                 'appropriationScheme',
                 'history',
-                'dataProvider'
+                'dataProvider',
+                'inseminationDataProvider'
             )
         );
+    }
+
+    /**
+     * @return string|\yii\web\Response
+     * @throws \Throwable
+     */
+    public function actionAddInsemination()
+    {
+        /** @var Insemination $model */
+        $model = new Insemination();
+
+        $isLoading = $model->load(Yii::$app->request->post());
+
+        if ($isLoading && $model->validate()) {
+            $model->date = (new \DateTime($model->date))->format('Y-m-d H:i:s');
+            $model->save();
+
+            // Смена статуса
+            $animal = Animal::findOne($model->animal_id);
+            $animal->updateAttributes(['status' => Animal::STATUS_INSEMINATED]);
+
+            // Вычесть из склада
+            SeedBullStorage::substractSeedBull($model->seed_bull_id, $model->container_duara_id, $model->count);
+
+            $seedBullPrice = ArrayHelper::getValue(SeedBull::findOne($model->seed_bull_id), "price");
+
+            // Добавить в расход
+            $seedCashBook = new SeedCashBook();
+            $seedCashBook->user_id = $model->user_id;
+            $seedCashBook->date = $model->date;
+            $seedCashBook->type = SeedCashBook::TYPE_KREDIT;
+            $seedCashBook->seed_bull_id = $model->seed_bull_id;
+            $seedCashBook->container_duara_id = $model->container_duara_id;
+            $seedCashBook->count = $model->count;
+            $seedCashBook->total_price_with_vat = $seedCashBook->count * $seedBullPrice;
+            $seedCashBook->total_price_without_vat = $seedCashBook->total_price_with_vat;
+            $seedCashBook->vat_percent = 0;
+            $seedCashBook->save();
+
+            Yii::$app->session->setFlash('success', 'Успешное добавление осеменения');
+            return $this->redirect(["detail", "id" => $model->animal_id]);
+        } else {
+            Yii::$app->session->setFlash('error', 'Ошибка при добавлении осеменения');
+            return $this->redirect(["detail", "id" => $model->animal_id]);
+        }
     }
 
     /**
@@ -657,7 +710,7 @@ class AnimalController extends BackendController
                             ]);
 
                         $updateParameters = [
-                            'date_health'   => $dateHealth,
+                            'date_health' => $dateHealth,
                         ];
 
                         // Если мы выписываем её здоровой

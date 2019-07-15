@@ -8,7 +8,6 @@ use \backend\modules\scheme\models\AppropriationScheme;
 use \yii\jui\DatePicker;
 use \yii\helpers\Html;
 use \yii\helpers\ArrayHelper;
-use \backend\modules\scheme\models\ActionHistory;
 use \backend\modules\scheme\models\Diagnosis;
 use \backend\models\forms\HealthForm;
 use \backend\models\forms\AnimalDiagnosisForm;

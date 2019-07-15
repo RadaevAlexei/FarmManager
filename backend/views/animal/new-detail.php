@@ -18,6 +18,7 @@ use yii\data\ArrayDataProvider;
  * @var AppropriationScheme $appropriationScheme
  * @var AnimalHistory[] $history
  * @var ArrayDataProvider $dataProvider
+ * @var ArrayDataProvider $inseminationDataProvider
  */
 
 AnimalAsset::register($this);
@@ -95,31 +96,39 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
     <div class="col-md-9">
         <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
-<!--                <li class="active"><a href="#info" data-toggle="tab" aria-expanded="true">Основная информация</a></li>-->
+                <!--                <li class="active"><a href="#info" data-toggle="tab" aria-expanded="true">Основная информация</a></li>-->
                 <!--                <li class=""><a href="#calvings" data-toggle="tab" aria-expanded="true">Отёлы</a></li>-->
-                <!--                <li class=""><a href="#inseminations" data-toggle="tab" aria-expanded="true">Осеменения</a></li>-->
-                <li class="active"><a href="#scheme" data-toggle="tab" aria-expanded="true">Схема лечения</a></li>
-                <li class=""><a href="#animal-history" data-toggle="tab" aria-expanded="true">Амбулаторная карта
-                        животного</a></li>
+                <li class="active">
+                    <a href="#scheme" data-toggle="tab" aria-expanded="true">Схема лечения</a>
+                </li>
+                <li class="">
+                    <a href="#animal-history" data-toggle="tab" aria-expanded="true">Амбулаторная карта
+                        животного</a>
+                </li>
+                <li class="">
+                    <a href="#inseminations" data-toggle="tab" aria-expanded="true">Осеменения</a>
+                </li>
             </ul>
             <div class="tab-content">
 
                 <!--<div class="tab-pane" id="info">
-                    <?/*= $this->render('/animal/tabs/info', [
+                    <? /*= $this->render('/animal/tabs/info', [
                         "model" => $model
-                    ]) */?>
+                    ]) */ ?>
                 </div>-->
 
                 <!--<div class="tab-pane" id="calvings">
                     <? /*= $this->render('/animal/tabs/calvings', [
 
                     ]) */ ?>
-                </div>
+                </div>-->
 
                 <div class="tab-pane" id="inseminations">
-                    <? /*= $this->render('/animal/tabs/inseminations', [
-                    ]) */ ?>
-                </div>-->
+                    <?= $this->render('/animal/tabs/inseminations', [
+                        'animal'       => $model,
+                        'dataProvider' => $inseminationDataProvider,
+                    ]) ?>
+                </div>
 
                 <div class="active tab-pane" id="scheme">
                     <?= $this->render('/animal/tabs/scheme', [
