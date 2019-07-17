@@ -729,8 +729,9 @@ class AnimalController extends BackendController
                         }
 
                         $updateParameters = array_merge($updateParameters, [
-                            'diagnosis'     => $diagnosis,
-                            'health_status' => $healthStatus,
+                            'diagnosis'             => $diagnosis,
+                            'health_status'         => $healthStatus,
+                            'health_status_comment' => $model->comment,
                         ]);
                         $animal->updateAttributes($updateParameters);
 
