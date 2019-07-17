@@ -10,6 +10,7 @@ use yii\base\Model;
 class HealthForm extends Model
 {
     public $health_status;
+    public $health_status_comment;
     public $animal_id;
     public $date_health;
     public $comment;
@@ -21,7 +22,7 @@ class HealthForm extends Model
     {
         return [
             [['health_status', 'animal_id'], 'integer'],
-            [['comment'], 'string'],
+            [['comment', 'health_status_comment'], 'string'],
             [['date_health'], 'safe']
         ];
     }
@@ -29,9 +30,10 @@ class HealthForm extends Model
     public function attributeLabels()
     {
         return [
-            'health_status' => 'Состояние здоровья',
-            'date_health' => 'Дата',
-            'comment' => 'Комментарий',
+            'health_status'         => 'Состояние здоровья',
+            'date_health'           => 'Дата',
+            'comment'               => 'Комментарий',
+            'health_status_comment' => 'Комментарий'
         ];
     }
 }

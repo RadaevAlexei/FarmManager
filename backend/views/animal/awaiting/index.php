@@ -82,6 +82,7 @@ AnimalAsset::register($this);
 
                 return $result ? $result : "Схема не назначена";
             }
-        ]
+        ],
+        'health_status_comment',
     ]
 ]);

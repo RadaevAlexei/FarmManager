@@ -21,7 +21,10 @@ use \yii\data\ArrayDataProvider;
  * @var ArrayDataProvider $dataProvider
  */
 
-$healthModel = new HealthForm(['date_health' => $animal->date_health]);
+$healthModel = new HealthForm([
+    'date_health'           => $animal->date_health,
+    'health_status_comment' => $animal->health_status_comment
+]);
 $animalDiagnosisForm = new AnimalDiagnosisForm();
 
 ?>
@@ -54,6 +57,11 @@ $animalDiagnosisForm = new AnimalDiagnosisForm();
                 'language'   => 'ru',
                 'dateFormat' => 'dd.MM.yyyy',
                 'options'    => ['class' => 'form-control', 'autocomplete' => 'off']
+            ]) ?>
+        </div>
+        <div class="form-group">
+            <?= $formHealth->field($healthModel, 'health_status_comment')->textInput([
+                'options' => ['class' => 'form-control']
             ]) ?>
         </div>
     </div>

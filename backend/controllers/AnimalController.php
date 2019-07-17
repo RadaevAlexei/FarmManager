@@ -629,8 +629,9 @@ class AnimalController extends BackendController
 
                     if ($animal) {
                         $animal->updateAttributes([
-                            'health_status' => $model->health_status,
-                            'date_health'   => (new \DateTime($model->date_health))->format('Y-m-d H:i:s'),
+                            'health_status'         => $model->health_status,
+                            'health_status_comment' => $model->health_status_comment,
+                            'date_health'           => (new \DateTime($model->date_health))->format('Y-m-d H:i:s'),
                         ]);
 
                         $userId = Yii::$app->getUser()->getIdentity()->getId();
