@@ -81,114 +81,136 @@ $containerDuaraList = ArrayHelper::map(ContainerDuara::getAllList(), "id", "name
             ]
         ]); ?>
     </div>
-</div>
-
-<div class="box box-success">
-    <div class="box-header with-border" style="background-color: #0ead0e78">
-        <h3 class="box-title">Добавить осеменение</h3>
-    </div>
-
-    <?php $form = ActiveForm::begin([
-        'action' => Url::toRoute(['add-insemination']),
-        'id'     => 'insemination-form',
-        'method' => 'post',
-        'class'  => 'form-horizontal'
-    ]); ?>
-    <div class="box-body">
-
-        <div class="form-group">
-            <div class="col-sm-10">
-                <?= $form->field($model, 'animal_id')->hiddenInput()->label(false); ?>
-
-                <?= $form->field($model, 'date')->widget(DatePicker::class, [
-                    'language'   => 'ru',
-                    'dateFormat' => 'dd.MM.yyyy',
-                    'options'    => [
-                        'class'        => 'form-control',
-                        'autocomplete' => 'off'
-                    ]
-                ]) ?>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-sm-10">
-                <?= $form->field($model, 'user_id')->dropDownList(
-                    $userList,
-                    [
-                        'class'  => 'form-control',
-                        'prompt' => 'Кто проводил?'
-                    ]
-                ) ?>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-sm-10">
-                <?= $form->field($model, 'seed_bull_id')->dropDownList(
-                    $seedBullList,
-                    [
-                        'class'  => 'form-control',
-                        'prompt' => 'Выберите быка'
-                    ]
-                ) ?>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-sm-10">
-                <?= $form->field($model, 'container_duara_id')->dropDownList(
-                    $containerDuaraList,
-                    [
-                        'class'  => 'form-control',
-                        'prompt' => 'Выберите Сосуд Дьюара'
-                    ]
-                ) ?>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-sm-10">
-                <?= $form->field($model, 'count')->input(
-                    'number',
-                    [
-                        'class'  => 'form-control',
-                        'prompt' => 'Выберите быка',
-                        'min'    => 1
-                    ]
-                ) ?>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-sm-10">
-                <?= $form->field($model, 'type_insemination')->dropDownList(
-                    Insemination::getTypesInsemination(),
-                    [
-                        'class'  => 'form-control',
-                        'prompt' => 'Выберите ип осеменения?'
-                    ]
-                ) ?>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-sm-10">
-                <?= $form->field($model, 'comment')->textInput(
-                    [
-                        'class'  => 'form-control',
-                        'prompt' => 'Примечание'
-                    ]
-                ) ?>
-            </div>
-        </div>
-    </div>
 
     <div class="box-footer">
-        <?= Html::submitButton('Добавить осеменение', [
-            'class' => 'btn btn-primary',
-            'data'  => ['confirm' => 'Вы действительно хотите добавить осеменение?']
+        <?= Html::button('Добавить осеменение', [
+            'class' => 'btn btn-warning',
+            'data'  => [
+                'toggle' => 'modal',
+                'target' => '#add-insemination-form-button',
+            ]
         ]) ?>
     </div>
-    <?php ActiveForm::end(); ?>
+</div>
+
+<!-- Модальное окно добавления осеменения -->
+<div class="modal fade" id="add-insemination-form-button" tabindex="-1" role="dialog"
+     aria-labelledby="addInseminationLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #0ead0e78">
+                <h5 class="modal-title" id="addInseminationLabel">Добавление осеменения</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <?php $form = ActiveForm::begin([
+                    'action' => Url::toRoute(['add-insemination']),
+                    'id'     => 'insemination-form',
+                    'method' => 'post',
+                    'class'  => 'form-horizontal'
+                ]); ?>
+                <div class="box-body">
+
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <?= $form->field($model, 'animal_id')->hiddenInput()->label(false); ?>
+
+                            <?= $form->field($model, 'date')->widget(DatePicker::class, [
+                                'language'   => 'ru',
+                                'dateFormat' => 'dd.MM.yyyy',
+                                'options'    => [
+                                    'class'        => 'form-control',
+                                    'autocomplete' => 'off'
+                                ]
+                            ]) ?>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <?= $form->field($model, 'user_id')->dropDownList(
+                                $userList,
+                                [
+                                    'class'  => 'form-control',
+                                    'prompt' => 'Кто проводил?'
+                                ]
+                            ) ?>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <?= $form->field($model, 'seed_bull_id')->dropDownList(
+                                $seedBullList,
+                                [
+                                    'class'  => 'form-control',
+                                    'prompt' => 'Выберите быка'
+                                ]
+                            ) ?>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <?= $form->field($model, 'container_duara_id')->dropDownList(
+                                $containerDuaraList,
+                                [
+                                    'class'  => 'form-control',
+                                    'prompt' => 'Выберите Сосуд Дьюара'
+                                ]
+                            ) ?>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <?= $form->field($model, 'count')->input(
+                                'number',
+                                [
+                                    'class'  => 'form-control',
+                                    'prompt' => 'Выберите быка',
+                                    'min'    => 1
+                                ]
+                            ) ?>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <?= $form->field($model, 'type_insemination')->dropDownList(
+                                Insemination::getTypesInsemination(),
+                                [
+                                    'class'  => 'form-control',
+                                    'prompt' => 'Выберите ип осеменения?'
+                                ]
+                            ) ?>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <?= $form->field($model, 'comment')->textInput(
+                                [
+                                    'class'  => 'form-control',
+                                    'prompt' => 'Примечание'
+                                ]
+                            ) ?>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="box-footer">
+                    <?= Html::submitButton('Добавить', [
+                        'class' => 'btn btn-primary',
+                        'data'  => ['confirm' => 'Вы действительно хотите добавить осеменение?']
+                    ]) ?>
+                </div>
+                <?php ActiveForm::end(); ?>
+            </div>
+        </div>
+    </div>
 </div>
