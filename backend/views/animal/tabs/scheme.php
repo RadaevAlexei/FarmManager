@@ -56,6 +56,11 @@ $animalDiagnosisForm = new AnimalDiagnosisForm();
                 'options'    => ['class' => 'form-control', 'autocomplete' => 'off']
             ]) ?>
         </div>
+        <div class="form-group">
+            <?= $formHealth->field($healthModel, 'health_status_comment')->textInput([
+                'options' => ['class' => 'form-control']
+            ]) ?>
+        </div>
     </div>
     <div class="box-footer">
         <?= Html::submitButton('Сменить состояние здоровья', [
