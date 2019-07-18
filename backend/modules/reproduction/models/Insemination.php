@@ -46,6 +46,7 @@ class Insemination extends ActiveRecord
     public function attributeLabels()
     {
         return [
+            'id'                 => 'Код',
             'user_id'            => 'Техник-осеменатор',
             'date'               => 'Дата',
             'animal_id'          => 'Животное',

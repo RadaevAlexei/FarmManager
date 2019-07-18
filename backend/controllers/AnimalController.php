@@ -284,6 +284,20 @@ class AnimalController extends BackendController
             $seedCashBook->vat_percent = 0;
             $seedCashBook->save();
 
+            $userId = Yii::$app->getUser()->getId();
+            $actionText = "Создал осеменение #$model->id";
+
+            /** @var AnimalHistory $newAnimalHistory */
+            $newAnimalHistory = new AnimalHistory([
+                'animal_id'   => $model->animal_id,
+                'user_id'     => $userId,
+                'date'        => (new \DateTime($model->date))->format('Y-m-d H:i:s'),
+                'action_type' => AnimalHistory::ACTION_TYPE_CREATE_INSEMINATION,
+                'action_text' => $actionText
+            ]);
+
+            $newAnimalHistory->save();
+
             Yii::$app->session->setFlash('success', 'Успешное добавление осеменения');
             return $this->redirect(["detail", "id" => $model->animal_id]);
         } else {
@@ -689,6 +703,121 @@ class AnimalController extends BackendController
         $response->format = Response::FORMAT_HTML;
 
         return $this->renderPartial('tabs/close-scheme', compact('animal', 'appropriationScheme'));
+    }
+
+    /**
+     * @param $inseminationId
+     *
+     * @return string
+     */
+    public function actionEditInseminationForm($inseminationId)
+    {
+        $response = Yii::$app->response;
+
+        $editModel = Insemination::findOne($inseminationId);
+        $userList = ArrayHelper::map(User::getAllList(), "id", "username");
+        $seedBullList = ArrayHelper::map(SeedBull::getAllList(), "id", "nickname");
+        $containerDuaraList = ArrayHelper::map(ContainerDuara::getAllList(), "id", "name");
+
+        $response->format = Response::FORMAT_HTML;
+
+        return $this->renderPartial('forms/edit-insemination', compact(
+            'editModel',
+            'userList',
+            'seedBullList',
+            'containerDuaraList'
+        ));
+    }
+
+    /**
+     * @param $inseminationId
+     *
+     * @return Response
+     */
+    public function actionEditInsemination($inseminationId)
+    {
+        /** @var Insemination $model */
+        $model = new Insemination();
+
+        $transaction = Yii::$app->db->beginTransaction();
+
+        try {
+            if (Yii::$app->request->isPost) {
+                if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+                    $updateModel = Insemination::findOne($inseminationId);
+                    $model->setAttribute('date', (new \DateTime($model->date))->format('Y-m-d H:i:s'));
+
+                    $attributes = $model->getAttributes();
+                    unset($attributes['id']);
+                    $updateModel->updateAttributes($attributes);
+
+                    $userId = Yii::$app->getUser()->getId();
+                    $actionText = "Отредактировал осеменение #$updateModel->id";
+
+                    /** @var AnimalHistory $newAnimalHistory */
+                    $newAnimalHistory = new AnimalHistory([
+                        'animal_id'   => $model->animal_id,
+                        'user_id'     => $userId,
+                        'date'        => (new \DateTime($model->date))->format('Y-m-d H:i:s'),
+                        'action_type' => AnimalHistory::ACTION_TYPE_EDIT_INSEMINATION,
+                        'action_text' => $actionText
+                    ]);
+
+                    $newAnimalHistory->save();
+
+                    Yii::$app->session->setFlash('success', 'Успешное редактирование осеменения');
+                    $transaction->commit();
+                }
+                return $this->redirect(['detail', 'id' => $model->animal_id]);
+            }
+        } catch (\Exception $exception) {
+            Yii::$app->session->setFlash('error', 'Ошибка при редактировании осеменения');
+            $transaction->rollBack();
+            return $this->redirect(['detail', 'id' => $model->animal_id]);
+        }
+    }
+
+    /**
+     * @param $id
+     *
+     * @return Response
+     */
+    public function actionDeleteInsemination($id)
+    {
+        $model = Insemination::findOne($id);
+
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+
+            if ($model) {
+                $model->delete();
+
+                $userId = Yii::$app->getUser()->getId();
+                $actionText = "Удалил осеменение #$model->id";
+
+                /** @var AnimalHistory $newAnimalHistory */
+                $newAnimalHistory = new AnimalHistory([
+                    'animal_id'   => $model->animal_id,
+                    'user_id'     => $userId,
+                    'date'        => (new \DateTime($model->date))->format('Y-m-d H:i:s'),
+                    'action_type' => AnimalHistory::ACTION_TYPE_DELETE_INSEMINATION,
+                    'action_text' => $actionText
+                ]);
+
+                $newAnimalHistory->save();
+
+                Yii::$app->session->setFlash('success', 'Успешное редактирование осеменения');
+                $transaction->commit();
+            } else {
+                Yii::$app->session->setFlash('warning', 'Данное осеменение не найдено');
+            }
+
+            return $this->redirect(['detail', 'id' => $model->animal_id]);
+        } catch (\Exception $exception) {
+            Yii::$app->session->setFlash('error', 'Ошибка при редактировании осеменения');
+            $transaction->rollBack();
+            return $this->redirect(['detail', 'id' => $model->animal_id]);
+        }
     }
 
     /**

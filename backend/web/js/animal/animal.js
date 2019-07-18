@@ -28,4 +28,19 @@ $(function () {
         });
     });
 
+    $(document).on("click", "#edit-insemination-button", function (event) {
+        event.preventDefault();
+        $.ajax({
+            type: "get",
+            url: $(this).data("url"),
+            success: function (data, status, response) {
+                var $modal = $("#edit-insemination-modal");
+                $modal.find(".modal-body").html(data);
+                $modal.modal("show");
+                var id = "#" + $modal.find(".edit-insemination-datepicker").attr('id');
+                $(id).datepicker();
+            }
+        });
+    });
+
 });

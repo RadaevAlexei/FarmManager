@@ -25,41 +25,42 @@ use \yii\data\ArrayDataProvider;
 
     <div class="box-body">
         <?php echo GridView::widget([
-            'formatter' => [
-                'class' => 'yii\i18n\Formatter',
+            'formatter'    => [
+                'class'       => 'yii\i18n\Formatter',
                 'nullDisplay' => '',
             ],
             "dataProvider" => $dataProvider,
-            'summary' => false,
+            'summary'      => false,
             'tableOptions' => [
                 'style' => 'display:block; width:100%; overflow-x:auto',
                 'class' => 'table table-striped',
             ],
-            'columns' => [
+            'columns'      => [
                 ['class' => 'yii\grid\SerialColumn'],
+                'id',
                 [
                     'attribute' => 'date',
-                    'content' => function (Insemination $model) {
+                    'content'   => function (Insemination $model) {
                         return (new DateTime($model->date))->format('d.m.Y');
                     }
                 ],
                 [
                     'attribute' => 'user_id',
-                    'content' => function (Insemination $model) {
+                    'content'   => function (Insemination $model) {
                         return ArrayHelper::getValue($model, "user.username");
                     }
                 ],
                 'count',
                 [
                     'attribute' => 'type_insemination',
-                    'content' => function (Insemination $model) {
+                    'content'   => function (Insemination $model) {
                         return $model->getTypeInsemination();
                     }
                 ],
                 'comment',
                 [
                     'attribute' => 'seed_bull_id',
-                    'content' => function (Insemination $model) {
+                    'content'   => function (Insemination $model) {
                         return Html::a(
                             ArrayHelper::getValue($model, "seedBull.nickname"),
                             Url::toRoute(['reproduction/seed-bull/edit/', 'id' => $model->seed_bull_id]),
@@ -69,7 +70,7 @@ use \yii\data\ArrayDataProvider;
                 ],
                 [
                     'attribute' => 'container_duara_id',
-                    'content' => function (Insemination $model) {
+                    'content'   => function (Insemination $model) {
                         return Html::a(
                             ArrayHelper::getValue($model, "containerDuara.name"),
                             Url::toRoute(['reproduction/container-duara/edit/', 'id' => $model->container_duara_id]),
@@ -78,32 +79,30 @@ use \yii\data\ArrayDataProvider;
                     }
                 ],
                 [
-                    'class' => 'yii\grid\ActionColumn',
-                    'header' => 'Действия',
+                    'class'    => 'yii\grid\ActionColumn',
+                    'header'   => 'Действия',
                     'template' => '<div class="btn-group">{edit} {delete}</div>',
-                    'buttons' => [
-                        'edit' => function ($url, Insemination $model) {
+                    'buttons'  => [
+                        'edit'   => function ($url, Insemination $model) {
                             return Html::button('<span class="glyphicon glyphicon-edit"></span>', [
+                                'id'    => 'edit-insemination-button',
                                 'class' => 'btn btn-warning',
-                                'data' => [
+                                'data'  => [
                                     'toggle' => 'modal',
-                                    'target' => '#edit-insemination-form-button',
-                                    'url' => Url::toRoute([
+                                    'url'    => Url::toRoute([
                                         'animal/edit-insemination-form',
-                                        'id' => $model->id
+                                        'inseminationId' => $model->id
                                     ])
-                                ],
-                                'disabled' => true,
+                                ]
                             ]);
                         },
                         'delete' => function ($url, Insemination $model) {
                             return Html::a(
                                 '<span class="glyphicon glyphicon-trash"></span>',
-                                Url::toRoute(['animal/remove-insemination', 'id' => $model->id]),
+                                Url::toRoute(['animal/delete-insemination', 'id' => $model->id]),
                                 [
-                                    'class' => 'btn btn-danger',
-                                    'data' => ['confirm' => 'Вы действительно хотите удалить осеменение?'],
-                                    'disabled' => true,
+                                    'class'    => 'btn btn-danger',
+                                    'data'     => ['confirm' => 'Вы действительно хотите удалить осеменение?'],
                                 ]
                             );
                         },
@@ -116,7 +115,7 @@ use \yii\data\ArrayDataProvider;
     <div class="box-footer">
         <?= Html::button('Добавить осеменение', [
             'class' => 'btn btn-warning',
-            'data' => [
+            'data'  => [
                 'toggle' => 'modal',
                 'target' => '#add-insemination-form-button',
             ]
@@ -149,7 +148,7 @@ use \yii\data\ArrayDataProvider;
 </div>
 
 <!-- Модальное окно редактирования осеменения -->
-<div class="modal fade" id="edit-insemination-form-button" tabindex="-1" role="dialog"
+<div class="modal fade" id="edit-insemination-modal" tabindex="-1" role="dialog"
      aria-labelledby="editInseminationLabel"
      aria-hidden="true">
     <div class="modal-dialog" role="document">

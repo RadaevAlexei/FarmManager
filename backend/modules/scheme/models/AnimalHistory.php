@@ -27,6 +27,9 @@ class AnimalHistory extends ActiveRecord
     const ACTION_TYPE_SET_HEALTH_STATUS = 'set_health_status';
     const ACTION_TYPE_SET_DIAGNOSIS = 'set_diagnosis';
     const ACTION_TYPE_CLOSE_SCHEME = 'close_scheme';
+    const ACTION_TYPE_CREATE_INSEMINATION = 'create_insemination';
+    const ACTION_TYPE_EDIT_INSEMINATION = 'edit_insemination';
+    const ACTION_TYPE_DELETE_INSEMINATION = 'delete_insemination';
 
     /**
      * @return string
