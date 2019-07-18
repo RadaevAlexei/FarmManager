@@ -1,31 +1,20 @@
 <?php
 
 use \yii\helpers\Url;
-use \yii\bootstrap\ActiveForm;
-use \yii\jui\DatePicker;
 use \yii\helpers\Html;
 use \backend\modules\reproduction\models\Insemination;
 use common\models\Animal;
-use \common\models\User;
 use \yii\helpers\ArrayHelper;
-use backend\modules\reproduction\models\SeedBull;
 use \yii\grid\GridView;
 use \yii\data\ArrayDataProvider;
-use backend\modules\reproduction\models\ContainerDuara;
 
 /**
- * @var Insemination $model
  * @var ArrayDataProvider $dataProvider
  * @var Animal $animal
+ * @var array $userList
+ * @var array $seedBullList
+ * @var array $containerDuaraList
  */
-
-$model = new Insemination([
-    'animal_id' => $animal
-]);
-
-$userList = ArrayHelper::map(User::getAllList(), "id", "username");
-$seedBullList = ArrayHelper::map(SeedBull::getAllList(), "id", "nickname");
-$containerDuaraList = ArrayHelper::map(ContainerDuara::getAllList(), "id", "name");
 
 ?>
 
@@ -36,41 +25,41 @@ $containerDuaraList = ArrayHelper::map(ContainerDuara::getAllList(), "id", "name
 
     <div class="box-body">
         <?php echo GridView::widget([
-            'formatter'    => [
-                'class'       => 'yii\i18n\Formatter',
+            'formatter' => [
+                'class' => 'yii\i18n\Formatter',
                 'nullDisplay' => '',
             ],
             "dataProvider" => $dataProvider,
-            'summary'      => false,
+            'summary' => false,
             'tableOptions' => [
                 'style' => 'display:block; width:100%; overflow-x:auto',
                 'class' => 'table table-striped',
             ],
-            'columns'      => [
+            'columns' => [
                 ['class' => 'yii\grid\SerialColumn'],
                 [
                     'attribute' => 'date',
-                    'content'   => function (Insemination $model) {
+                    'content' => function (Insemination $model) {
                         return (new DateTime($model->date))->format('d.m.Y');
                     }
                 ],
                 [
                     'attribute' => 'user_id',
-                    'content'   => function (Insemination $model) {
+                    'content' => function (Insemination $model) {
                         return ArrayHelper::getValue($model, "user.username");
                     }
                 ],
                 'count',
                 [
                     'attribute' => 'type_insemination',
-                    'content'   => function (Insemination $model) {
+                    'content' => function (Insemination $model) {
                         return $model->getTypeInsemination();
                     }
                 ],
                 'comment',
                 [
                     'attribute' => 'seed_bull_id',
-                    'content'   => function (Insemination $model) {
+                    'content' => function (Insemination $model) {
                         return Html::a(
                             ArrayHelper::getValue($model, "seedBull.nickname"),
                             Url::toRoute(['reproduction/seed-bull/edit/', 'id' => $model->seed_bull_id]),
@@ -78,6 +67,48 @@ $containerDuaraList = ArrayHelper::map(ContainerDuara::getAllList(), "id", "name
                         );
                     }
                 ],
+                [
+                    'attribute' => 'container_duara_id',
+                    'content' => function (Insemination $model) {
+                        return Html::a(
+                            ArrayHelper::getValue($model, "containerDuara.name"),
+                            Url::toRoute(['reproduction/container-duara/edit/', 'id' => $model->container_duara_id]),
+                            ["target" => "_blank"]
+                        );
+                    }
+                ],
+                [
+                    'class' => 'yii\grid\ActionColumn',
+                    'header' => 'Действия',
+                    'template' => '<div class="btn-group">{edit} {delete}</div>',
+                    'buttons' => [
+                        'edit' => function ($url, Insemination $model) {
+                            return Html::button('<span class="glyphicon glyphicon-edit"></span>', [
+                                'class' => 'btn btn-warning',
+                                'data' => [
+                                    'toggle' => 'modal',
+                                    'target' => '#edit-insemination-form-button',
+                                    'url' => Url::toRoute([
+                                        'animal/edit-insemination-form',
+                                        'id' => $model->id
+                                    ])
+                                ],
+                                'disabled' => true,
+                            ]);
+                        },
+                        'delete' => function ($url, Insemination $model) {
+                            return Html::a(
+                                '<span class="glyphicon glyphicon-trash"></span>',
+                                Url::toRoute(['animal/remove-insemination', 'id' => $model->id]),
+                                [
+                                    'class' => 'btn btn-danger',
+                                    'data' => ['confirm' => 'Вы действительно хотите удалить осеменение?'],
+                                    'disabled' => true,
+                                ]
+                            );
+                        },
+                    ],
+                ]
             ]
         ]); ?>
     </div>
@@ -85,7 +116,7 @@ $containerDuaraList = ArrayHelper::map(ContainerDuara::getAllList(), "id", "name
     <div class="box-footer">
         <?= Html::button('Добавить осеменение', [
             'class' => 'btn btn-warning',
-            'data'  => [
+            'data' => [
                 'toggle' => 'modal',
                 'target' => '#add-insemination-form-button',
             ]
@@ -106,110 +137,30 @@ $containerDuaraList = ArrayHelper::map(ContainerDuara::getAllList(), "id", "name
                 </button>
             </div>
             <div class="modal-body">
+                <?= $this->render('/animal/forms/add-insemination', compact(
+                    'animal',
+                    'userList',
+                    'seedBullList',
+                    'containerDuaraList'
+                )) ?>
+            </div>
+        </div>
+    </div>
+</div>
 
-                <?php $form = ActiveForm::begin([
-                    'action' => Url::toRoute(['add-insemination']),
-                    'id'     => 'insemination-form',
-                    'method' => 'post',
-                    'class'  => 'form-horizontal'
-                ]); ?>
-                <div class="box-body">
-
-                    <div class="form-group">
-                        <div class="col-sm-12">
-                            <?= $form->field($model, 'animal_id')->hiddenInput()->label(false); ?>
-
-                            <?= $form->field($model, 'date')->widget(DatePicker::class, [
-                                'language'   => 'ru',
-                                'dateFormat' => 'dd.MM.yyyy',
-                                'options'    => [
-                                    'class'        => 'form-control',
-                                    'autocomplete' => 'off'
-                                ]
-                            ]) ?>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <div class="col-sm-12">
-                            <?= $form->field($model, 'user_id')->dropDownList(
-                                $userList,
-                                [
-                                    'class'  => 'form-control',
-                                    'prompt' => 'Кто проводил?'
-                                ]
-                            ) ?>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <div class="col-sm-12">
-                            <?= $form->field($model, 'seed_bull_id')->dropDownList(
-                                $seedBullList,
-                                [
-                                    'class'  => 'form-control',
-                                    'prompt' => 'Выберите быка'
-                                ]
-                            ) ?>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <div class="col-sm-12">
-                            <?= $form->field($model, 'container_duara_id')->dropDownList(
-                                $containerDuaraList,
-                                [
-                                    'class'  => 'form-control',
-                                    'prompt' => 'Выберите Сосуд Дьюара'
-                                ]
-                            ) ?>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <div class="col-sm-12">
-                            <?= $form->field($model, 'count')->input(
-                                'number',
-                                [
-                                    'class'  => 'form-control',
-                                    'prompt' => 'Выберите быка',
-                                    'min'    => 1
-                                ]
-                            ) ?>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <div class="col-sm-12">
-                            <?= $form->field($model, 'type_insemination')->dropDownList(
-                                Insemination::getTypesInsemination(),
-                                [
-                                    'class'  => 'form-control',
-                                    'prompt' => 'Выберите ип осеменения?'
-                                ]
-                            ) ?>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <div class="col-sm-12">
-                            <?= $form->field($model, 'comment')->textInput(
-                                [
-                                    'class'  => 'form-control',
-                                    'prompt' => 'Примечание'
-                                ]
-                            ) ?>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="box-footer">
-                    <?= Html::submitButton('Добавить', [
-                        'class' => 'btn btn-primary',
-                        'data'  => ['confirm' => 'Вы действительно хотите добавить осеменение?']
-                    ]) ?>
-                </div>
-                <?php ActiveForm::end(); ?>
+<!-- Модальное окно редактирования осеменения -->
+<div class="modal fade" id="edit-insemination-form-button" tabindex="-1" role="dialog"
+     aria-labelledby="editInseminationLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #0ead0e78">
+                <h5 class="modal-title" id="editInseminationLabel">Редактирование осеменения</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
             </div>
         </div>
     </div>

@@ -2,9 +2,9 @@
 
 namespace backend\modules\reproduction\models;
 
+use Yii;
 use common\models\Animal;
 use common\models\User;
-use Yii;
 use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
 
@@ -12,6 +12,7 @@ use yii\helpers\ArrayHelper;
  * Class Insemination
  * @package backend\modules\reproduction\models
  *
+ * @property integer $id
  * @property integer $user_id
  * @property \DateTime $date
  * @property Animal $animal_id

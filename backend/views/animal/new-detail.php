@@ -7,7 +7,6 @@ use \backend\modules\scheme\models\Scheme;
 use \backend\modules\scheme\models\AppropriationScheme;
 use \backend\modules\scheme\models\AnimalHistory;
 use \backend\assets\AnimalAsset;
-use \yii\helpers\Html;
 use yii\data\ArrayDataProvider;
 
 //ChartAsset::register($this);
@@ -19,6 +18,9 @@ use yii\data\ArrayDataProvider;
  * @var AnimalHistory[] $history
  * @var ArrayDataProvider $dataProvider
  * @var ArrayDataProvider $inseminationDataProvider
+ * @var array $userList
+ * @var array $seedBullList
+ * @var array $containerDuaraList
  */
 
 AnimalAsset::register($this);
@@ -26,7 +28,7 @@ AnimalAsset::register($this);
 $this->title = 'Детальная карточка животного';
 $this->params['breadcrumbs'][] = [
     'label' => Yii::t('app/animal', "ANIMAL_LIST"),
-    'url'   => Url::toRoute(['/animal/index'])
+    'url' => Url::toRoute(['/animal/index'])
 ];
 
 $this->params['breadcrumbs'][] = ['label' => $this->title];
@@ -125,17 +127,20 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
 
                 <div class="tab-pane" id="inseminations">
                     <?= $this->render('/animal/tabs/inseminations', [
-                        'animal'       => $model,
+                        'animal' => $model,
                         'dataProvider' => $inseminationDataProvider,
+                        'userList' => $userList,
+                        'seedBullList' => $seedBullList,
+                        'containerDuaraList' => $containerDuaraList,
                     ]) ?>
                 </div>
 
                 <div class="active tab-pane" id="scheme">
                     <?= $this->render('/animal/tabs/scheme', [
-                        'animal'              => $model,
-                        'schemeList'          => $schemeList,
+                        'animal' => $model,
+                        'schemeList' => $schemeList,
                         'appropriationScheme' => $appropriationScheme,
-                        'dataProvider'        => $dataProvider,
+                        'dataProvider' => $dataProvider,
                     ]) ?>
                 </div>
 

@@ -9,6 +9,7 @@ use backend\models\forms\UploadForm;
 use backend\models\search\AnimalSearch;
 use backend\models\search\AnimalSickSearch;
 use backend\models\search\AwaitingAnimalSearch;
+use backend\modules\reproduction\models\ContainerDuara;
 use backend\modules\reproduction\models\Insemination;
 use backend\modules\reproduction\models\SeedBull;
 use backend\modules\reproduction\models\SeedBullStorage;
@@ -16,6 +17,7 @@ use backend\modules\reproduction\models\SeedCashBook;
 use backend\modules\scheme\models\AnimalHistory;
 use backend\modules\scheme\models\Diagnosis;
 use common\helpers\Excel\ExcelHelper;
+use common\models\User;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Reader\BaseReader;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
@@ -226,6 +228,10 @@ class AnimalController extends BackendController
         $inseminations = $model->getInseminations();
         $inseminationDataProvider = new ArrayDataProvider(['allModels' => $inseminations]);
 
+        $userList = ArrayHelper::map(User::getAllList(), "id", "username");
+        $seedBullList = ArrayHelper::map(SeedBull::getAllList(), "id", "nickname");
+        $containerDuaraList = ArrayHelper::map(ContainerDuara::getAllList(), "id", "name");
+
         return $this->render('new-detail',
             compact(
                 'model',
@@ -233,7 +239,10 @@ class AnimalController extends BackendController
                 'appropriationScheme',
                 'history',
                 'dataProvider',
-                'inseminationDataProvider'
+                'inseminationDataProvider',
+                'userList',
+                'seedBullList',
+                'containerDuaraList'
             )
         );
     }
