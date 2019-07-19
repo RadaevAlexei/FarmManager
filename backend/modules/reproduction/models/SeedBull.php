@@ -22,6 +22,7 @@ use yii\db\ActiveRecord;
  * @property string $breed
  * @property string $color_id
  * @property Color $color
+ * @property SeedSupplier $supplier
  * @property double $price
  */
 class SeedBull extends ActiveRecord
@@ -83,11 +84,11 @@ class SeedBull extends ActiveRecord
     }
 
     /**
-     * @return mixed
+     * @return \yii\db\ActiveQuery
      */
-    public function getContractorName()
+    public function getSupplier()
     {
-        return ContractorSeed::getName($this->contractor);
+        return $this->hasOne(SeedSupplier::class, ['id' => 'contractor']);
     }
 
     /**

@@ -193,6 +193,11 @@ use \yii\helpers\Url;
                     ],*/
                     ['label' => 'Воспроизводство', 'options' => ['class' => 'header']],
                     [
+                        'label' => 'Поставщики семени',
+                        'icon'  => 'users',
+                        'url'   => Url::toRoute(['/reproduction/seed-supplier/index'])
+                    ],
+                    [
                         'label' => 'Список быков',
                         'icon'  => 'users',
                         'url'   => Url::toRoute(['/reproduction/seed-bull/index'])

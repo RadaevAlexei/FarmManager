@@ -51,7 +51,7 @@ $this->params['breadcrumbs'][] = $this->title;
         [
             'attribute' => 'contractor',
             'content' => function (SeedBull $model) {
-                return $model->getContractorName();
+                return ArrayHelper::getValue($model->supplier, "name");
             }
         ],
         [

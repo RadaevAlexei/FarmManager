@@ -2,6 +2,7 @@
 
 namespace backend\modules\reproduction\controllers;
 
+use backend\modules\reproduction\models\SeedSupplier;
 use Yii;
 use backend\modules\reproduction\models\search\SeedBullSearch;
 use backend\modules\reproduction\models\SeedBull;
@@ -44,12 +45,12 @@ class SeedBullController extends BackendController
 		/** @var SeedBull $model */
 		$model = new SeedBull();
 
-		$contractorSeedList = ContractorSeed::getList();
+		$seedSupplierList = ArrayHelper::map(SeedSupplier::getAllList(), "id", "name");
 		$breedList = Breed::getList();
 		$colorList = ArrayHelper::map(Color::getAllList(), "id", "name");
 
 		return $this->render('new',
-			compact('model', 'contractorSeedList', 'breedList', 'colorList')
+			compact('model', 'seedSupplierList', 'breedList', 'colorList')
 		);
 	}
 
@@ -89,12 +90,12 @@ class SeedBullController extends BackendController
 	{
 		$model = SeedBull::findOne($id);
 
-        $contractorSeedList = ContractorSeed::getList();
+        $seedSupplierList = ArrayHelper::map(SeedSupplier::getAllList(), "id", "name");
         $breedList = Breed::getList();
         $colorList = ArrayHelper::map(Color::getAllList(), "id", "name");
 
 		return $this->render('edit',
-			compact('model', 'contractorSeedList', 'breedList', 'colorList')
+			compact('model', 'seedSupplierList', 'breedList', 'colorList')
 		);
 	}
 

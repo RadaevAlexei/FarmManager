@@ -8,7 +8,7 @@ use yii\jui\DatePicker;
 
 /**
  * @var SeedBull $model
- * @var array $contractorSeedList
+ * @var array $seedSupplierList
  * @var array $breedList
  * @var array $colorList
  */
@@ -77,7 +77,7 @@ $this->title = 'Добавление быка';
         <!--Поставщик семени-->
         <div class="form-group">
             <div class="col-sm-12">
-                <?= $form->field($model, 'contractor')->dropDownList($contractorSeedList, [
+                <?= $form->field($model, 'contractor')->dropDownList($seedSupplierList, [
                     'id' => 'select-contractor-seed',
                     'class' => 'form-control',
                     'prompt' => 'Выберите поставщика семени',
