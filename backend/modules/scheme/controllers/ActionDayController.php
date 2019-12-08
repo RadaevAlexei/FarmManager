@@ -400,7 +400,7 @@ class ActionDayController extends BackendController
                 if ($listItems) {
                     $mappedItems = ArrayHelper::map($listItems, "id", "name");
                     $values = array_values($mappedItems);
-                    $value = json_encode($values);
+                    $value = json_encode($values, JSON_UNESCAPED_UNICODE);
                 } else {
                     $value = json_encode($value);
                 }
