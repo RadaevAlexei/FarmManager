@@ -2,6 +2,7 @@
 
 namespace backend\models\search;
 
+use backend\modules\scheme\models\Scheme;
 use common\models\Animal;
 use yii\data\ActiveDataProvider;
 use yii\db\ActiveQuery;
@@ -32,6 +33,7 @@ class AwaitingAnimalSearch extends Animal
                     $query->joinWith([
                         'scheme' => function (ActiveQuery $query) {
                             $query->alias('s');
+                            $query->where(['s.status' => Scheme::STATUS_ACTIVE]);
                             $query->joinWith([
                                 'schemeDays' => function (ActiveQuery $query) {
                                     $query->alias('sd');

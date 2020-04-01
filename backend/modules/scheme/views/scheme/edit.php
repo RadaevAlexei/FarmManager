@@ -21,14 +21,14 @@ SchemeAsset::register($this);
 $this->title = Yii::t('app/scheme', 'SCHEME_EDIT');
 $this->params['breadcrumbs'][] = $this->title;
 
-if ($canApprove) {
-    $boxClass = "warning";
-    $boxHeaderBackgroundColor = "#f3d75a";
-    $title = "Схема не утверждена";
-} else {
+if ($model->approve) {
     $boxClass = "success";
     $boxHeaderBackgroundColor = "#65e065";
     $title = "Схема утверждена";
+} else {
+    $boxClass = "warning";
+    $boxHeaderBackgroundColor = "#f3d75a";
+    $title = "Схема не утверждена";
 }
 
 ?>

@@ -125,6 +125,15 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                     ]) */ ?>
                 </div>-->
 
+                <div class="active tab-pane" id="scheme">
+                    <?= $this->render('/animal/tabs/scheme', [
+                        'animal' => $model,
+                        'schemeList' => $schemeList,
+                        'appropriationScheme' => $appropriationScheme,
+                        'dataProvider' => $dataProvider,
+                    ]) ?>
+                </div>
+
                 <div class="tab-pane" id="inseminations">
                     <?= $this->render('/animal/tabs/inseminations', [
                         'animal' => $model,
@@ -132,15 +141,6 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                         'userList' => $userList,
                         'seedBullList' => $seedBullList,
                         'containerDuaraList' => $containerDuaraList,
-                    ]) ?>
-                </div>
-
-                <div class="active tab-pane" id="scheme">
-                    <?= $this->render('/animal/tabs/scheme', [
-                        'animal' => $model,
-                        'schemeList' => $schemeList,
-                        'appropriationScheme' => $appropriationScheme,
-                        'dataProvider' => $dataProvider,
                     ]) ?>
                 </div>
 

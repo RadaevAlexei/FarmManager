@@ -16,6 +16,7 @@ use backend\modules\reproduction\models\SeedBullStorage;
 use backend\modules\reproduction\models\SeedCashBook;
 use backend\modules\scheme\models\AnimalHistory;
 use backend\modules\scheme\models\Diagnosis;
+use backend\modules\scheme\models\Scheme;
 use common\helpers\Excel\ExcelHelper;
 use common\models\User;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -1027,6 +1028,7 @@ class AnimalController extends BackendController
                     $query->joinWith([
                         'scheme' => function (ActiveQuery $query) {
                             $query->alias('s');
+                            $query->where(['s.status' => Scheme::STATUS_ACTIVE]);
                             $query->joinWith([
                                 'schemeDays' => function (ActiveQuery $query) {
                                     $query->alias('sd');

@@ -15,6 +15,7 @@ use backend\modules\scheme\models\search\SchemeSearch;
 use yii\data\ActiveDataProvider;
 use yii\db\Exception;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\web\BadRequestHttpException;
 use yii\web\Response;
@@ -144,16 +145,37 @@ class SchemeController extends BackendController
      */
     public function actionDelete($id)
     {
-        /** @var Scheme $model */
-        $model = Scheme::findOne($id);
-        $model->delete();
-        Yii::$app->session->setFlash('success', Yii::t('app/scheme', 'SCHEME_DELETE_SUCCESS'));
+        $transaction = Yii::$app->db->beginTransaction();
+
+        try {
+            /** @var Scheme $model */
+            $model = Scheme::findOne($id);
+
+            if ($model->approve && $model->existNewActions()) {
+                $animals = $model->animalsOnNotExecutedSchemes();
+                $prepareAnimals = ArrayHelper::map($animals, 'label', function ($item) {
+                    return Html::a($item['label'] . '-' . $item['nickname'], ['/animal/detail', 'id' => $item['id']],
+                            ['data-confirm' => 'Удалить?']) . "<br>";
+                });
+                $message = DataHelper::getArrayString($prepareAnimals);
+                throw new Exception("Удалить схему нельзя. На данной схеме находятся животные:<br> \n" . $message);
+            }
+
+            $model->status = Scheme::STATUS_DELETED;
+            $model->updateAttributes(['status']);
+            Yii::$app->session->setFlash('success', 'Успешное удаление схемы');
+            $transaction->commit();
+        } catch (\Exception $exception) {
+            Yii::$app->session->setFlash('error', $exception->getMessage());
+            $transaction->rollBack();
+        }
 
         return $this->redirect(['index']);
     }
 
     /**
      * @return \yii\console\Response|Response
+     * @throws Exception
      */
     public function actionAddNewGroupsAction()
     {
@@ -220,7 +242,7 @@ class SchemeController extends BackendController
             }
 
             SchemeDayGroupsActionLink::deleteAll([
-                "scheme_day_id"    => $scheme_day_id,
+                "scheme_day_id" => $scheme_day_id,
                 "groups_action_id" => $groups_action_id,
             ]);
 
@@ -252,7 +274,7 @@ class SchemeController extends BackendController
 
         try {
             SchemeDayLink::deleteAll([
-                'scheme_id'     => $scheme_id,
+                'scheme_id' => $scheme_id,
                 'scheme_day_id' => $scheme_day_id,
             ]);
 

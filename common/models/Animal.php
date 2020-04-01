@@ -9,6 +9,7 @@ use backend\modules\scheme\models\AppropriationScheme;
 use backend\modules\scheme\models\Diagnosis;
 use backend\modules\scheme\models\Scheme;
 use Yii;
+use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 
 /**
@@ -98,31 +99,31 @@ class Animal extends ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id'                     => 'ID',
-            'cowshed_id'             => 'Коровник',
-            'box'                    => 'Бокс',
-            'nickname'               => 'Кличка',
-            'label'                  => 'Бирка',
-            'farm_id'                => 'Происхождение',
-            'birthday'               => 'Дата Рождения',
-            'sex'                    => 'Пол животного',
-            'birth_weight'           => 'Вес при рождении',
-            'color'                  => 'Масть',
-            'mother_id'              => 'Мать',
-            'father_id'              => 'Отец',
-            'group_id'               => 'Группа',
-            'animal_group_id'        => 'Группа животного',
-            'physical_state'         => 'Физиологическое состояние',
-            'status'                 => 'Статус',
-            'rectal_examination'     => 'Ректальное исследование',
+            'id' => 'ID',
+            'cowshed_id' => 'Коровник',
+            'box' => 'Бокс',
+            'nickname' => 'Кличка',
+            'label' => 'Бирка',
+            'farm_id' => 'Происхождение',
+            'birthday' => 'Дата Рождения',
+            'sex' => 'Пол животного',
+            'birth_weight' => 'Вес при рождении',
+            'color' => 'Масть',
+            'mother_id' => 'Мать',
+            'father_id' => 'Отец',
+            'group_id' => 'Группа',
+            'animal_group_id' => 'Группа животного',
+            'physical_state' => 'Физиологическое состояние',
+            'status' => 'Статус',
+            'rectal_examination' => 'Ректальное исследование',
             'previous_weighing_date' => 'Дата предыдущего взвешивания',
-            'previous_weighing'      => 'Предыдущее взвешивание',
-            'current_weighing_date'  => 'Дата текущего взвешивания',
-            'current_weighing'       => 'Текущее взвешивание',
-            'collar'                 => 'Номер ошейника',
-            'health_status'          => 'Состояние здоровья',
-            'health_status_comment'  => 'Комментарий',
-            'diagnosis'              => 'Диагноз',
+            'previous_weighing' => 'Предыдущее взвешивание',
+            'current_weighing_date' => 'Дата текущего взвешивания',
+            'current_weighing' => 'Текущее взвешивание',
+            'collar' => 'Номер ошейника',
+            'health_status' => 'Состояние здоровья',
+            'health_status_comment' => 'Комментарий',
+            'diagnosis' => 'Диагноз',
         ];
     }
 
@@ -196,7 +197,7 @@ class Animal extends ActiveRecord
                 'current_weighing',
                 'collar',
             ],
-            self::SCENARIO_FILTER      => [
+            self::SCENARIO_FILTER => [
                 'cowshed_id',
                 'box',
                 'nickname',
@@ -241,8 +242,8 @@ class Animal extends ActiveRecord
     public static function getHealthStatusList()
     {
         return [
-            self::HEALTH_STATUS_HEALTHY  => 'Здоровая',
-            self::HEALTH_STATUS_SICK     => 'Больная',
+            self::HEALTH_STATUS_HEALTHY => 'Здоровая',
+            self::HEALTH_STATUS_SICK => 'Больная',
             self::HEALTH_STATUS_AWAITING => 'В ожидании',
         ];
     }
@@ -263,10 +264,16 @@ class Animal extends ActiveRecord
     public function onScheme()
     {
         return AppropriationScheme::find()
-            ->joinWith(['scheme'])
+            ->alias('as')
+            ->joinWith([
+                'scheme' => function (ActiveQuery $query) {
+                    $query->alias('s');
+                    $query->where(['s.status' => Scheme::STATUS_ACTIVE]);
+                }
+            ])
             ->where([
                 'animal_id' => $this->id,
-                'status'    => AppropriationScheme::STATUS_IN_PROGRESS,
+                'as.status' => AppropriationScheme::STATUS_IN_PROGRESS,
             ])
             ->all();
     }
@@ -321,9 +328,9 @@ class Animal extends ActiveRecord
     public static function getListStatuses()
     {
         return [
-            self::STATUS_INSEMINATED     => Yii::t('app/animal', 'ANIMAL_STATUS_INSEMINATED'),
+            self::STATUS_INSEMINATED => Yii::t('app/animal', 'ANIMAL_STATUS_INSEMINATED'),
             self::STATUS_NOT_INSEMINATED => Yii::t('app/animal', 'ANIMAL_STATUS_NOT_INSEMINATED'),
-            self::STATUS_HUNT            => Yii::t('app/animal', 'ANIMAL_STATUS_HUNT'),
+            self::STATUS_HUNT => Yii::t('app/animal', 'ANIMAL_STATUS_HUNT'),
         ];
     }
 
@@ -346,8 +353,8 @@ class Animal extends ActiveRecord
     {
         return [
             self::RECTAL_EXAMINATION_NOT_STERILE => Yii::t('app/animal', 'ANIMAL_NOT_STERILE'),
-            self::RECTAL_EXAMINATION_STERILE     => Yii::t('app/animal', 'ANIMAL_STERILE'),
-            self::RECTAL_EXAMINATION_DUBIOUS     => Yii::t('app/animal', 'ANIMAL_DUBIOUS'),
+            self::RECTAL_EXAMINATION_STERILE => Yii::t('app/animal', 'ANIMAL_STERILE'),
+            self::RECTAL_EXAMINATION_DUBIOUS => Yii::t('app/animal', 'ANIMAL_DUBIOUS'),
         ];
     }
 
@@ -466,9 +473,9 @@ class Animal extends ActiveRecord
             ->joinWith(['groupsAction', 'action'])
             ->where([
                 'appropriation_scheme_id' => $appropriationScheme->id,
-                'scheme_day_at'           => (new \DateTime('now',
+                'scheme_day_at' => (new \DateTime('now',
                     (new \DateTimeZone('Europe/Samara'))))->format('Y-m-d'),
-                'status'                  => ActionHistory::STATUS_NEW
+                'status' => ActionHistory::STATUS_NEW
             ])
             ->all();
     }
@@ -484,6 +491,8 @@ class Animal extends ActiveRecord
 
         return Scheme::find()
             ->where(['diagnosis_id' => $this->diagnosis])
+            ->andWhere(['approve' => Scheme::APPROVED])
+            ->andWhere(['status' => Scheme::STATUS_ACTIVE])
             ->all();
     }
 

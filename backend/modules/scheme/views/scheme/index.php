@@ -28,25 +28,32 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <?php echo GridView::widget([
     "dataProvider" => $dataProvider,
-    "filterModel"  => $searchModel,
-    'columns'      => [
+    "filterModel" => $searchModel,
+    'columns' => [
         ['class' => 'yii\grid\SerialColumn'],
         'name',
         [
+            'attribute' => 'approve',
+            'content' => function (Scheme $model) {
+                $class = ($model->approve === Scheme::APPROVED) ? "success" : "danger";
+                return "<span class='label label-$class'>" . Scheme::getStatusScheme($model->approve) . "</span>";
+            }
+        ],
+        [
             'attribute' => 'diagnosis_id',
-            'value'     => function (Scheme $model) {
+            'value' => function (Scheme $model) {
                 return ArrayHelper::getValue($model, "diagnosis.name");
             }
         ],
         [
             'attribute' => 'created_by',
-            'value'     => function (Scheme $model) {
+            'value' => function (Scheme $model) {
                 return ArrayHelper::getValue($model, "createdBy.username");
             }
         ],
         [
             'attribute' => 'created_at',
-            'value'     => function (Scheme $model) {
+            'value' => function (Scheme $model) {
                 if (!empty($model->created_at)) {
                     return date('d.m.Y H:i:s', $model->created_at);
                 } else {
@@ -55,10 +62,10 @@ $this->params['breadcrumbs'][] = $this->title;
             }
         ],
         [
-            'class'    => 'yii\grid\ActionColumn',
-            'header'   => Yii::t('app/scheme', 'ACTIONS'),
+            'class' => 'yii\grid\ActionColumn',
+            'header' => Yii::t('app/scheme', 'ACTIONS'),
             'template' => '<div class="btn-group">{update} {delete} </div>',
-            'buttons'  => [
+            'buttons' => [
                 'detail' => function ($url, Scheme $model) {
                     return Html::a(
                         '<span class="glyphicon glyphicon-eye-open"></span>',
@@ -74,14 +81,13 @@ $this->params['breadcrumbs'][] = $this->title;
                     );
                 },
                 'delete' => function ($url, Scheme $model) {
-                    if ($model->approve) {
-                        return '';
-                    }
-
                     return Html::a(
                         '<span class="glyphicon glyphicon-trash"></span>',
                         Url::toRoute(['scheme/delete', 'id' => $model->id]),
-                        ['class' => 'btn btn-danger']
+                        [
+                            'class' => 'btn btn-danger',
+                            'data' => ['confirm' => 'Вы действительно хотите удалить схему лечения?']
+                        ]
                     );
                 },
             ],

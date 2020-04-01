@@ -7,6 +7,7 @@ use backend\modules\pharmacy\models\Preparation;
 use backend\modules\pharmacy\models\Storage;
 use backend\modules\scheme\models\ActionListItem;
 use backend\modules\scheme\models\AnimalHistory;
+use backend\modules\scheme\models\Scheme;
 use common\models\TypeField;
 use Yii;
 use backend\modules\scheme\models\ActionHistory;
@@ -149,6 +150,7 @@ class ActionDayController extends BackendController
                         },
                         'scheme' => function (ActiveQuery $query) {
                             $query->alias('s');
+                            $query->where(['s.status' => Scheme::STATUS_ACTIVE]);
                             $query->joinWith(['diagnosis']);
                         }
                     ]);
@@ -227,6 +229,7 @@ class ActionDayController extends BackendController
                         },
                         'scheme' => function (ActiveQuery $query) use ($scheme_id) {
                             $query->alias('s');
+                            $query->where(['s.status' => Scheme::STATUS_ACTIVE]);
                             $query->andFilterWhere(['s.id' => $scheme_id]);
                         }
                     ]);
@@ -286,6 +289,7 @@ class ActionDayController extends BackendController
                         },
                         'scheme' => function (ActiveQuery $query) use ($scheme_id) {
                             $query->alias('s');
+                            $query->where(['s.status' => Scheme::STATUS_ACTIVE]);
                             $query->andFilterWhere(['s.id' => $scheme_id]);
                         }
                     ]);

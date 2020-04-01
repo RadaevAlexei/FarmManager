@@ -41,6 +41,7 @@ class ActionHistorySearch extends ActionHistory
                         },
                         'scheme' => function (ActiveQuery $query) {
                             $query->alias('s');
+                            $query->where(['s.status' => Scheme::STATUS_ACTIVE]);
                             $query->joinWith(['diagnosis']);
                         }
                     ]);
