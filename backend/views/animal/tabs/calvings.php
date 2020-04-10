@@ -1,48 +1,80 @@
 <?php
 
+use \yii\helpers\Url;
+use \yii\helpers\Html;
+use common\models\Animal;
+use \yii\helpers\ArrayHelper;
+use common\models\Calving;
+use \yii\grid\GridView;
+use \yii\data\ArrayDataProvider;
+
+/**
+ * @var Animal $animal
+ * @var ArrayDataProvider $dataProviderCalvings
+ */
+
 ?>
 
-<form class="form-horizontal">
-    <div class="form-group">
-        <label for="inputName" class="col-sm-2 control-label">Name</label>
+<div class="box-header">
+    <?= Html::button('Добавить отёл', [
+        'class' => 'btn btn-warning',
+        'data' => [
+            'toggle' => 'modal',
+            'target' => '#add-calving-form-button',
+        ]
+    ]) ?>
+</div>
 
-        <div class="col-sm-10">
-            <input type="email" class="form-control" id="inputName" placeholder="Name">
-        </div>
+<div class="box box-success">
+    <div class="box-header with-border" style="background-color: #0ead0e78">
+        <h3 class="box-title">История отёлов</h3>
     </div>
-    <div class="form-group">
-        <label for="inputEmail" class="col-sm-2 control-label">Email</label>
 
-        <div class="col-sm-10">
-            <input type="email" class="form-control" id="inputEmail" placeholder="Email">
-        </div>
+    <div class="box-body">
+        <?php foreach ($dataProviderCalvings->getModels() as $calving) :
+            echo $this->render('/animal/tabs/calving-table', compact(
+                'calving'
+            ));
+        endforeach; ?>
     </div>
-    <div class="form-group">
-        <label for="inputExperience" class="col-sm-2 control-label">Experience</label>
 
-        <div class="col-sm-10">
-            <textarea class="form-control" id="inputExperience" placeholder="Experience"></textarea>
-        </div>
-    </div>
-    <div class="form-group">
-        <label for="inputSkills" class="col-sm-2 control-label">Skills</label>
+</div>
 
-        <div class="col-sm-10">
-            <input type="text" class="form-control" id="inputSkills" placeholder="Skills">
-        </div>
-    </div>
-    <div class="form-group">
-        <div class="col-sm-offset-2 col-sm-10">
-            <div class="checkbox">
-                <label>
-                    <input type="checkbox"> I agree to the <a href="#">terms and conditions</a>
-                </label>
+<!-- Модальное окно добавления осеменения -->
+<div class="modal fade" id="add-calving-form-button" tabindex="-1" role="dialog"
+     aria-labelledby="addCalvingLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #0ead0e78">
+                <h5 class="modal-title" id="addCalvingLabel">Добавление отёла</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <?= $this->render('/animal/forms/add-calving', compact(
+                    'animal'
+                )) ?>
             </div>
         </div>
     </div>
-    <div class="form-group">
-        <div class="col-sm-offset-2 col-sm-10">
-            <button type="submit" class="btn btn-danger">Submit</button>
+</div>
+
+<!-- Модальное окно редактирования осеменения -->
+<!--<div class="modal fade" id="edit-insemination-modal" tabindex="-1" role="dialog"
+     aria-labelledby="editInseminationLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #0ead0e78">
+                <h5 class="modal-title" id="editInseminationLabel">Редактирование осеменения</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+            </div>
         </div>
     </div>
-</form>
+</div>-->

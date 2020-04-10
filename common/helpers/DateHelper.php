@@ -2,6 +2,8 @@
 
 namespace common\helpers;
 
+use DateTime;
+
 /**
  * Class DateHelper
  * @package common\helpers
@@ -18,12 +20,10 @@ class DateHelper
      */
     public static function convertFromTo($from_format = "d.m.y", $data_str = "", $to_format = "Y-m-d")
     {
-        $date = \DateTime::createFromFormat($from_format, $data_str);
+        $date = DateTime::createFromFormat($from_format, $data_str);
         if (!$date) {
-            $date = \DateTime::createFromFormat("d/m/y", $data_str);
+            $date = DateTime::createFromFormat("d/m/y", $data_str);
         }
-        $date_formatted = $date->format($to_format);
-
-        return $date_formatted;
+        return $date->format($to_format);
     }
 }

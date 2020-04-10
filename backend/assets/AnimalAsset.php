@@ -19,6 +19,7 @@ class AnimalAsset extends AssetBundle
 
     public $js = [
         'js/animal/animal.js',
+        'js/lodash.js',
     ];
 
     public $depends = [

@@ -1,5 +1,7 @@
 $(function () {
 
+    let $childAnimals = $("#child_animals");
+
     $(document).on("change", "#health_status_list", function (event) {
         var $this = $(this);
 
@@ -41,6 +43,39 @@ $(function () {
                 $(id).datepicker();
             }
         });
+    });
+
+    function updateIndex() {
+        let index = 0;
+        let arr = ["sex", "label", "weight"];
+        $childAnimals.find(".calving_row_block").each((i, el) => {
+            $(el).find(".form-control").each((ind, elem) => {
+                $(elem)[0].name = `Calving[child][${index}][${arr[ind]}]`;
+            });
+            index++;
+        });
+    }
+
+    $(document).on("click", "#add_calving_template", function (event) {
+        let count = $childAnimals.find('.calving_row_block').length;
+
+        let new_calving_template = _.template($("#newCalving").html())({
+            index: count
+        });
+
+        $childAnimals.append(new_calving_template);
+    });
+
+    $(document).on("click", "#remove_calving", function (event) {
+        let $calvingBlock = $(event.target).closest('.calving_row_block');
+        let id = $(event.target).closest('.calving_row_block').attr('id');
+
+        if (id) {
+            console.log("ajax...");
+        } else {
+            $calvingBlock.remove();
+            updateIndex();
+        }
     });
 
 });

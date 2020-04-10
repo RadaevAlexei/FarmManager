@@ -30,6 +30,8 @@ class AnimalHistory extends ActiveRecord
     const ACTION_TYPE_CREATE_INSEMINATION = 'create_insemination';
     const ACTION_TYPE_EDIT_INSEMINATION = 'edit_insemination';
     const ACTION_TYPE_DELETE_INSEMINATION = 'delete_insemination';
+    const ACTION_TYPE_CREATE_CALVING = 'create_calving';
+    const ACTION_TYPE_REMOVE_CALVING = 'remove_calving';
 
     /**
      * @return string

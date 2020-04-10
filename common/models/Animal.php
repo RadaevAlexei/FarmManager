@@ -11,6 +11,7 @@ use backend\modules\scheme\models\Scheme;
 use Yii;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
+use yii\db\Query;
 
 /**
  * Общий класс для животных
@@ -28,6 +29,8 @@ use yii\db\ActiveRecord;
  * @property string $nickname
  * @property string $label
  * @property integer $animal_group
+ * @property integer $sex
+ * @property integer $physical_state
  */
 class Animal extends ActiveRecord
 {
@@ -41,8 +44,8 @@ class Animal extends ActiveRecord
      */
     const SCENARIO_FILTER = "filter";
 
-    const SEX_TYPE_MAN = 0;                 // Мужской пол
-    const SEX_TYPE_WOMAN = 1;               // Женский пол
+    const SEX_TYPE_MAN = 1;                 // Мужской пол
+    const SEX_TYPE_WOMAN = 2;               // Женский пол
 
     /**
      * Физиологические состояния
@@ -137,7 +140,7 @@ class Animal extends ActiveRecord
             [
                 [
                     'label',
-                    'nickname',
+//                    'nickname',
                     'birthday',
                     'sex',
                     'physical_state'
@@ -221,6 +224,16 @@ class Animal extends ActiveRecord
                 'collar',
             ]
         ];
+    }
+
+    public function isMan()
+    {
+        return $this->sex === self::SEX_TYPE_MAN;
+    }
+
+    public function isWoman()
+    {
+        return $this->sex === self::SEX_TYPE_WOMAN;
     }
 
     /**
@@ -553,6 +566,33 @@ class Animal extends ActiveRecord
         return Insemination::find()
             ->where(['animal_id' => $this->id])
             ->orderBy(['date' => SORT_DESC])
+            ->all();
+    }
+
+    public function getCalvings()
+    {
+        return Calving::find()
+            ->alias('c')
+            ->select([
+                'c.date',
+                'c.status',
+                'c.position',
+                'c.note',
+                'cl.id',
+                'cl.calving_id',
+                'cl.child_animal_id',
+                'ac.label',
+                'ac.birthday',
+                'ac.sex',
+                'ac.physical_state',
+                'ac.birth_weight',
+                'u.lastname',
+            ])
+            ->innerJoin(['cl' => CalvingLink::tableName()], 'c.id = cl.calving_id')
+            ->innerJoin(['ac' => Animal::tableName()], 'cl.child_animal_id = ac.id')
+            ->leftJoin(['u' => User::tableName()], 'c.user_id = u.id')
+            ->andWhere(['=', 'c.animal_id', $this->id])
+            ->asArray()
             ->all();
     }
 }

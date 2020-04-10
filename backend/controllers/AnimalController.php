@@ -17,11 +17,16 @@ use backend\modules\reproduction\models\SeedCashBook;
 use backend\modules\scheme\models\AnimalHistory;
 use backend\modules\scheme\models\Diagnosis;
 use backend\modules\scheme\models\Scheme;
+use common\helpers\DateHelper;
 use common\helpers\Excel\ExcelHelper;
+use common\models\Bull;
+use common\models\Calving;
+use common\models\CalvingLink;
 use common\models\User;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Reader\BaseReader;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Yii;
@@ -71,7 +76,7 @@ class AnimalController extends BackendController
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
-            "searchModel"  => $searchModel,
+            "searchModel" => $searchModel,
             "dataProvider" => $dataProvider,
         ]);
 
@@ -220,7 +225,7 @@ class AnimalController extends BackendController
 
         $appropriationScheme = new AppropriationScheme([
             'animal_id' => $id,
-            'status'    => AppropriationScheme::STATUS_IN_PROGRESS,
+            'status' => AppropriationScheme::STATUS_IN_PROGRESS,
         ]);
 
         /** @var AnimalHistory[] $history */
@@ -233,6 +238,12 @@ class AnimalController extends BackendController
         $seedBullList = ArrayHelper::map(SeedBull::getAllList(), "id", "nickname");
         $containerDuaraList = ArrayHelper::map(ContainerDuara::getAllList(), "id", "name");
 
+        $calvings = ArrayHelper::map($model->calvings, 'label', function ($item) {
+            return $item;
+        }, 'calving_id');
+
+        $dataProviderCalvings = new ArrayDataProvider(['allModels' => $calvings]);
+
         return $this->render('new-detail',
             compact(
                 'model',
@@ -243,7 +254,8 @@ class AnimalController extends BackendController
                 'inseminationDataProvider',
                 'userList',
                 'seedBullList',
-                'containerDuaraList'
+                'containerDuaraList',
+                'dataProviderCalvings'
             )
         );
     }
@@ -290,9 +302,9 @@ class AnimalController extends BackendController
 
             /** @var AnimalHistory $newAnimalHistory */
             $newAnimalHistory = new AnimalHistory([
-                'animal_id'   => $model->animal_id,
-                'user_id'     => $userId,
-                'date'        => (new \DateTime($model->date))->format('Y-m-d H:i:s'),
+                'animal_id' => $model->animal_id,
+                'user_id' => $userId,
+                'date' => (new \DateTime($model->date))->format('Y-m-d H:i:s'),
                 'action_type' => AnimalHistory::ACTION_TYPE_CREATE_INSEMINATION,
                 'action_text' => $actionText
             ]);
@@ -308,10 +320,174 @@ class AnimalController extends BackendController
     }
 
     /**
+     * Добавление отёла
+     * @return Response
+     * @throws Exception
+     */
+    public function actionAddCalving()
+    {
+        /** @var Calving $model */
+        $model = new Calving();
+
+        $transaction = Yii::$app->db->beginTransaction();
+
+        try {
+            $post = Yii::$app->request->post();
+            $childAnimals = ArrayHelper::getValue($post, "Calving.child", []);
+
+            if (empty($childAnimals)) {
+                throw new Exception('Вы не добавили приплод!');
+            }
+
+            $isLoading = $model->load($post);
+            $date = (new \DateTime($model->date))->format('Y-m-d H:i:s');
+            $model->date = $date;
+
+            if ($isLoading && $model->validate()) {
+                // Сохраняем данные по отелу
+                if (!$model->save()) {
+                    throw new Exception('При сохрании возникли ошибки');
+                }
+
+                // Добавляем приплод в базу
+                foreach ($childAnimals as $childAnimal) {
+                    $sex = ArrayHelper::getValue($childAnimal, 'sex');
+
+                    $newAnimal = new Animal([
+                        'label' => ArrayHelper::getValue($childAnimal, 'label'),
+                        'birthday' => $date,
+                        'birth_weight' => ArrayHelper::getValue($childAnimal, 'weight'),
+                        'sex' => $sex,
+                        'mother_id' => $model->animal_id,
+                        'physical_state' => $sex == Cow::ANIMAL_SEX_TYPE
+                            ? Animal::PHYSICAL_STATE_CALF : Animal::PHYSICAL_STATE_BULL
+                    ]);
+                    $newAnimal->setScenario(Animal::SCENARIO_CREATE_EDIT);
+
+                    if ($newAnimal->save()) {
+                        $model->link('animals', $newAnimal);
+                    } else {
+                        throw new Exception('При сохрании приплода возникли ошибки');
+                    }
+                }
+
+                $parentAnimal = Animal::findOne($model->animal_id);
+                $actionText = "Провёл отёл у #$parentAnimal->label";
+
+                /** @var AnimalHistory $newAnimalHistory */
+                $newAnimalHistory = new AnimalHistory([
+                    'animal_id' => $model->animal_id,
+                    'user_id' => $model->user_id,
+                    'date' => (new \DateTime('now',
+                        new \DateTimeZone('Europe/Samara')))->format('Y-m-d H:i:s'),
+                    'action_type' => AnimalHistory::ACTION_TYPE_CREATE_CALVING,
+                    'action_text' => $actionText
+                ]);
+
+                if (!$newAnimalHistory->save()) {
+                    throw new Exception('Ошибка при записи действия в историю');
+                }
+
+            } else {
+                throw new Exception('Ошибка правильности ввода данных');
+            }
+
+            $transaction->commit();
+            Yii::$app->session->setFlash('success', 'Успешное добавление отёла');
+            return $this->redirect(["detail", "id" => $model->animal_id]);
+        } catch (\Exception $exception) {
+            $transaction->rollBack();
+            Yii::$app->session->setFlash('error', $exception->getMessage());
+            return $this->redirect(["detail", "id" => $model->animal_id]);
+        }
+    }
+
+    /**
+     * @param $id
+     * @return Response
+     * @throws Exception
+     * @throws \Throwable
+     */
+    public function actionRemoveCalving($id)
+    {
+        /** @var Calving $model */
+        $model = Calving::findOne($id);
+
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+
+            if ($model) {
+                $model->deleteCalving();
+
+                $parentAnimal = Animal::findOne($model->animal_id);
+                $actionText = "Удалил отёл у животного #$parentAnimal->label";
+
+                /** @var AnimalHistory $newAnimalHistory */
+                $newAnimalHistory = new AnimalHistory([
+                    'animal_id' => $model->animal_id,
+                    'user_id' => $model->user_id,
+                    'date' => (new \DateTime('now',
+                        new \DateTimeZone('Europe/Samara')))->format('Y-m-d H:i:s'),
+                    'action_type' => AnimalHistory::ACTION_TYPE_REMOVE_CALVING,
+                    'action_text' => $actionText
+                ]);
+
+                if (!$newAnimalHistory->save()) {
+                    throw new Exception('Ошибка при записи действия в историю');
+                }
+
+                Yii::$app->session->setFlash('success', 'Успешное удаление отёла');
+                $transaction->commit();
+            } else {
+                Yii::$app->session->setFlash('warning', 'Данное отёл найден');
+            }
+
+            return $this->redirect(['detail', 'id' => $model->animal_id]);
+        } catch (\Exception $exception) {
+            Yii::$app->session->setFlash('error', 'Ошибка при удалении отёла');
+            $transaction->rollBack();
+            return $this->redirect(['detail', 'id' => $model->animal_id]);
+        }
+    }
+
+    /**
+     * Удаление животного из отёла
+     * @param $animalId
+     * @param $calvingId
+     * @return Response
+     * @throws Exception
+     * @throws \Throwable
+     */
+    public function actionRemoveAnimalFromCalving($animalId, $calvingId)
+    {
+        /** @var Calving $model */
+        $calving = Calving::findOne($calvingId);
+
+        /** @var Animal $animal */
+        $animal = Animal::findOne($animalId);
+
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            if ($calving && $animal) {
+                $calving->deleteChildAnimal($animalId);
+                Yii::$app->session->setFlash('success', 'Успешное удаление животного из отёла');
+                $transaction->commit();
+            } else {
+                Yii::$app->session->setFlash('warning', 'Ошибка удаления.Отёл или животное отсутствует!');
+            }
+
+            return $this->redirect(['detail', 'id' => $calving->animal_id]);
+        } catch (\Exception $exception) {
+            Yii::$app->session->setFlash('error', 'Ошибка при удалении животного из отёла');
+            $transaction->rollBack();
+            return $this->redirect(['detail', 'id' => $calving->animal_id]);
+        }
+    }
+
+    /**
      * Поставить животное на схему
-     *
-     * @return \yii\web\Response
-     * @throws \yii\db\Exception
+     * @return Response
+     * @throws Exception
      */
     public function actionAppropriationScheme()
     {
@@ -326,9 +502,9 @@ class AnimalController extends BackendController
 
                 $appropriationScheme = AppropriationScheme::find()
                     ->where([
-                        'animal_id'   => $model->animal_id,
-                        'scheme_id'   => $model->scheme_id,
-                        'status'      => AppropriationScheme::STATUS_IN_PROGRESS,
+                        'animal_id' => $model->animal_id,
+                        'scheme_id' => $model->scheme_id,
+                        'status' => AppropriationScheme::STATUS_IN_PROGRESS,
                         'finished_at' => null
                     ])
                     ->one();
@@ -355,8 +531,8 @@ class AnimalController extends BackendController
 
     /**
      * @param $id
-     *
-     * @return \yii\web\Response
+     * @return Response
+     * @throws Exception
      */
     public function actionRemoveFromScheme($id)
     {
@@ -558,11 +734,11 @@ class AnimalController extends BackendController
         $fathers = [];
 
         return $this->render('animal-add', [
-            "action"  => $action,
-            "url"     => $url,
-            "model"   => $model,
-            "groups"  => $groups,
-            "colors"  => $colors,
+            "action" => $action,
+            "url" => $url,
+            "model" => $model,
+            "groups" => $groups,
+            "colors" => $colors,
             "mothers" => $mothers,
             "fathers" => $fathers,
         ]);
@@ -653,9 +829,9 @@ class AnimalController extends BackendController
 
                     if ($animal) {
                         $animal->updateAttributes([
-                            'health_status'         => $model->health_status,
+                            'health_status' => $model->health_status,
                             'health_status_comment' => $model->health_status_comment,
-                            'date_health'           => (new \DateTime($model->date_health))->format('Y-m-d H:i:s'),
+                            'date_health' => (new \DateTime($model->date_health))->format('Y-m-d H:i:s'),
                         ]);
 
                         $userId = Yii::$app->getUser()->getIdentity()->getId();
@@ -664,9 +840,9 @@ class AnimalController extends BackendController
 
                         /** @var AnimalHistory $newAnimalHistory */
                         $newAnimalHistory = new AnimalHistory([
-                            'animal_id'   => $animal->id,
-                            'user_id'     => $userId,
-                            'date'        => (new \DateTime('now',
+                            'animal_id' => $animal->id,
+                            'user_id' => $userId,
+                            'date' => (new \DateTime('now',
                                 new \DateTimeZone('Europe/Samara')))->format('Y-m-d H:i:s'),
                             'action_type' => AnimalHistory::ACTION_TYPE_SET_HEALTH_STATUS,
                             'action_text' => "Поставил статус \"$health_status\""
@@ -757,9 +933,9 @@ class AnimalController extends BackendController
 
                     /** @var AnimalHistory $newAnimalHistory */
                     $newAnimalHistory = new AnimalHistory([
-                        'animal_id'   => $model->animal_id,
-                        'user_id'     => $userId,
-                        'date'        => (new \DateTime($model->date))->format('Y-m-d H:i:s'),
+                        'animal_id' => $model->animal_id,
+                        'user_id' => $userId,
+                        'date' => (new \DateTime($model->date))->format('Y-m-d H:i:s'),
                         'action_type' => AnimalHistory::ACTION_TYPE_EDIT_INSEMINATION,
                         'action_text' => $actionText
                     ]);
@@ -798,9 +974,9 @@ class AnimalController extends BackendController
 
                 /** @var AnimalHistory $newAnimalHistory */
                 $newAnimalHistory = new AnimalHistory([
-                    'animal_id'   => $model->animal_id,
-                    'user_id'     => $userId,
-                    'date'        => (new \DateTime($model->date))->format('Y-m-d H:i:s'),
+                    'animal_id' => $model->animal_id,
+                    'user_id' => $userId,
+                    'date' => (new \DateTime($model->date))->format('Y-m-d H:i:s'),
                     'action_type' => AnimalHistory::ACTION_TYPE_DELETE_INSEMINATION,
                     'action_text' => $actionText
                 ]);
@@ -844,8 +1020,8 @@ class AnimalController extends BackendController
 
                         AppropriationScheme::findOne($model->appropriation_scheme_id)
                             ->updateAttributes([
-                                'status'      => $model->health_status,
-                                'comment'     => $model->comment,
+                                'status' => $model->health_status,
+                                'comment' => $model->comment,
                                 'finished_at' => $dateHealth
                             ]);
 
@@ -868,8 +1044,8 @@ class AnimalController extends BackendController
                         }
 
                         $updateParameters = array_merge($updateParameters, [
-                            'diagnosis'             => $diagnosis,
-                            'health_status'         => $healthStatus,
+                            'diagnosis' => $diagnosis,
+                            'health_status' => $healthStatus,
                             'health_status_comment' => $model->comment,
                         ]);
                         $animal->updateAttributes($updateParameters);
@@ -879,9 +1055,9 @@ class AnimalController extends BackendController
 
                         /** @var AnimalHistory $newAnimalHistory */
                         $newAnimalHistory = new AnimalHistory([
-                            'animal_id'   => $animal->id,
-                            'user_id'     => $userId,
-                            'date'        => (new \DateTime('now',
+                            'animal_id' => $animal->id,
+                            'user_id' => $userId,
+                            'date' => (new \DateTime('now',
                                 new \DateTimeZone('Europe/Samara')))->format('Y-m-d H:i:s'),
                             'action_type' => AnimalHistory::ACTION_TYPE_CLOSE_SCHEME,
                             'action_text' => "Выписал животное со статусом \"$health_status\""
@@ -921,7 +1097,7 @@ class AnimalController extends BackendController
                     if ($animal) {
                         $animal->updateAttributes([
                             'health_status' => $model->health_status,
-                            'diagnosis'     => $model->diagnosis,
+                            'diagnosis' => $model->diagnosis,
                         ]);
 
                         $userId = Yii::$app->getUser()->getIdentity()->getId();
@@ -935,9 +1111,9 @@ class AnimalController extends BackendController
 
                         /** @var AnimalHistory $newAnimalHistory */
                         $newAnimalHistory = new AnimalHistory([
-                            'animal_id'   => $animal->id,
-                            'user_id'     => $userId,
-                            'date'        => (new \DateTime('now',
+                            'animal_id' => $animal->id,
+                            'user_id' => $userId,
+                            'date' => (new \DateTime('now',
                                 new \DateTimeZone('Europe/Samara')))->format('Y-m-d H:i:s'),
                             'action_type' => AnimalHistory::ACTION_TYPE_SET_DIAGNOSIS,
                             'action_text' => "Поставил диагноз \"$diagnosisName\""
@@ -1020,7 +1196,7 @@ class AnimalController extends BackendController
         $animals = Animal::find()
             ->alias('a')
             ->with([
-                'diagnoses'           => function (ActiveQuery $query) {
+                'diagnoses' => function (ActiveQuery $query) {
                     $query->alias('d');
                 },
                 'appropriationScheme' => function (ActiveQuery $query) {

@@ -21,6 +21,7 @@ use yii\data\ArrayDataProvider;
  * @var array $userList
  * @var array $seedBullList
  * @var array $containerDuaraList
+ * @var ArrayDataProvider $dataProviderCalvings
  */
 
 AnimalAsset::register($this);
@@ -110,6 +111,12 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                 <li class="">
                     <a href="#inseminations" data-toggle="tab" aria-expanded="true">Осеменения</a>
                 </li>
+
+                <?php if ($model->isWoman()) : ?>
+                    <li class="">
+                        <a href="#calvings" data-toggle="tab" aria-expanded="true">Отёлы</a>
+                    </li>
+                <?php endif; ?>
             </ul>
             <div class="tab-content">
 
@@ -134,6 +141,12 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                     ]) ?>
                 </div>
 
+                <div class="tab-pane" id="animal-history">
+                    <?= $this->render('/animal/tabs/animal-history', [
+                        'history' => $history
+                    ]) ?>
+                </div>
+
                 <div class="tab-pane" id="inseminations">
                     <?= $this->render('/animal/tabs/inseminations', [
                         'animal' => $model,
@@ -144,11 +157,14 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                     ]) ?>
                 </div>
 
-                <div class="tab-pane" id="animal-history">
-                    <?= $this->render('/animal/tabs/animal-history', [
-                        'history' => $history
-                    ]) ?>
-                </div>
+                <?php if ($model->isWoman()) : ?>
+                    <div class="tab-pane" id="calvings">
+                        <?= $this->render('/animal/tabs/calvings', [
+                            'animal' => $model,
+                            'dataProviderCalvings' => $dataProviderCalvings,
+                        ]) ?>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
     </div>
