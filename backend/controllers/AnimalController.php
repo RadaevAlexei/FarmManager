@@ -906,6 +906,12 @@ class AnimalController extends BackendController
         ));
     }
 
+    /**
+     * Редактирование отёла
+     * @param $calvingId
+     * @return Response
+     * @throws Exception
+     */
     public function actionEditCalving($calvingId)
     {
         /** @var Calving $model */
@@ -930,7 +936,8 @@ class AnimalController extends BackendController
                     $newAnimalHistory = new AnimalHistory([
                         'animal_id' => $model->animal_id,
                         'user_id' => $model->user_id,
-                        'date' => (new \DateTime($model->date))->format('Y-m-d H:i:s'),
+                        'date' => (new \DateTime('now',
+                            new \DateTimeZone('Europe/Samara')))->format('Y-m-d H:i:s'),
                         'action_type' => AnimalHistory::ACTION_TYPE_EDIT_CALVING,
                         'action_text' => $actionText
                     ]);
