@@ -78,4 +78,19 @@ $(function () {
         }
     });
 
+    $(document).on("click", "#edit-calving-button", function (event) {
+        event.preventDefault();
+        $.ajax({
+            type: "get",
+            url: $(this).data("url"),
+            success: function (data, status, response) {
+                var $modal = $("#edit-calving-modal");
+                $modal.find(".modal-body").html(data);
+                $modal.modal("show");
+                var id = "#" + $modal.find(".edit-calving-datepicker").attr('id');
+                $(id).datepicker();
+            }
+        });
+    });
+
 });

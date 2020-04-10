@@ -17,25 +17,28 @@ $dataProvider = new ArrayDataProvider(['allModels' => $calving]);
 $dateCalving = (new DateTime(current($calving)['date']))->format('d.m.Y');
 $dateStatus = ArrayHelper::getValue(current($calving), 'status');
 $datePosition = ArrayHelper::getValue(current($calving), 'position');
+$note = ArrayHelper::getValue(current($calving), 'note');
+$userLastname = ArrayHelper::getValue(current($calving), 'lastname');
 $calvingId = current($calving)['calving_id'];
 
 ?>
 
 <div class="calving_table" id="<?= $calvingId ?>">
-    <p1>Отёл:
+    <p>
+        <strong>Отёл: </strong>
         <span class='label label-danger'><?= $dateCalving ?></span>
         <span class='label label-success'><?= Calving::getStatusLabel($dateStatus) ?></span>
         <span class='label label-primary'><?= Calving::getPositionLabel($datePosition) ?></span>
         <?= Html::button('<span class="glyphicon glyphicon-edit"></span>', [
             'id' => 'edit-calving-button',
             'class' => 'btn btn-warning btn-sm',
-            /*'data' => [
+            'data' => [
                 'toggle' => 'modal',
                 'url' => Url::toRoute([
                     'animal/edit-calving-form',
                     'calvingId' => $calvingId
                 ])
-            ]*/
+            ]
         ]) ?>
         <?= Html::a(
             '<span class="glyphicon glyphicon-trash"></span>',
@@ -45,14 +48,20 @@ $calvingId = current($calving)['calving_id'];
                 'data' => ['confirm' => 'Вы действительно хотите удалить отёл?'],
             ]
         ) ?>
-    </p1>
+    </p>
+    <p><strong>Провёл: </strong><?=$userLastname?></p>
 
-    <?php echo GridView::widget(['formatter' => ['class' => 'yii\i18n\Formatter',
-            'nullDisplay' => '',],
+    <?php echo GridView::widget([
+            'formatter' => [
+                'class' => 'yii\i18n\Formatter',
+                'nullDisplay' => ''
+            ],
             "dataProvider" => $dataProvider,
             'summary' => false,
-            'tableOptions' => ['style' => 'display:block; width:100%; overflow-x:auto',
-                'class' => 'table table-striped',],
+            'tableOptions' => [
+                'style' => 'display:block; width:100%; overflow-x:auto',
+                'class' => 'table table-striped'
+            ],
             'columns' => [
                 ['class' => 'yii\grid\SerialColumn'],
                 [
@@ -75,18 +84,6 @@ $calvingId = current($calving)['calving_id'];
                     }
                 ],
                 [
-                    'label' => 'Провел',
-                    'content' => function ($model) {
-                        return ArrayHelper::getValue($model, "lastname");
-                    }
-                ],
-                [
-                    'label' => 'Примечание',
-                    'content' => function ($model) {
-                        return ArrayHelper::getValue($model, 'note');
-                    }
-                ],
-                [
                     'class' => 'yii\grid\ActionColumn',
                     'header' => 'Действия',
                     'template' => '<div class="btn-group">{edit} {delete}</div>',
@@ -106,5 +103,7 @@ $calvingId = current($calving)['calving_id'];
             ]
         ]
     ); ?>
+
+    <p><strong>Примечание: </strong><?=$note?></p>
 
 </div>

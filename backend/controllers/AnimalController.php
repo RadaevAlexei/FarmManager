@@ -883,6 +883,75 @@ class AnimalController extends BackendController
     }
 
     /**
+     * Редактирование отёла
+     * @param $calvingId
+     * @return string
+     */
+    public function actionEditCalvingForm($calvingId)
+    {
+        $response = Yii::$app->response;
+
+        $editModel = Calving::findOne($calvingId);
+
+        $statusesList = Calving::getListStatuses();
+        $positionsList = Calving::getListPositions();
+        $usersList = User::getAllList();
+
+        $response->format = Response::FORMAT_HTML;
+        return $this->renderPartial('forms/edit-calving', compact(
+            'editModel',
+            'statusesList',
+            'positionsList',
+            'usersList'
+        ));
+    }
+
+    public function actionEditCalving($calvingId)
+    {
+        /** @var Calving $model */
+        $model = new Calving();
+
+        $transaction = Yii::$app->db->beginTransaction();
+
+        try {
+            if (Yii::$app->request->isPost) {
+                if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+                    $updateModel = Calving::findOne($calvingId);
+                    $model->setAttribute('date', (new \DateTime($model->date))->format('Y-m-d H:i:s'));
+
+                    $attributes = $model->getAttributes();
+                    unset($attributes['id']);
+                    $updateModel->updateAttributes($attributes);
+
+                    $animal = Animal::findOne($model->animal_id);
+                    $actionText = "Отредактировал отёл #$animal->label";
+
+                    /** @var AnimalHistory $newAnimalHistory */
+                    $newAnimalHistory = new AnimalHistory([
+                        'animal_id' => $model->animal_id,
+                        'user_id' => $model->user_id,
+                        'date' => (new \DateTime($model->date))->format('Y-m-d H:i:s'),
+                        'action_type' => AnimalHistory::ACTION_TYPE_EDIT_CALVING,
+                        'action_text' => $actionText
+                    ]);
+
+                    if (!$newAnimalHistory->save()) {
+                        throw new Exception('Ошибка при сохранении в амбулаторный журнал');
+                    }
+
+                    Yii::$app->session->setFlash('success', 'Успешное редактирование отёла');
+                    $transaction->commit();
+                }
+                return $this->redirect(['detail', 'id' => $model->animal_id]);
+            }
+        } catch (\Exception $exception) {
+            Yii::$app->session->setFlash('error', 'Ошибка при редактировании отёла');
+            $transaction->rollBack();
+            return $this->redirect(['detail', 'id' => $model->animal_id]);
+        }
+    }
+
+    /**
      * @param $inseminationId
      *
      * @return string
