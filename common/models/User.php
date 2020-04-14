@@ -88,7 +88,7 @@ class User extends ActiveRecord implements IdentityInterface
 
             [['email'], 'email'],
             [['firstName', 'lastName', 'middleName'], 'string'],
-            [['username', 'lastName', 'email'], 'required', 'on' => self::SCENARIO_CREATE_EDIT],
+            [['username', 'lastName'], 'required', 'on' => self::SCENARIO_CREATE_EDIT],
             [['firstName', 'lastName', 'middleName'], 'trim'],
             ['gender', 'in', 'range' => [self::GENDER_MALE, self::GENDER_FEMALE]],
             ['position_id', 'in', 'range' => Position::getAllPositionsIDs()],
