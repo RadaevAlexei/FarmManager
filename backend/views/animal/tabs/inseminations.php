@@ -11,7 +11,7 @@ use \yii\data\ArrayDataProvider;
 /**
  * @var ArrayDataProvider $dataProvider
  * @var Animal $animal
- * @var array $userList
+ * @var array $usersList
  * @var array $seedBullList
  * @var array $containerDuaraList
  */
@@ -21,6 +21,16 @@ use \yii\data\ArrayDataProvider;
 <div class="box box-success">
     <div class="box-header with-border" style="background-color: #0ead0e78">
         <h3 class="box-title">История осеменений</h3>
+    </div>
+
+    <div class="box-footer">
+        <?= Html::button('Добавить осеменение', [
+            'class' => 'btn btn-warning',
+            'data'  => [
+                'toggle' => 'modal',
+                'target' => '#add-insemination-form-button',
+            ]
+        ]) ?>
     </div>
 
     <div class="box-body">
@@ -47,7 +57,7 @@ use \yii\data\ArrayDataProvider;
                 [
                     'attribute' => 'user_id',
                     'content'   => function (Insemination $model) {
-                        return ArrayHelper::getValue($model, "user.username");
+                        return ArrayHelper::getValue($model, "user.lastName");
                     }
                 ],
                 'count',
@@ -112,15 +122,6 @@ use \yii\data\ArrayDataProvider;
         ]); ?>
     </div>
 
-    <div class="box-footer">
-        <?= Html::button('Добавить осеменение', [
-            'class' => 'btn btn-warning',
-            'data'  => [
-                'toggle' => 'modal',
-                'target' => '#add-insemination-form-button',
-            ]
-        ]) ?>
-    </div>
 </div>
 
 <!-- Модальное окно добавления осеменения -->
@@ -138,7 +139,7 @@ use \yii\data\ArrayDataProvider;
             <div class="modal-body">
                 <?= $this->render('/animal/forms/add-insemination', compact(
                     'animal',
-                    'userList',
+                    'usersList',
                     'seedBullList',
                     'containerDuaraList'
                 )) ?>

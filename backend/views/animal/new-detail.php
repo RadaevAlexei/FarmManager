@@ -18,10 +18,12 @@ use yii\data\ArrayDataProvider;
  * @var AnimalHistory[] $history
  * @var ArrayDataProvider $dataProvider
  * @var ArrayDataProvider $inseminationDataProvider
- * @var array $userList
+ * @var array $usersList
+ * @var array $rectalResults
  * @var array $seedBullList
  * @var array $containerDuaraList
  * @var ArrayDataProvider $dataProviderCalvings
+ * @var ArrayDataProvider $dataProviderRectal
  */
 
 AnimalAsset::register($this);
@@ -117,6 +119,12 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                         <a href="#calvings" data-toggle="tab" aria-expanded="true">Отёлы</a>
                     </li>
                 <?php endif; ?>
+
+                <?php if ($model->isWoman()) : ?>
+                    <li class="">
+                        <a href="#rectalings" data-toggle="tab" aria-expanded="true">Ректальные исследования</a>
+                    </li>
+                <?php endif; ?>
             </ul>
             <div class="tab-content">
 
@@ -151,7 +159,7 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                     <?= $this->render('/animal/tabs/inseminations', [
                         'animal' => $model,
                         'dataProvider' => $inseminationDataProvider,
-                        'userList' => $userList,
+                        'usersList' => $usersList,
                         'seedBullList' => $seedBullList,
                         'containerDuaraList' => $containerDuaraList,
                     ]) ?>
@@ -162,6 +170,17 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                         <?= $this->render('/animal/tabs/calvings', [
                             'animal' => $model,
                             'dataProviderCalvings' => $dataProviderCalvings,
+                        ]) ?>
+                    </div>
+                <?php endif; ?>
+
+                <?php if ($model->isWoman()) : ?>
+                    <div class="tab-pane" id="rectalings">
+                        <?= $this->render('/animal/tabs/rectalings', [
+                            'animal' => $model,
+                            'usersList' => $usersList,
+                            'rectalResults' => $rectalResults,
+                            'dataProviderRectal' => $dataProviderRectal,
                         ]) ?>
                     </div>
                 <?php endif; ?>

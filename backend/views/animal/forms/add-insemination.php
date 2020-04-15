@@ -12,7 +12,7 @@ use \yii\data\ArrayDataProvider;
  * @var Insemination $model
  * @var ArrayDataProvider $dataProvider
  * @var Animal $animal
- * @var mixed $userList
+ * @var mixed $usersList
  * @var mixed $seedBullList
  * @var mixed $containerDuaraList
  */
@@ -49,7 +49,7 @@ $model = new Insemination([
     <div class="form-group">
         <div class="col-sm-12">
             <?= $form->field($model, 'user_id')->dropDownList(
-                $userList,
+                $usersList,
                 [
                     'class'  => 'form-control',
                     'prompt' => 'Кто проводил?'

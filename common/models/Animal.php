@@ -595,4 +595,20 @@ class Animal extends ActiveRecord
             ->asArray()
             ->all();
     }
+
+    /**
+     * История всех ректальных исследований
+     * @return array|ActiveRecord[]
+     */
+    public function rectalHistory()
+    {
+        return Rectal::find()
+            ->alias('r')
+            ->select(['r.*', 'u.lastName'])
+            ->leftJoin(['u' => User::tableName()], 'r.user_id = u.id')
+            ->where(['=', 'r.animal_id', $this->id])
+            ->orderBy(['r.date' => SORT_DESC])
+            ->asArray()
+            ->all();
+    }
 }

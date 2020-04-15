@@ -93,4 +93,19 @@ $(function () {
         });
     });
 
+    $(document).on("click", "#edit-rectal-button", function (event) {
+        event.preventDefault();
+        $.ajax({
+            type: "get",
+            url: $(this).data("url"),
+            success: function (data, status, response) {
+                var $modal = $("#edit-rectal-modal");
+                $modal.find(".modal-body").html(data);
+                $modal.modal("show");
+                var id = "#" + $modal.find(".edit-rectal-datepicker").attr('id');
+                $(id).datepicker();
+            }
+        });
+    });
+
 });
