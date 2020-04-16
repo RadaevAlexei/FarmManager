@@ -212,6 +212,18 @@ use \yii\helpers\Url;
                         'icon'  => 'users',
                         'url'   => Url::toRoute(['/reproduction/seed-cash-book/index']),
                     ],
+                    ['label' => 'Ректальное исследование', 'options' => ['class' => 'header']],
+                    [
+                        'label' => 'Список животных под РИ',
+                        'icon'  => 'users',
+//                        'url'   => Url::toRoute(['/rectal/rectal-list/index']),
+                        'url'   => '#',
+                    ],
+                    [
+                        'label' => 'Настройки РИ',
+                        'icon'  => 'users',
+                        'url'   => Url::toRoute(['/rectal/rectal-settings/index']),
+                    ],
                 ],
             ]
         ) ?>

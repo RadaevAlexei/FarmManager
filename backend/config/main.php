@@ -100,5 +100,8 @@ return [
         'reproduction' => [
             'class' => 'backend\modules\reproduction\Module'
         ],
+        'rectal' => [
+            'class' => 'backend\modules\rectal\Module'
+        ],
     ],
 ];
