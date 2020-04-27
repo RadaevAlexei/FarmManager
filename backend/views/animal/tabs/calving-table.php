@@ -30,11 +30,11 @@ $calvingId = current($calving)['calving_id'];
         <span class='label label-success'><?= Calving::getStatusLabel($dateStatus) ?></span>
         <span class='label label-primary'><?= Calving::getPositionLabel($datePosition) ?></span>
         <?= Html::button('<span class="glyphicon glyphicon-edit"></span>', [
-            'id' => 'edit-calving-button',
+            'id'    => 'edit-calving-button',
             'class' => 'btn btn-warning btn-sm',
-            'data' => [
+            'data'  => [
                 'toggle' => 'modal',
-                'url' => Url::toRoute([
+                'url'    => Url::toRoute([
                     'animal/edit-calving-form',
                     'calvingId' => $calvingId
                 ])
@@ -45,58 +45,68 @@ $calvingId = current($calving)['calving_id'];
             Url::toRoute(['animal/remove-calving', 'id' => $calvingId]),
             [
                 'class' => 'btn btn-danger btn-sm',
-                'data' => ['confirm' => 'Вы действительно хотите удалить отёл?'],
+                'data'  => ['confirm' => 'Вы действительно хотите удалить отёл?'],
             ]
         ) ?>
     </p>
-    <p><strong>Провёл: </strong><?=$userLastname?></p>
+    <p><strong>Провёл: </strong><?= $userLastname ?></p>
 
     <?php echo GridView::widget([
-            'formatter' => [
-                'class' => 'yii\i18n\Formatter',
+            'formatter'    => [
+                'class'       => 'yii\i18n\Formatter',
                 'nullDisplay' => ''
             ],
             "dataProvider" => $dataProvider,
-            'summary' => false,
+            'summary'      => false,
             'tableOptions' => [
                 'style' => 'display:block; width:100%; overflow-x:auto',
                 'class' => 'table table-striped'
             ],
-            'columns' => [
+            'columns'      => [
                 ['class' => 'yii\grid\SerialColumn'],
                 [
-                    'label' => 'Бирка',
+                    'label'   => 'Бирка',
                     'content' => function ($model) {
-                        return ArrayHelper::getValue($model, 'label');
+                        if ($model['health_status'] == Animal::HEALTH_STATUS_DEAD) {
+                            return 'Мертвый';
+                        }
+
+                        return Html::a(
+                            ArrayHelper::getValue($model, "label"),
+                            Url::toRoute(['/animal/detail/', 'id' => $model['child_animal_id']]),
+                            ["target" => "_blank"]
+                        );
                     }
                 ],
                 [
-                    'label' => 'Пол',
+                    'label'   => 'Пол',
                     'content' => function ($model) {
-                        $class = ($model['sex'] == Bull::ANIMAL_SEX_TYPE) ? "primary" : "success";
-                        return "<span class='label label-$class'>" . Animal::getPhysicalState($model['physical_state']) . "</span>";
+                        $isFremartinText = $model['fremartin'] ? "(фримартин)" : "";
+                        $class = ($model['sex'] == Animal::SEX_TYPE_WOMAN) ? "primary" : "success";
+
+                        return "<span class='label label-$class'>" . Animal::getPhysicalState($model['physical_state']) . $isFremartinText . "</span>";
                     }
                 ],
                 [
-                    'label' => 'Вес при рождении, кг',
+                    'label'   => 'Вес при рождении, кг',
                     'content' => function ($model) {
                         return ArrayHelper::getValue($model, 'birth_weight');
                     }
                 ],
                 [
-                    'class' => 'yii\grid\ActionColumn',
-                    'header' => 'Действия',
+                    'class'    => 'yii\grid\ActionColumn',
+                    'header'   => 'Действия',
                     'template' => '<div class="btn-group">{edit} {delete}</div>',
-                    'buttons' => ['delete' => function ($url, $model) use ($calvingId) {
+                    'buttons'  => ['delete' => function ($url, $model) use ($calvingId) {
                         return Html::a(
                             '<span class="glyphicon glyphicon-trash"></span>',
                             Url::toRoute([
                                 'animal/remove-animal-from-calving',
-                                'animalId' => $model['child_animal_id'],
+                                'animalId'  => $model['child_animal_id'],
                                 'calvingId' => $calvingId
                             ]),
                             ['class' => 'btn btn-danger btn-sm',
-                                'data' => ['confirm' => 'Вы действительно хотите удалить животного из отёла?'],]
+                             'data'  => ['confirm' => 'Вы действительно хотите удалить животного из отёла?'],]
                         );
                     }],
                 ]
@@ -104,6 +114,6 @@ $calvingId = current($calving)['calving_id'];
         ]
     ); ?>
 
-    <p><strong>Примечание: </strong><?=$note?></p>
+    <p><strong>Примечание: </strong><?= $note ?></p>
 
 </div>

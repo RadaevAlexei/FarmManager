@@ -6,24 +6,35 @@ use common\models\Animal;
 use \yii\helpers\ArrayHelper;
 use \yii\grid\GridView;
 use \yii\data\ArrayDataProvider;
-use \common\models\Rectal;
+use common\models\rectal\Rectal;
 
 /**
  * @var Animal $animal
  * @var ArrayDataProvider $dataProviderRectal
  * @var mixed $usersList
  * @var mixed $rectalResults
+ * @var mixed $addRectal
  */
+
+$rectalButtonText = "Провести РИ";
+$stage = ArrayHelper::getValue($addRectal, 'stage.rectal_stage');
+if (!empty($stage)) {
+    $rectalButtonText = "Подтверждение стельности №" . ($stage - 1);
+}
 
 ?>
 
 <div class="box-header">
-    <?= Html::button('Добавить РИ', [
-        'class' => 'btn btn-warning',
-        'disabled' => true,
-        'data' => [
+    <?= Html::button($rectalButtonText, [
+        'id'       => 'add-rectal-button',
+        'class'    => 'btn btn-warning',
+        'disabled' => ArrayHelper::getValue($addRectal, "disable", true),
+        'data'     => [
             'toggle' => 'modal',
-            'target' => '#add-rectal-form-button',
+            'url'    => Url::toRoute([
+                'animal/add-rectal-form',
+                'id' => ArrayHelper::getValue($addRectal, 'stage.rectal_id')
+            ])
         ]
     ]) ?>
 </div>
@@ -35,41 +46,41 @@ use \common\models\Rectal;
 
     <div class="box-body">
         <?php echo GridView::widget([
-                'formatter' => [
-                    'class' => 'yii\i18n\Formatter',
+                'formatter'    => [
+                    'class'       => 'yii\i18n\Formatter',
                     'nullDisplay' => ''
                 ],
                 "dataProvider" => $dataProviderRectal,
-                'summary' => false,
+                'summary'      => false,
                 'tableOptions' => [
                     'style' => 'display:block; width:100%; overflow-x:auto',
                     'class' => 'table table-striped'
                 ],
-                'columns' => [
+                'columns'      => [
                     ['class' => 'yii\grid\SerialColumn'],
                     [
-                        'label' => 'Дата проведения',
-                        'content'   => function ($model) {
+                        'label'   => 'Дата проведения',
+                        'content' => function ($model) {
                             return (new DateTime(ArrayHelper::getValue($model, 'date')))->format('d.m.Y');
                         }
                     ],
                     [
-                        'label' => 'Результат',
+                        'label'   => 'Результат',
                         'content' => function ($model) {
                             return Rectal::getResultLabel(ArrayHelper::getValue($model, 'result'));
                         }
                     ],
                     [
-                        'label' => 'Кто проводил?',
+                        'label'   => 'Кто проводил?',
                         'content' => function ($model) {
                             return ArrayHelper::getValue($model, 'lastName');
                         }
                     ],
                     [
-                        'class' => 'yii\grid\ActionColumn',
-                        'header' => 'Действия',
+                        'class'    => 'yii\grid\ActionColumn',
+                        'header'   => 'Действия',
                         'template' => '<div class="btn-group">{edit} {delete}</div>',
-                        'buttons' => [
+                        'buttons'  => [
                             'edit'   => function ($url, $model) {
                                 return Html::button('<span class="glyphicon glyphicon-edit"></span>', [
                                     'id'    => 'edit-rectal-button',
@@ -92,7 +103,7 @@ use \common\models\Rectal;
                                     ]),
                                     [
                                         'class' => 'btn btn-danger btn-sm',
-                                        'data' => ['confirm' => 'Вы действительно хотите удалить это РИ?']
+                                        'data'  => ['confirm' => 'Вы действительно хотите удалить это РИ?']
                                     ]
                                 );
                             }
@@ -106,7 +117,7 @@ use \common\models\Rectal;
 </div>
 
 <!-- Модальное окно добавления ректального исследования -->
-<div class="modal fade" id="add-rectal-form-button" tabindex="-1" role="dialog"
+<div class="modal fade" id="add-rectal-modal" tabindex="-1" role="dialog"
      aria-labelledby="addRectalLabel"
      aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -117,13 +128,7 @@ use \common\models\Rectal;
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
-                <?= $this->render('/animal/forms/add-rectal', compact(
-                    'animal',
-                    'usersList',
-                    'rectalResults'
-                )) ?>
-            </div>
+            <div class="modal-body"></div>
         </div>
     </div>
 </div>

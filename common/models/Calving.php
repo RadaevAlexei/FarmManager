@@ -9,6 +9,7 @@ use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 use yii\db\StaleObjectException;
+use yii\helpers\ArrayHelper;
 
 /**
  * Class Calving - отелы
@@ -48,11 +49,11 @@ class Calving extends ActiveRecord
     {
         return [
             'animal_id' => 'Кто отелился',
-            'date' => 'Дата',
-            'status' => 'Лёгкость отёла',
-            'position' => 'Предлежание плода',
-            'note' => 'Примечание',
-            'user_id' => 'Кто проводил отёл',
+            'date'      => 'Дата',
+            'status'    => 'Лёгкость отёла',
+            'position'  => 'Предлежание плода',
+            'note'      => 'Примечание',
+            'user_id'   => 'Кто проводил отёл',
         ];
     }
 
@@ -76,10 +77,10 @@ class Calving extends ActiveRecord
     public static function getListStatuses()
     {
         return [
-            self::STATUS_INDEPENDENTLY => 'Самостоятельно',
-            self::STATUS_EASY => 'Лёгкое родовспоможение',
-            self::STATUS_MEDIUM => 'Роды средней тяжести',
-            self::STATUS_HEAVY => 'Тяжелые роды',
+            self::STATUS_INDEPENDENTLY    => 'Самостоятельно',
+            self::STATUS_EASY             => 'Лёгкое родовспоможение',
+            self::STATUS_MEDIUM           => 'Роды средней тяжести',
+            self::STATUS_HEAVY            => 'Тяжелые роды',
             self::STATUS_CESAREAN_SECTION => 'Кесарево сечение',
         ];
     }
@@ -101,7 +102,7 @@ class Calving extends ActiveRecord
     public static function getListPositions()
     {
         return [
-            self::POSITION_BACK => 'Спинное',
+            self::POSITION_BACK  => 'Спинное',
             self::POSITION_BELLY => 'Брюшное'
         ];
     }
@@ -188,6 +189,37 @@ class Calving extends ActiveRecord
         ]);
 
         $this->delete();
+    }
+
+    /**
+     * Определяем, будет ли считаться тёлочка ФРИМАРТИНОМ
+     * @param array $animals
+     * @return bool
+     */
+    public static function isFremartin($animals = [])
+    {
+        if (!$animals || count($animals) < 2) {
+            return false;
+        }
+
+        $manAnimals = array_filter($animals, function ($animal) {
+            return ArrayHelper::getValue($animal, 'sex') == Animal::SEX_TYPE_MAN;
+        });
+
+        $womanAnimals = array_filter($animals, function ($animal) {
+            return (
+                (ArrayHelper::getValue($animal, 'sex') == Animal::SEX_TYPE_WOMAN) &&
+                !ArrayHelper::getValue($animal, 'dead')
+            );
+        });
+        
+        if (!$womanAnimals) {
+            return false;
+        }
+
+        return (count($manAnimals) == 1) &&
+            (count($womanAnimals) == 1) &&
+            (count($animals) == 2);
     }
 
 }

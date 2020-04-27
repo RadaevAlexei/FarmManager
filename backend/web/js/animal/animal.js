@@ -49,7 +49,7 @@ $(function () {
         let index = 0;
         let arr = ["sex", "label", "weight"];
         $childAnimals.find(".calving_row_block").each((i, el) => {
-            $(el).find(".form-control").each((ind, elem) => {
+            $(el).find("select, input").each((ind, elem) => {
                 $(elem)[0].name = `Calving[child][${index}][${arr[ind]}]`;
             });
             index++;
@@ -103,6 +103,21 @@ $(function () {
                 $modal.find(".modal-body").html(data);
                 $modal.modal("show");
                 var id = "#" + $modal.find(".edit-rectal-datepicker").attr('id');
+                $(id).datepicker();
+            }
+        });
+    });
+
+    $(document).on("click", "#add-rectal-button", function (event) {
+        event.preventDefault();
+        $.ajax({
+            type: "get",
+            url: $(this).data("url"),
+            success: function (data, status, response) {
+                var $modal = $("#add-rectal-modal");
+                $modal.find(".modal-body").html(data);
+                $modal.modal("show");
+                var id = "#" + $modal.find(".add-rectal-datepicker").attr('id');
                 $(id).datepicker();
             }
         });

@@ -55,6 +55,16 @@ use \yii\data\ArrayDataProvider;
                     }
                 ],
                 [
+                    'attribute' => 'status',
+                    'content'   => function (Insemination $model) {
+                        if ($model->status == Insemination::STATUS_SEMINAL) {
+                            return "<span class='label label-success'>" . $model->getStatusLabel() . "</span>";
+                        }
+
+                        return "";
+                    }
+                ],
+                [
                     'attribute' => 'user_id',
                     'content'   => function (Insemination $model) {
                         return ArrayHelper::getValue($model, "user.lastName");
@@ -111,8 +121,8 @@ use \yii\data\ArrayDataProvider;
                                 '<span class="glyphicon glyphicon-trash"></span>',
                                 Url::toRoute(['animal/delete-insemination', 'id' => $model->id]),
                                 [
-                                    'class'    => 'btn btn-danger',
-                                    'data'     => ['confirm' => 'Вы действительно хотите удалить осеменение?'],
+                                    'class' => 'btn btn-danger',
+                                    'data'  => ['confirm' => 'Вы действительно хотите удалить осеменение?'],
                                 ]
                             );
                         },

@@ -24,6 +24,7 @@ use yii\data\ArrayDataProvider;
  * @var array $containerDuaraList
  * @var ArrayDataProvider $dataProviderCalvings
  * @var ArrayDataProvider $dataProviderRectal
+ * @var array $addRectal
  */
 
 AnimalAsset::register($this);
@@ -31,10 +32,13 @@ AnimalAsset::register($this);
 $this->title = 'Детальная карточка животного';
 $this->params['breadcrumbs'][] = [
     'label' => Yii::t('app/animal', "ANIMAL_LIST"),
-    'url' => Url::toRoute(['/animal/index'])
+    'url'   => Url::toRoute(['/animal/index'])
 ];
 
 $this->params['breadcrumbs'][] = ['label' => $this->title];
+
+$isFremartinText = $model->fremartin ? "(фримартин)" : ""
+
 ?>
 
 <div class="row">
@@ -75,7 +79,7 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                     </li>
                     <li class="list-group-item">
                         <b>Физ состояние</b><span
-                                class="pull-right label label-danger"><?= Animal::getPhysicalState($model->physical_state) ?></span>
+                                class="pull-right label label-danger"><?= Animal::getPhysicalState($model->physical_state) . $isFremartinText ?></span>
                     </li>
                     <li class="list-group-item">
                         <b>Рект. иссл-е</b><span
@@ -142,10 +146,10 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
 
                 <div class="active tab-pane" id="scheme">
                     <?= $this->render('/animal/tabs/scheme', [
-                        'animal' => $model,
-                        'schemeList' => $schemeList,
+                        'animal'              => $model,
+                        'schemeList'          => $schemeList,
                         'appropriationScheme' => $appropriationScheme,
-                        'dataProvider' => $dataProvider,
+                        'dataProvider'        => $dataProvider,
                     ]) ?>
                 </div>
 
@@ -157,10 +161,10 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
 
                 <div class="tab-pane" id="inseminations">
                     <?= $this->render('/animal/tabs/inseminations', [
-                        'animal' => $model,
-                        'dataProvider' => $inseminationDataProvider,
-                        'usersList' => $usersList,
-                        'seedBullList' => $seedBullList,
+                        'animal'             => $model,
+                        'dataProvider'       => $inseminationDataProvider,
+                        'usersList'          => $usersList,
+                        'seedBullList'       => $seedBullList,
                         'containerDuaraList' => $containerDuaraList,
                     ]) ?>
                 </div>
@@ -168,7 +172,7 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                 <?php if ($model->isWoman()) : ?>
                     <div class="tab-pane" id="calvings">
                         <?= $this->render('/animal/tabs/calvings', [
-                            'animal' => $model,
+                            'animal'               => $model,
                             'dataProviderCalvings' => $dataProviderCalvings,
                         ]) ?>
                     </div>
@@ -177,10 +181,11 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                 <?php if ($model->isWoman()) : ?>
                     <div class="tab-pane" id="rectalings">
                         <?= $this->render('/animal/tabs/rectalings', [
-                            'animal' => $model,
-                            'usersList' => $usersList,
-                            'rectalResults' => $rectalResults,
+                            'animal'             => $model,
+                            'usersList'          => $usersList,
+                            'rectalResults'      => $rectalResults,
                             'dataProviderRectal' => $dataProviderRectal,
+                            'addRectal'          => $addRectal,
                         ]) ?>
                     </div>
                 <?php endif; ?>
