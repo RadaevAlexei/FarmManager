@@ -38,6 +38,7 @@ use yii\helpers\ArrayHelper;
  * @property integer $physical_state
  * @property integer $cur_insemination_id
  * @property integer $fremartin
+ * @property integer $rectal_examination
  */
 class Animal extends ActiveRecord
 {
@@ -247,6 +248,36 @@ class Animal extends ActiveRecord
     public function isWoman()
     {
         return $this->sex === self::SEX_TYPE_WOMAN;
+    }
+
+    /**
+     * Проверяем, является ли корова стельной
+     * @return bool
+     */
+    public function isSterile()
+    {
+        return ($this->sex == self::SEX_TYPE_WOMAN) &&
+            ($this->rectal_examination === self::RECTAL_EXAMINATION_STERILE);
+    }
+
+    /**
+     * Проверяем, является ли корова не стельной
+     * @return bool
+     */
+    public function isNotSterile()
+    {
+        return ($this->sex == self::SEX_TYPE_WOMAN) &&
+            ($this->rectal_examination === self::RECTAL_EXAMINATION_NOT_STERILE);
+    }
+
+    /**
+     * Является ли сомнительной после РИ
+     * @return bool
+     */
+    public function isDubious()
+    {
+        return ($this->sex == self::SEX_TYPE_WOMAN) &&
+            ($this->rectal_examination === self::RECTAL_EXAMINATION_DUBIOUS);
     }
 
     /**
@@ -489,9 +520,9 @@ class Animal extends ActiveRecord
     }
 
     /**
-     * @param AppropriationScheme $appropriationScheme
-     *
+     * @param $appropriationScheme
      * @return array|ActiveRecord[]
+     * @throws Exception
      */
     public function getActionsToday($appropriationScheme)
     {
@@ -638,6 +669,14 @@ class Animal extends ActiveRecord
     }
 
     /**
+     * Сброс текущего осеменения
+     */
+    public function resetCurInsemination()
+    {
+        $this->updateAttributes(['cur_insemination_id' => null]);
+    }
+
+    /**
      * Получаем данные для добавления РИ
      * @return array
      * @throws Exception
@@ -677,12 +716,20 @@ class Animal extends ActiveRecord
         }
 
 //        $curDate = (new DateTime('now', new DateTimeZone('Europe/Samara')))->setTime(0, 0);
-        $curDate = (new DateTime('2020-12-15'))->setTime(0, 0);
+        $curDate = (new DateTime('2020-05-28'))->setTime(0, 0);
         $rectalDate = (new DateTime(ArrayHelper::getValue($curStage, "rectal_date")))->setTime(0, 0);
 
         return [
             'disable' => ($curRectal->result == Rectal::RESULT_DUBIOUS) ? false : $curDate < $rectalDate,
             'stage'   => $curStage
         ];
+    }
+
+    /**
+     * @param $newStatus
+     */
+    public function updateRectalStatus($newStatus)
+    {
+        $this->updateAttributes(['rectal_examination' => $newStatus]);
     }
 }

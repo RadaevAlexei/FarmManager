@@ -18,7 +18,8 @@ use common\models\rectal\Rectal;
 
 $rectalButtonText = "Провести РИ";
 $stage = ArrayHelper::getValue($addRectal, 'stage.rectal_stage');
-if (!empty($stage)) {
+
+if (!empty($stage) && $stage > Rectal::STAGE_FIRST) {
     $rectalButtonText = "Подтверждение стельности №" . ($stage - 1);
 }
 

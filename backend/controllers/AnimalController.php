@@ -1481,12 +1481,15 @@ class AnimalController extends BackendController
 
                 if ($model->result == Rectal::RESULT_NOT_STERILE) {
                     $curInsemination->changeStatus(Insemination::STATUS_NOT_SEMINAL);
-                    $animal->changeCurInsemination(null);
+                    $animal->resetCurInsemination();
+                    $animal->updateRectalStatus(Animal::RECTAL_EXAMINATION_NOT_STERILE);
                 } else if ($model->result == Rectal::RESULT_DUBIOUS) {
+                    $animal->updateRectalStatus(Animal::RECTAL_EXAMINATION_DUBIOUS);
                 } else if ($model->result == Rectal::RESULT_STERILE) {
                     if ($model->rectal_stage == Rectal::STAGE_CONFIRM_SECOND) {
                         $curInsemination->changeStatus(Insemination::STATUS_SEMINAL);
-                        $animal->changeCurInsemination(null);
+                        $animal->resetCurInsemination();
+                        $animal->updateRectalStatus(Animal::RECTAL_EXAMINATION_NOT_STERILE);
                     } else {
                         $nextStage = $model->getNextStage();
                         $nextRectalDate = RectalSettings::calculateRectalDate($model->date, $nextStage);
@@ -1515,6 +1518,7 @@ class AnimalController extends BackendController
                         ]);
 
                         $newInseminationRectalLink->save();
+                        $animal->updateRectalStatus(Animal::RECTAL_EXAMINATION_STERILE);
                     }
                 }
             }

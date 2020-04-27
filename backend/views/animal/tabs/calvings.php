@@ -17,8 +17,9 @@ use \yii\data\ArrayDataProvider;
 
 <div class="box-header">
     <?= Html::button('Добавить отёл', [
-        'class' => 'btn btn-warning',
-        'data' => [
+        'class'    => 'btn btn-warning',
+        'disabled' => !$animal->isSterile(),
+        'data'     => [
             'toggle' => 'modal',
             'target' => '#add-calving-form-button',
         ]

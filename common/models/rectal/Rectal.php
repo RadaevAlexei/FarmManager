@@ -128,7 +128,8 @@ class Rectal extends ActiveRecord
      */
     public function getNextStage()
     {
-        return ($this->rectal_stage == self::STAGE_FIRST) ? self::STAGE_CONFIRM_FIRST : self::STAGE_CONFIRM_SECOND;
+        return ($this->rectal_stage == self::STAGE_FIRST) ?
+            self::STAGE_CONFIRM_FIRST : self::STAGE_CONFIRM_SECOND;
     }
 
 }
