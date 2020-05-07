@@ -216,8 +216,7 @@ use \yii\helpers\Url;
                     [
                         'label' => 'Список животных под РИ',
                         'icon'  => 'users',
-//                        'url'   => Url::toRoute(['/rectal/rectal-list/index']),
-                        'url'   => '#',
+                        'url'   => Url::toRoute(['/rectal/rectal-list/index']),
                     ],
                     [
                         'label' => 'Настройки РИ',

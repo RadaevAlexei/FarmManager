@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use common\helpers\DateHelper;
 use common\models\rectal\InseminationRectalLink;
 use common\models\rectal\RectalSettings;
 use DateInterval;
@@ -256,6 +257,9 @@ class AnimalController extends BackendController
         $dataProviderRectal = new ArrayDataProvider(['allModels' => $rectalHistory]);
         $addRectal = $model->getAddRectalData();
 
+        // Количество дней стельности
+        $countSterileDays = $model->getCountSterileDays();
+
         return $this->render('new-detail',
             compact(
                 'model',
@@ -270,7 +274,8 @@ class AnimalController extends BackendController
                 'dataProviderCalvings',
                 'rectalResults',
                 'dataProviderRectal',
-                'addRectal'
+                'addRectal',
+                'countSterileDays'
             )
         );
     }
@@ -431,6 +436,11 @@ class AnimalController extends BackendController
                 }
 
                 $parentAnimal = Animal::findOne($model->animal_id);
+
+                // TODO:: Обновление статуса и СБРОС текущего осеменения делать ПОСЛЕ! отёла
+                $parentAnimal->resetCurInsemination();
+                $parentAnimal->updateRectalStatus(Animal::RECTAL_EXAMINATION_NOT_STERILE);
+
                 $actionText = "Провёл отёл у #$parentAnimal->label";
 
                 /** @var AnimalHistory $newAnimalHistory */
@@ -1488,8 +1498,6 @@ class AnimalController extends BackendController
                 } else if ($model->result == Rectal::RESULT_STERILE) {
                     if ($model->rectal_stage == Rectal::STAGE_CONFIRM_SECOND) {
                         $curInsemination->changeStatus(Insemination::STATUS_SEMINAL);
-                        $animal->resetCurInsemination();
-                        $animal->updateRectalStatus(Animal::RECTAL_EXAMINATION_NOT_STERILE);
                     } else {
                         $nextStage = $model->getNextStage();
                         $nextRectalDate = RectalSettings::calculateRectalDate($model->date, $nextStage);

@@ -122,38 +122,3 @@ if (!empty($stage) && $stage > Rectal::STAGE_FIRST) {
     </div>
 
 </div>
-
-<!-- Модальное окно добавления ректального исследования -->
-<div class="modal fade" id="add-rectal-modal" tabindex="-1" role="dialog"
-     aria-labelledby="addRectalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header" style="background-color: #0ead0e78">
-                <h5 class="modal-title" id="addRectalLabel">Добавление ректального исследования</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body"></div>
-        </div>
-    </div>
-</div>
-
-<!-- Модальное окно редактирования РИ -->
-<div class="modal fade" id="edit-rectal-modal" tabindex="-1" role="dialog"
-     aria-labelledby="editRectalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header" style="background-color: #0ead0e78">
-                <h5 class="modal-title" id="editRectalLabel">Редактирование ректального исследования</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-            </div>
-        </div>
-    </div>
-</div>

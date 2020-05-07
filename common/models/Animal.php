@@ -8,6 +8,7 @@ use backend\modules\scheme\models\AnimalHistory;
 use backend\modules\scheme\models\AppropriationScheme;
 use backend\modules\scheme\models\Diagnosis;
 use backend\modules\scheme\models\Scheme;
+use common\helpers\DateHelper;
 use common\models\rectal\Rectal;
 use DateTime;
 use DateTimeZone;
@@ -39,6 +40,7 @@ use yii\helpers\ArrayHelper;
  * @property integer $cur_insemination_id
  * @property integer $fremartin
  * @property integer $rectal_examination
+ * @property Insemination $curInsemination
  */
 class Animal extends ActiveRecord
 {
@@ -238,6 +240,27 @@ class Animal extends ActiveRecord
                 'collar',
             ]
         ];
+    }
+
+    /**
+     * @return array
+     */
+    public static function getListRectalStatuses()
+    {
+        return [
+            self::RECTAL_EXAMINATION_NOT_STERILE => 'Не стельная',
+            self::RECTAL_EXAMINATION_STERILE     => 'Стельная',
+            self::RECTAL_EXAMINATION_DUBIOUS     => 'Сомнительная'
+        ];
+    }
+
+    /**
+     * @param $status
+     * @return mixed
+     */
+    public static function getRectalStatusLabel($status)
+    {
+        return self::getListRectalStatuses()[$status];
     }
 
     public function isMan()
@@ -570,6 +593,14 @@ class Animal extends ActiveRecord
     }
 
     /**
+     * @return ActiveQuery
+     */
+    public function getCurInsemination()
+    {
+        return $this->hasOne(Insemination::class, ['id' => 'cur_insemination_id']);
+    }
+
+    /**
      * Проверяем, здоровое ли у нас животное
      * @return bool
      */
@@ -638,6 +669,7 @@ class Animal extends ActiveRecord
             ->innerJoin(['ac' => Animal::tableName()], 'cl.child_animal_id = ac.id')
             ->leftJoin(['u' => User::tableName()], 'c.user_id = u.id')
             ->andWhere(['=', 'c.animal_id', $this->id])
+            ->orderBy(['c.date' => SORT_DESC])
             ->asArray()
             ->all();
     }
@@ -687,22 +719,23 @@ class Animal extends ActiveRecord
 
         if (!$curInsemination) {
             return [
-                'disable' => true,
-                'stage'   => []
+                'disable'          => true,
+                'can-insemination' => true,
+                'stage'            => []
             ];
         }
 
         $curStage = $curInsemination->getCurStage();
         if (!$curStage) {
             return [
-                'disable' => true,
-                'stage'   => []
+                'disable'          => true,
+                'can-insemination' => true,
+                'stage'            => []
             ];
         }
 
         /** @var Rectal $curRectal */
         $curRectal = Rectal::findOne(ArrayHelper::getValue($curStage, "rectal_id"));
-
         if (!$curRectal ||
             !in_array($curRectal->result, [
                 Rectal::RESULT_NOT_RESULT,
@@ -710,18 +743,22 @@ class Animal extends ActiveRecord
             ])
         ) {
             return [
-                'disable' => true,
-                'stage'   => []
+                'disable'          => true,
+                'can-insemination' => true,
+                'stage'            => []
             ];
         }
 
 //        $curDate = (new DateTime('now', new DateTimeZone('Europe/Samara')))->setTime(0, 0);
-        $curDate = (new DateTime('2020-05-28'))->setTime(0, 0);
+        $curDate = (new DateTime('2021-09-03'))->setTime(0, 0);
         $rectalDate = (new DateTime(ArrayHelper::getValue($curStage, "rectal_date")))->setTime(0, 0);
+        $stage = ArrayHelper::getValue($curStage, 'rectal_stage');
+        $result = ArrayHelper::getValue($curStage, 'result');
 
         return [
-            'disable' => ($curRectal->result == Rectal::RESULT_DUBIOUS) ? false : $curDate < $rectalDate,
-            'stage'   => $curStage
+            'disable'          => ($curRectal->result == Rectal::RESULT_DUBIOUS) ? false : $curDate < $rectalDate,
+            'can-insemination' => $this->isNotSterile() && ($stage == 1) && ($result == Rectal::RESULT_NOT_RESULT),
+            'stage'            => $curStage
         ];
     }
 
@@ -731,5 +768,69 @@ class Animal extends ActiveRecord
     public function updateRectalStatus($newStatus)
     {
         $this->updateAttributes(['rectal_examination' => $newStatus]);
+    }
+
+    /**
+     * Количество дней стельности
+     * @return int|mixed
+     * @throws Exception
+     */
+    public function getCountSterileDays()
+    {
+//        if (!$this->isSterile()) {
+//            return 0;
+//        }
+
+        $curInsemination = $this->curInsemination;
+//        if (!$curInsemination || ($curInsemination->status != Insemination::STATUS_SEMINAL)) {
+        if (!$curInsemination) {
+            return 0;
+        }
+
+        $curDate = (new DateTime('2020-05-09', (new DateTimeZone('Europe/Samara'))));
+        $dateInsemination = (new DateTime(
+            ArrayHelper::getValue($curInsemination, "date"),
+            (new DateTimeZone('Europe/Samara'))
+        ));
+
+        return DateHelper::diff($curDate, $dateInsemination);
+    }
+
+    /**
+     * @return bool
+     * @throws Exception
+     */
+    public function canAddCalving()
+    {
+        return $this->isSterile() && ($this->getCountSterileDays() >= 250);
+    }
+
+    /**
+     * Получение сервис-периода у коровы
+     * @return int|mixed
+     * @throws Exception
+     */
+    public function getServicePeriod()
+    {
+        $calvings = $this->calvings;
+
+        if (!$calvings || !$this->isSterile()) {
+            return 0;
+        }
+
+        $calvingDate = new DateTime(
+            ArrayHelper::getValue($calvings[0], "date"),
+            new DateTimeZone('Europe/Samara')
+        );
+        $inseminationDate = new DateTime(
+            ArrayHelper::getValue($this, "curInsemination.date"),
+            new DateTimeZone('Europe/Samara')
+        );
+
+        if (!$calvingDate || !$inseminationDate) {
+            return 0;
+        }
+
+        return DateHelper::diff($inseminationDate, $calvingDate);
     }
 }

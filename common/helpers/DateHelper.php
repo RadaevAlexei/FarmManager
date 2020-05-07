@@ -3,6 +3,7 @@
 namespace common\helpers;
 
 use DateTime;
+use DateTimeZone;
 
 /**
  * Class DateHelper
@@ -25,5 +26,23 @@ class DateHelper
             $date = DateTime::createFromFormat("d/m/y", $data_str);
         }
         return $date->format($to_format);
+    }
+
+    /**
+     * Разница между датами в днях
+     * @param DateTime $dateFrom
+     * @param DateTime $dateTo
+     * @return mixed
+     */
+    public static function diff($dateFrom, $dateTo)
+    {
+        $result = $dateFrom->diff($dateTo);
+        return $result->invert ? $result->days : 0;
+    }
+
+    public static function getDate($date)
+    {
+        return (new DateTime($date, new DateTimeZone('Europe/Samara')))
+            ->format('d.m.Y');
     }
 }

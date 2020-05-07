@@ -9,6 +9,9 @@ use backend\modules\scheme\models\ActionListItem;
 use backend\modules\scheme\models\AnimalHistory;
 use backend\modules\scheme\models\Scheme;
 use common\models\TypeField;
+use DateTime;
+use DateTimeZone;
+use Exception;
 use Yii;
 use backend\modules\scheme\models\ActionHistory;
 use backend\modules\scheme\models\search\ActionHistorySearch;
@@ -41,17 +44,17 @@ class ActionDayController extends BackendController
      */
     public function actionIndex()
     {
-        $filterDate = (new \DateTime('now', new \DateTimeZone('Europe/Samara')));
+        $filterDate = (new DateTime('now', new DateTimeZone('Europe/Samara')));
 
         if (Yii::$app->request->isPost) {
             $postDate = Yii::$app->request->post("filter_date");
             if (!empty($postDate)) {
-                $filterDate = (new \DateTime($postDate));
+                $filterDate = (new DateTime($postDate));
             }
         }
 
         $disableExecuteAction = false;
-        if ($filterDate > new \DateTime('now', new \DateTimeZone('Europe/Samara'))) {
+        if ($filterDate > new DateTime('now', new DateTimeZone('Europe/Samara'))) {
             $disableExecuteAction = true;
         }
 
@@ -73,6 +76,7 @@ class ActionDayController extends BackendController
 
     /**
      * @return string
+     * @throws Exception
      */
     public function actionOverdue()
     {
@@ -81,7 +85,7 @@ class ActionDayController extends BackendController
 
         /** @var ArrayDataProvider $dataProvider */
         $dataProvider = $searchModel->search(array_merge(Yii::$app->request->queryParams, [
-            'day'     => (new \DateTime('-1 days', new \DateTimeZone('Europe/Samara')))
+            'day'     => (new DateTime('-1 days', new DateTimeZone('Europe/Samara')))
                 ->setTime(23, 59, 59)
                 ->format('Y-m-d H:i:s'),
             'overdue' => true
@@ -99,7 +103,7 @@ class ActionDayController extends BackendController
 
     private function getTimePrefix()
     {
-        return (new \DateTime('now', new \DateTimeZone('Europe/Samara')))->format('Y_m_d_H_i_s');
+        return (new DateTime('now', new DateTimeZone('Europe/Samara')))->format('Y_m_d_H_i_s');
     }
 
     /**
@@ -125,11 +129,11 @@ class ActionDayController extends BackendController
         /** @var Worksheet $sheet */
         $sheet = $spreadsheet->getActiveSheet();
 
-        /** @var \DateTime $date */
+        /** @var DateTime $date */
         if (empty($filterDate)) {
-            $date = new \DateTime('now', new \DateTimeZone('Europe/Samara'));
+            $date = new DateTime('now', new DateTimeZone('Europe/Samara'));
         } else {
-            $date = new \DateTime($filterDate);
+            $date = new DateTime($filterDate);
         }
 
         $sheet->setCellValue("H1", $date->format('d.m.Y'));
@@ -237,7 +241,7 @@ class ActionDayController extends BackendController
             ])
             ->where([
                 'ah.status'        => ActionHistory::STATUS_NEW,
-                'ah.scheme_day_at' => (new \DateTime('now', new \DateTimeZone('Europe/Samara')))->format('Y-m-d')
+                'ah.scheme_day_at' => (new DateTime('now', new DateTimeZone('Europe/Samara')))->format('Y-m-d')
             ])
             ->orderBy(['animal_id' => SORT_ASC])
             ->all();
@@ -302,7 +306,7 @@ class ActionDayController extends BackendController
                 [
                     '<=',
                     'ah.scheme_day_at',
-                    (new \DateTime('-1 days', new \DateTimeZone('Europe/Samara')))
+                    (new DateTime('-1 days', new DateTimeZone('Europe/Samara')))
                         ->setTime(23, 59, 59)
                         ->format('Y-m-d H:i:s')
                 ]
@@ -368,7 +372,7 @@ class ActionDayController extends BackendController
 
         try {
             if (!$actionHistory) {
-                throw new \Exception();
+                throw new Exception();
             }
 
             $post = Yii::$app->request->post("ExecuteForm");
@@ -381,12 +385,12 @@ class ActionDayController extends BackendController
 
 
             if (empty($value)) {
-                throw new \Exception('Заполните значение');
+                throw new Exception('Заполните значение');
             }
             if (empty($executeAt)) {
-                throw new \Exception('Выберите дату!');
+                throw new Exception('Выберите дату!');
             } else {
-                $executeAt = (new \DateTime($executeAt))->format('Y-m-d H:i:s');
+                $executeAt = (new DateTime($executeAt))->format('Y-m-d H:i:s');
             }
 
             $type = ArrayHelper::getValue($post, "type");
@@ -413,7 +417,7 @@ class ActionDayController extends BackendController
                 if ($type == TypeField::TYPE_NUMBER && !empty($preparationId)) {
 
                     if (empty($stockId)) {
-                        throw new \Exception('Выберите склад!');
+                        throw new Exception('Выберите склад!');
                     }
 
                     $preparation = Preparation::findOne($preparationId);
@@ -456,7 +460,7 @@ class ActionDayController extends BackendController
 
             \Yii::$app->session->setFlash('success', 'Успешное выполнение действия');
             return $this->redirect([$returnAction, "scheme_id" => $scheme_id]);
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             $transaction->rollBack();
             \Yii::$app->session->setFlash('error', $exception->getMessage());
             return $this->redirect([$returnAction, "scheme_id" => $scheme_id]);

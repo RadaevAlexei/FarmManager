@@ -11,14 +11,19 @@ use \yii\data\ArrayDataProvider;
 /**
  * @var Animal $animal
  * @var ArrayDataProvider $dataProviderCalvings
+ * @var integer $countSterileDays
  */
 
+
+$countSterileDaysText = $countSterileDays ? "({$countSterileDays}-й день)" : "";
 ?>
+
+<p>Статус: <?= Animal::getRectalStatusLabel($animal->rectal_examination) . $countSterileDaysText ?></p>
 
 <div class="box-header">
     <?= Html::button('Добавить отёл', [
         'class'    => 'btn btn-warning',
-        'disabled' => !$animal->isSterile(),
+        'disabled' => !$animal->canAddCalving(),
         'data'     => [
             'toggle' => 'modal',
             'target' => '#add-calving-form-button',

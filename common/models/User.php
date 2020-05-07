@@ -103,16 +103,16 @@ class User extends ActiveRecord implements IdentityInterface
     public function attributeLabels()
     {
         return [
-            'username' => Yii::t('app/user', 'USER_NAME'),
-            'email' => Yii::t('app/user', 'USER_EMAIL'),
-            'status' => Yii::t('app/user', 'USER_STATUS'),
-            'gender' => Yii::t('app/user', 'USER_GENDER'),
-            'birthday' => Yii::t('app/user', 'USER_BIRTHDAY'),
+            'username'    => Yii::t('app/user', 'USER_NAME'),
+            'email'       => Yii::t('app/user', 'USER_EMAIL'),
+            'status'      => Yii::t('app/user', 'USER_STATUS'),
+            'gender'      => Yii::t('app/user', 'USER_GENDER'),
+            'birthday'    => Yii::t('app/user', 'USER_BIRTHDAY'),
             'position_id' => Yii::t('app/position', 'POSITION'),
-            'firstName' => Yii::t('app/user', 'USER_FIRSTNAME'),
-            'lastName' => Yii::t('app/user', 'USER_LASTNAME'),
-            'middleName' => Yii::t('app/user', 'USER_MIDDLENAME'),
-            'posName' => Yii::t('app/position', 'POSITION_NAME'),
+            'firstName'   => Yii::t('app/user', 'USER_FIRSTNAME'),
+            'lastName'    => Yii::t('app/user', 'USER_LASTNAME'),
+            'middleName'  => Yii::t('app/user', 'USER_MIDDLENAME'),
+            'posName'     => Yii::t('app/position', 'POSITION_NAME'),
 //            'birthday_formatted'     => 'форматируемая дата',
         ];
     }
@@ -155,7 +155,7 @@ class User extends ActiveRecord implements IdentityInterface
     public static function getGenderList()
     {
         return [
-            self::GENDER_MALE => Yii::t('app/user', 'USER_GENDER_' . self::GENDER_MALE),
+            self::GENDER_MALE   => Yii::t('app/user', 'USER_GENDER_' . self::GENDER_MALE),
             self::GENDER_FEMALE => Yii::t('app/user', 'USER_GENDER_' . self::GENDER_FEMALE)
         ];
     }
@@ -178,7 +178,7 @@ class User extends ActiveRecord implements IdentityInterface
                 'gender',
                 'position_id',
             ],
-            self::SCENARIO_FILTER => [
+            self::SCENARIO_FILTER      => [
                 'firstName',
                 'lastName',
                 'middleName',
@@ -252,7 +252,7 @@ class User extends ActiveRecord implements IdentityInterface
 
         return static::findOne([
             'password_reset_token' => $token,
-            'status' => self::STATUS_ACTIVE,
+            'status'               => self::STATUS_ACTIVE,
         ]);
     }
 
@@ -348,5 +348,14 @@ class User extends ActiveRecord implements IdentityInterface
     public static function getAllList()
     {
         return self::find()->all();
+    }
+
+    /**
+     * Получаем главного ветеринарного врача
+     * @return User|null
+     */
+    public static function getChiefVeterinarian()
+    {
+        return User::findOne(['position_id' => 3]);
     }
 }

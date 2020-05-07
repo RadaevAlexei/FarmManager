@@ -25,6 +25,7 @@ use yii\data\ArrayDataProvider;
  * @var ArrayDataProvider $dataProviderCalvings
  * @var ArrayDataProvider $dataProviderRectal
  * @var array $addRectal
+ * @var integer $countSterileDays
  */
 
 AnimalAsset::register($this);
@@ -120,13 +121,15 @@ $isFremartinText = $model->fremartin ? "(фримартин)" : ""
 
                 <?php if ($model->isWoman()) : ?>
                     <li class="">
-                        <a href="#calvings" data-toggle="tab" aria-expanded="true">Отёлы</a>
-                    </li>
-                <?php endif; ?>
-
-                <?php if ($model->isWoman()) : ?>
-                    <li class="">
                         <a href="#rectalings" data-toggle="tab" aria-expanded="true">Ректальные исследования</a>
+                    </li>
+
+<!--                    <li class="">-->
+<!--                        <a href="#dry-off" data-toggle="tab" aria-expanded="true">Запуск</a>-->
+<!--                    </li>-->
+
+                    <li class="">
+                        <a href="#calvings" data-toggle="tab" aria-expanded="true">Отёлы</a>
                     </li>
                 <?php endif; ?>
             </ul>
@@ -166,17 +169,9 @@ $isFremartinText = $model->fremartin ? "(фримартин)" : ""
                         'usersList'          => $usersList,
                         'seedBullList'       => $seedBullList,
                         'containerDuaraList' => $containerDuaraList,
+                        'addRectal'          => $addRectal,
                     ]) ?>
                 </div>
-
-                <?php if ($model->isWoman()) : ?>
-                    <div class="tab-pane" id="calvings">
-                        <?= $this->render('/animal/tabs/calvings', [
-                            'animal'               => $model,
-                            'dataProviderCalvings' => $dataProviderCalvings,
-                        ]) ?>
-                    </div>
-                <?php endif; ?>
 
                 <?php if ($model->isWoman()) : ?>
                     <div class="tab-pane" id="rectalings">
@@ -186,6 +181,20 @@ $isFremartinText = $model->fremartin ? "(фримартин)" : ""
                             'rectalResults'      => $rectalResults,
                             'dataProviderRectal' => $dataProviderRectal,
                             'addRectal'          => $addRectal,
+                        ]) ?>
+                    </div>
+
+                    <div class="tab-pane" id="dry-off">
+                        <?/*= $this->render('/animal/tabs/dry-off', [
+                            'animal' => $model,
+                        ]) */?>
+                    </div>
+
+                    <div class="tab-pane" id="calvings">
+                        <?= $this->render('/animal/tabs/calvings', [
+                            'animal'               => $model,
+                            'dataProviderCalvings' => $dataProviderCalvings,
+                            'countSterileDays'     => $countSterileDays,
                         ]) ?>
                     </div>
                 <?php endif; ?>

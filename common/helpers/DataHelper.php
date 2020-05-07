@@ -19,9 +19,11 @@ class DataHelper
         }
 
         return implode($delimiter,
-            array_filter($array, function($element) {
-                return !empty($element);
-            })
+            array_values(
+                array_filter($array, function ($element) {
+                    return !empty($element);
+                })
+            )
         );
     }
 
@@ -67,14 +69,14 @@ class DataHelper
         return null;
     }
 
-	/**
-	 * @param $array
-	 * @param $searchField
-	 * @param $searchValue
-	 * @param $returnValue
-	 *
-	 * @return array|mixed|null
-	 */
+    /**
+     * @param $array
+     * @param $searchField
+     * @param $searchValue
+     * @param $returnValue
+     *
+     * @return array|mixed|null
+     */
     public static function getField($array, $searchField, $searchValue, $returnValue)
     {
         if (empty($array)) {
@@ -111,7 +113,7 @@ class DataHelper
             return false;
         }
 
-        $searchArray = array_filter($array, function($object) use ($fieldSearch, $field) {
+        $searchArray = array_filter($array, function ($object) use ($fieldSearch, $field) {
             if (is_array($object)) {
                 return (ArrayHelper::getValue($object, $fieldSearch) == $field);
             }
@@ -131,12 +133,12 @@ class DataHelper
         return date($format, $timestamp);
     }
 
-	/**
-	 * @param null $date
-	 * @param bool $isReplace
-	 * Получение timastamp даты
-	 * @return false|int|null
-	 */
+    /**
+     * @param null $date
+     * @param bool $isReplace
+     * Получение timastamp даты
+     * @return false|int|null
+     */
     public static function getTimeStamp($date = null, $isReplace = false)
     {
         if (empty($date)) {
@@ -221,6 +223,21 @@ class DataHelper
         }
 
         return $result;
+    }
+
+    /**
+     * Вычисление среднего арифметического значений массива
+     * @param array $arr
+     * @return float|int
+     */
+    public static function getAverage($arr = [])
+    {
+        if (!count($arr)) {
+            return 0;
+        }
+        $sum = array_sum($arr);
+        $count = count($arr);
+        return $sum / $count;
     }
 
 }

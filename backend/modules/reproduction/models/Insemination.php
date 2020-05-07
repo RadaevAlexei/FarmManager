@@ -10,6 +10,7 @@ use DateTime;
 use Yii;
 use common\models\Animal;
 use common\models\User;
+use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 use yii\db\Exception;
 use yii\helpers\ArrayHelper;
@@ -200,10 +201,8 @@ class Insemination extends ActiveRecord
             throw new Exception('Ошибка при добавлении осеменения');
         }
 
-        $animal = Animal::findOne($this->animal_id);
-
         // Текущее осеменение
-        $animal->updateAttributes(['cur_insemination_id' => $this->id]);
+        Animal::findOne($this->animal_id)->changeCurInsemination($this->id);
     }
 
     /**
@@ -331,6 +330,56 @@ class Insemination extends ActiveRecord
             echo '</pre>';
             die();
         }
+    }
+
+    public static function isHormonal($type)
+    {
+        return ($type == self::TYPE_HORMONAL);
+    }
+
+    public static function isNatural($type)
+    {
+        return ($type == self::TYPE_NATURAL);
+    }
+
+    public static function getTypeInseminationLabel($type)
+    {
+        return self::isNatural($type) ? "ОХОТА" : "Другое";
+    }
+
+    /**
+     * Получаем список перегулов в диапазоне
+     * @param null $dateFrom
+     * @param null $dateTo
+     * @return mixed
+     */
+    public static function getReheatsList($dateFrom = null, $dateTo = null)
+    {
+        $query = Insemination::find()
+            ->alias('i')
+            ->select([
+                'u.id',
+                'u.lastName',
+                'u.firstName',
+                'u.middleName',
+            ])
+            ->where(['i.status' => self::STATUS_REHEAT])
+            ->innerJoin(['u' => User::tableName()], 'u.id = i.user_id')
+            ->orderBy(['i.date' => SORT_DESC]);
+
+        if ($dateFrom && $dateTo) {
+            $query->andWhere([
+                'and',
+                ['>=', 'i.date', $dateFrom],
+                ['<=', 'i.date', $dateTo]
+            ]);
+        } else if ($dateFrom) {
+            $query->andWhere(['>=', 'i.date', $dateFrom]);
+        } else if ($dateTo) {
+            $query->andWhere(['<=', 'i.date', $dateTo]);
+        }
+
+        return $query->asArray()->all();
     }
 
 }

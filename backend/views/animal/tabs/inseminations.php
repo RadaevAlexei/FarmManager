@@ -14,6 +14,7 @@ use \yii\data\ArrayDataProvider;
  * @var array $usersList
  * @var array $seedBullList
  * @var array $containerDuaraList
+ * @var mixed $addRectal
  */
 
 ?>
@@ -25,8 +26,9 @@ use \yii\data\ArrayDataProvider;
 
     <div class="box-footer">
         <?= Html::button('Добавить осеменение', [
-            'class' => 'btn btn-warning',
-            'data'  => [
+            'class'    => 'btn btn-warning',
+            'disabled' => !ArrayHelper::getValue($addRectal, "can-insemination") || $animal->canAddCalving(),
+            'data'     => [
                 'toggle' => 'modal',
                 'target' => '#add-insemination-form-button',
             ]
