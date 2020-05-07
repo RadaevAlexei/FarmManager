@@ -27,6 +27,7 @@ class ReportExcelRectalList extends ReportExcel
     private $dateTo;
     private $data;
 
+    private $offset = 4;
     private $totalReheats = 0;
     private $users = [];
     private $usersCount = [];
@@ -56,6 +57,15 @@ class ReportExcelRectalList extends ReportExcel
         $this->dateFrom = $dateFrom;
         $this->dateTo = $dateTo;
         $this->fetchData();
+
+        $this->reheats = ArrayHelper::map(
+            Insemination::getReheatsList($this->dateFrom, $this->dateTo),
+            "id",
+            function ($item) {
+                return $item;
+            },
+            "lastName"
+        );
     }
 
     /**
@@ -75,10 +85,10 @@ class ReportExcelRectalList extends ReportExcel
     }
 
     /**
-     * @return mixed|void
-     * @throws Exception
+     * Заполнение шапки отчета
+     * @throws \Exception
      */
-    public function generate()
+    public function fillHead()
     {
         $this->sheet->setTitle('Отчет по РИ');
 
@@ -88,31 +98,28 @@ class ReportExcelRectalList extends ReportExcel
                 ->format('d.m.Y')
         );
 
-        $this->sheet->setCellValue("M2", $this->getPeriodText($this->dateFrom, $this->dateTo));
-
-        $this->reheats = ArrayHelper::map(
-            Insemination::getReheatsList($this->dateFrom, $this->dateTo),
-            "id",
-            function ($item) {
-                return $item;
-            },
-            "lastName"
+        $this->sheet->setCellValue(
+            "M2",
+            $this->getPeriodText($this->dateFrom, $this->dateTo)
         );
+    }
 
-        $count = count($this->data);
-
-        $startIndex = 5;
-        if ($count > 1) {
-            $this->sheet->insertNewRowBefore($startIndex, $count - 1);
+    /**
+     * Заполнение первой самой основной таблицы отчета
+     * @throws Exception
+     */
+    public function fillFirstTable()
+    {
+        if (count($this->data) > 1) {
+            $this->sheet->insertNewRowBefore($this->offset + 1, count($this->data) - 1);
         }
 
-        $offset = 4;
         $index = 1;
         foreach ($this->data as $ri) {
-            $this->sheet->setCellValue("A$offset", $index);
-            $this->sheet->setCellValue("B$offset", ArrayHelper::getValue($ri, "collar"));
-            $this->sheet->setCellValue("C$offset", ArrayHelper::getValue($ri, "label"));
-            $this->sheet->setCellValue("D$offset",
+            $this->sheet->setCellValue("A$this->offset", $index);
+            $this->sheet->setCellValue("B$this->offset", ArrayHelper::getValue($ri, "collar"));
+            $this->sheet->setCellValue("C$this->offset", ArrayHelper::getValue($ri, "label"));
+            $this->sheet->setCellValue("D$this->offset",
                 (new DateTime(
                     ArrayHelper::getValue($ri, "insemination_date"),
                     new DateTimeZone('Europe/Samara')
@@ -120,7 +127,7 @@ class ReportExcelRectalList extends ReportExcel
             );
 
             $userInsemination = ArrayHelper::getValue($ri, "insemination_lastname");
-            $this->sheet->setCellValue("E$offset", $userInsemination);
+            $this->sheet->setCellValue("E$this->offset", $userInsemination);
 
             if (!in_array($userInsemination, $this->users)) {
                 $this->users[] = $userInsemination;
@@ -133,7 +140,7 @@ class ReportExcelRectalList extends ReportExcel
             $dose = ArrayHelper::getValue($ri, "insemination_count_dose");
             $this->usersDoses[$userInsemination][] = $dose;
 
-            $this->sheet->setCellValue("F$offset",
+            $this->sheet->setCellValue("F$this->offset",
                 DataHelper::concatArrayIsNotEmptyElement([
                     ArrayHelper::getValue($ri, "bull_nickname"),
                     ArrayHelper::getValue($ri, "bull_number_1"),
@@ -141,16 +148,16 @@ class ReportExcelRectalList extends ReportExcel
                     ArrayHelper::getValue($ri, "bull_number_3")
                 ], "\n")
             );
-            $this->sheet->setCellValue("G$offset", ArrayHelper::getValue($ri, "count_insemination"));
-            $this->sheet->setCellValue("H$offset", ArrayHelper::getValue($ri, "insemination_count_dose"));
-            $this->sheet->getStyle("F$offset")->getAlignment()->setWrapText(true);
+            $this->sheet->setCellValue("G$this->offset", ArrayHelper::getValue($ri, "count_insemination"));
+            $this->sheet->setCellValue("H$this->offset", ArrayHelper::getValue($ri, "insemination_count_dose"));
+            $this->sheet->getStyle("F$this->offset")->getAlignment()->setWrapText(true);
             $this->sheet->setCellValue(
-                "I$offset",
+                "I$this->offset",
                 Insemination::getTypeInseminationLabel(ArrayHelper::getValue($ri, "type_insemination"))
             );
             $resultRI = ArrayHelper::getValue($ri, "result");
             $this->sheet->setCellValue(
-                "J$offset",
+                "J$this->offset",
                 $resultRI
             );
             if ($resultRI) {
@@ -168,169 +175,196 @@ class ReportExcelRectalList extends ReportExcel
             }
 
             $days = ArrayHelper::getValue($ri, "days");
-            $this->sheet->setCellValue("K$offset", $days ? $days : 0);
-            $this->sheet->setCellValue("L$offset",
+            $this->sheet->setCellValue("K$this->offset", $days ? $days : 0);
+            $this->sheet->setCellValue("L$this->offset",
                 (new DateTime(
                     ArrayHelper::getValue($ri, "rectal_date"),
                     new DateTimeZone('Europe/Samara')
                 ))->format('d.m.Y')
             );
-            $this->sheet->setCellValue("M$offset", ArrayHelper::getValue($ri, "rectal_lastname"));
+            $this->sheet->setCellValue("M$this->offset", ArrayHelper::getValue($ri, "rectal_lastname"));
 
             $servicePeriod = ArrayHelper::getValue($ri, "service_period");
             if ($servicePeriod) {
-                $this->sheet->setCellValue("N$offset", $servicePeriod);
+                $this->sheet->setCellValue("N$this->offset", $servicePeriod);
                 $this->usersServicePeriod[$userInsemination][] = $servicePeriod;
             }
 
             $index++;
-            $offset++;
+            $this->offset++;
         }
 
         if (count($this->users) > 1) {
-            $this->sheet->insertNewRowBefore($offset + 1, count($this->users) - 1);
+            $this->sheet->insertNewRowBefore($this->offset + 1, count($this->users) - 1);
         }
 
         if (count($this->users) > 0) {
-            $rangeData = $this->sheet->rangeToArray("A$offset:M$offset");
+            $rangeData = $this->sheet->rangeToArray("A$this->offset:M$this->offset");
             for ($i = 0; $i < count($this->users); $i++) {
-                $this->sheet->fromArray($rangeData, null, "A$offset");
-                $this->sheet->mergeCells("A$offset:B$offset");
-                $this->sheet->mergeCells("C$offset:E$offset");
-                $this->sheet->mergeCells("G$offset:L$offset");
-                $this->sheet->setCellValue("C$offset", $this->users[$i]);
+                $this->sheet->fromArray($rangeData, null, "A$this->offset");
+                $this->sheet->mergeCells("A$this->offset:B$this->offset");
+                $this->sheet->mergeCells("C$this->offset:E$this->offset");
+                $this->sheet->mergeCells("G$this->offset:L$this->offset");
+                $this->sheet->setCellValue("C$this->offset", $this->users[$i]);
                 $userTotalDose = array_sum(ArrayHelper::getValue($this->usersDoses, $this->users[$i]));
                 $this->usersTotalDoses[] = $userTotalDose;
-                $this->sheet->setCellValue("F$offset", $userTotalDose);
-                $this->sheet->setCellValue("M$offset",
+                $this->sheet->setCellValue("F$this->offset", $userTotalDose);
+                $this->sheet->setCellValue("M$this->offset",
                     DataHelper::getAverage(ArrayHelper::getValue($this->usersDoses, $this->users[$i]))
                 );
 
-                $servicePeriodAvg = DataHelper::getAverage(ArrayHelper::getValue($this->usersServicePeriod, $this->users[$i]));
+                $servicePeriodAvg = DataHelper::getAverage(
+                    ArrayHelper::getValue($this->usersServicePeriod, $this->users[$i])
+                );
                 $this->usersServicePeriodAvg[$this->users[$i]] = $servicePeriodAvg;
                 $this->sheet->setCellValue(
-                    "N$offset",
+                    "N$this->offset",
                     $servicePeriodAvg
                 );
-                $offset++;
+                $this->offset++;
             }
         }
 
         $this->sumUsersTotalDoses = array_sum($this->usersTotalDoses);
-        $this->sheet->setCellValue("F$offset", $this->sumUsersTotalDoses);
+        $this->sheet->setCellValue("F$this->offset", $this->sumUsersTotalDoses);
         $this->sheet->setCellValue(
-            "N$offset",
+            "N$this->offset",
             DataHelper::getAverage($this->usersServicePeriodAvg)
         );
+    }
 
-        $offset += 3;
+    /**
+     * Заполнение второй таблицы отчета
+     * @throws Exception
+     */
+    public function fillSecondTable()
+    {
+        $this->offset += 3;
         if (count($this->users) > 1) {
-            $this->sheet->insertNewRowBefore($offset + 1, count($this->users) - 1);
+            $this->sheet->insertNewRowBefore($this->offset + 1, count($this->users) - 1);
         }
 
         if (count($this->users) > 0) {
             for ($i = 0; $i < count($this->users); $i++) {
-                $this->sheet->mergeCells("B$offset:E$offset");
-                $this->sheet->mergeCells("G$offset:H$offset");
-                $this->sheet->mergeCells("I$offset:J$offset");
-                $this->sheet->mergeCells("K$offset:L$offset");
+                $this->sheet->mergeCells("B$this->offset:E$this->offset");
+                $this->sheet->mergeCells("G$this->offset:H$this->offset");
+                $this->sheet->mergeCells("I$this->offset:J$this->offset");
+                $this->sheet->mergeCells("K$this->offset:L$this->offset");
 
-                $this->sheet->setCellValue("A$offset", ($i + 1));
-                $this->sheet->setCellValue("B$offset", $this->users[$i]);
+                $this->sheet->setCellValue("A$this->offset", ($i + 1));
+                $this->sheet->setCellValue("B$this->offset", $this->users[$i]);
 
                 $countAll = ArrayHelper::getValue($this->usersCount, $this->users[$i]) + count(ArrayHelper::getValue($this->reheats, $this->users[$i]));
                 $this->totalInseminated += $countAll;
-                $this->sheet->setCellValue("F$offset", $countAll);
+                $this->sheet->setCellValue("F$this->offset", $countAll);
 
                 $countSteriles = ArrayHelper::getValue($this->usersCountSteriles, $this->users[$i]);
-                $this->sheet->setCellValue("G$offset", $countSteriles ? $countSteriles : 0);
+                $this->sheet->setCellValue("G$this->offset", $countSteriles ? $countSteriles : 0);
                 $this->totalSteriles += $countSteriles;
 
                 $countNotSteriles = ArrayHelper::getValue($this->usersCountNotSteriles, $this->users[$i]);
-                $this->sheet->setCellValue("I$offset", $countNotSteriles ? $countNotSteriles : 0);
+                $this->sheet->setCellValue("I$this->offset", $countNotSteriles ? $countNotSteriles : 0);
                 $this->totalNotSteriles += $countNotSteriles;
 
                 $countReheats = count(ArrayHelper::getValue($this->reheats, $this->users[$i]));
                 $this->totalReheats += $countReheats;
-                $this->sheet->setCellValue("K$offset", $countReheats);
+                $this->sheet->setCellValue("K$this->offset", $countReheats);
 
                 if ($countSteriles > 0 && $countAll > 0) {
-                    $this->sheet->setCellValue("M$offset", $countSteriles / $countAll);
+                    $this->sheet->setCellValue("M$this->offset", $countSteriles / $countAll);
                 }
 
-                $offset++;
+                $this->offset++;
             }
         }
 
-        $this->sheet->setCellValue("F$offset", $this->totalInseminated);
-        $this->sheet->setCellValue("G$offset", $this->totalSteriles);
-        $this->sheet->setCellValue("I$offset", $this->totalNotSteriles);
-        $this->sheet->setCellValue("K$offset", $this->totalReheats);
-        $this->sheet->setCellValue("M$offset", $this->totalSteriles / $this->totalInseminated);
+        $this->sheet->setCellValue("F$this->offset", $this->totalInseminated);
+        $this->sheet->setCellValue("G$this->offset", $this->totalSteriles);
+        $this->sheet->setCellValue("I$this->offset", $this->totalNotSteriles);
+        $this->sheet->setCellValue("K$this->offset", $this->totalReheats);
+        $this->sheet->setCellValue("M$this->offset", $this->totalSteriles / $this->totalInseminated);
 
-        $offset++;
+        $this->offset++;
         if ($this->sumUsersTotalDoses && $this->totalSteriles) {
-            $this->sheet->setCellValue("F$offset", $this->sumUsersTotalDoses / $this->totalSteriles);
+            $this->sheet->setCellValue("F$this->offset", $this->sumUsersTotalDoses / $this->totalSteriles);
         }
 
-        $offset++;
+        $this->offset++;
         if (count($this->users) > 1) {
-            $this->sheet->insertNewRowBefore($offset + 1, count($this->users) - 1);
+            $this->sheet->insertNewRowBefore($this->offset + 1, count($this->users) - 1);
         }
 
         if (count($this->users) > 0) {
-            $indexRangeData = $this->sheet->rangeToArray("A$offset:F$offset");
+            $indexRangeData = $this->sheet->rangeToArray("A$this->offset:F$this->offset");
             for ($i = 0; $i < count($this->users); $i++) {
-                $this->sheet->mergeCells("A$offset:C$offset");
-                $this->sheet->mergeCells("D$offset:E$offset");
-                $this->sheet->mergeCells("F$offset:M$offset");
+                $this->sheet->mergeCells("A$this->offset:C$this->offset");
+                $this->sheet->mergeCells("D$this->offset:E$this->offset");
+                $this->sheet->mergeCells("F$this->offset:M$this->offset");
 
                 if ($i != 0) {
-                    $this->sheet->fromArray($indexRangeData, null, "A$offset");
+                    $this->sheet->fromArray($indexRangeData, null, "A$this->offset");
                 }
 
-                $this->sheet->setCellValue("A$offset", $this->users[$i]);
-                $this->sheet->setCellValue("F$offset",
+                $this->sheet->setCellValue("A$this->offset", $this->users[$i]);
+                $this->sheet->setCellValue("F$this->offset",
                     array_sum(ArrayHelper::getValue($this->usersDoses, $this->users[$i])) / ArrayHelper::getValue($this->usersCountSteriles, $this->users[$i])
                 );
 
-                $offset++;
+                $this->offset++;
             }
         }
+    }
 
+    /**
+     * @throws Exception
+     */
+    public function fillFooter()
+    {
         $post = Yii::$app->request->post("RectalSettingsForm");
         $gynecologistId = ArrayHelper::getValue($post, "gynecologist");
         $gynecologist = User::findOne($gynecologistId);
         $chiefVeterinarianId = ArrayHelper::getValue($post, "chief_veterinarian");
         $chiefVeterinarian = User::findOne($chiefVeterinarianId);
 
-        $offset += 5;
+        $this->offset += 5;
         $this->sheet->setCellValue(
-            "I$offset",
+            "I$this->offset",
             ArrayHelper::getValue($gynecologist, "lastName")
         );
 
-        $offset += 4;
+        $this->offset += 4;
         if (count($this->users) > 1) {
-            $this->sheet->insertNewRowBefore($offset + 1, (count($this->users) - 1) * 2);
+            $this->sheet->insertNewRowBefore($this->offset + 1, (count($this->users) - 1) * 2);
         }
 
         if (count($this->users)) {
-            $usersRangeData = $this->sheet->rangeToArray("A$offset:I$offset");
+            $usersRangeData = $this->sheet->rangeToArray("A$this->offset:I$this->offset");
             for ($i = 0; $i < count($this->users); $i++) {
-                $this->sheet->fromArray($usersRangeData, null, "A$offset");
+                $this->sheet->fromArray($usersRangeData, null, "A$this->offset");
                 $this->sheet->setCellValue(
-                    "I$offset",
+                    "I$this->offset",
                     ArrayHelper::getValue($this->users, $i)
                 );
-                $offset += 2;
+                $this->offset += 2;
             }
         }
 
         $this->sheet->setCellValue(
-            "I$offset",
+            "I$this->offset",
             ArrayHelper::getValue($chiefVeterinarian, "lastName")
         );
+    }
+
+    /**
+     * @return mixed|void
+     * @throws Exception
+     */
+    public function generate()
+    {
+        $this->fillHead();
+        $this->fillFirstTable();
+        $this->fillSecondTable();
+        $this->fillFooter();
     }
 
     /**
