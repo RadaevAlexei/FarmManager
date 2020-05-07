@@ -73,21 +73,12 @@ abstract class ReportExcel
     }
 
     /**
-     * Получение папки с шаблонами
-     * @return string
+     * @param $path
+     * @return mixed
      */
-    private function getTemplateFolder()
+    public function getFullPath($path)
     {
-        return Yii::getAlias('@webroot') . '/reports/rectal/rectal-list/templates/';
-    }
-
-    /**
-     * @param $templateName
-     * @return string
-     */
-    public function getFullPath($templateName)
-    {
-        return $this->getTemplateFolder() . $templateName;
+        return Yii::getAlias('@webroot') . $path;
     }
 
     /**

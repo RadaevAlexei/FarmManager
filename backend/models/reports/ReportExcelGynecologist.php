@@ -2,8 +2,8 @@
 
 namespace backend\models\reports;
 
+use Yii;
 use backend\modules\reproduction\models\Insemination;
-use common\helpers\DateHelper;
 use common\models\rectal\Rectal;
 use DateTime;
 use DateTimeZone;
@@ -11,14 +11,16 @@ use PhpOffice\PhpSpreadsheet\Exception;
 use yii\helpers\ArrayHelper;
 
 /**
+ * Отчет для гинеколога
+ *
  * Class ReportExcelGynecologist
  * @package backend\models\reports
  */
 class ReportExcelGynecologist extends ReportExcel
 {
-    const GYNECOLOGIST_TEMPLATE_NAME = "template_rectal_list_for_gynecologist.xlsx";
-    const GYNECOLOGIST_TEMPLATE_FILE_NAME = "rectal_list_for_gynecologist";
-    const GYNECOLOGIST_DIRECTORY_REPORTS = "reports/rectal/rectal-list/rectal_list_for_gynecologist";
+    const REPORT_TEMPLATE_NAME = "template_rectal_list_for_gynecologist.xlsx";
+    const REPORT_TEMPLATE_FILE_NAME = "rectal_list_for_gynecologist";
+    const REPORT_DIRECTORY_REPORTS = "reports/rectal/rectal-list/rectal_list_for_gynecologist";
 
     private $dateFrom;
     private $dateTo;
@@ -47,7 +49,8 @@ class ReportExcelGynecologist extends ReportExcel
      */
     private function getPathTemplateForReport()
     {
-        return $this->getFullPath(self::GYNECOLOGIST_TEMPLATE_NAME);
+        $path = '/reports/rectal/rectal-list/templates/' . self::REPORT_TEMPLATE_NAME;
+        return $this->getFullPath($path);
     }
 
     /**
@@ -105,8 +108,8 @@ class ReportExcelGynecologist extends ReportExcel
     public function saveReport()
     {
         self::save(
-            self::GYNECOLOGIST_DIRECTORY_REPORTS,
-            self::GYNECOLOGIST_TEMPLATE_FILE_NAME
+            self::REPORT_DIRECTORY_REPORTS,
+            self::REPORT_TEMPLATE_FILE_NAME
         );
     }
 

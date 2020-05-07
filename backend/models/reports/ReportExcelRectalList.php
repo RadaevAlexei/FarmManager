@@ -5,7 +5,6 @@ namespace backend\models\reports;
 use Yii;
 use backend\modules\reproduction\models\Insemination;
 use common\helpers\DataHelper;
-use common\helpers\DateHelper;
 use common\models\rectal\Rectal;
 use common\models\User;
 use DateTime;
@@ -14,6 +13,8 @@ use PhpOffice\PhpSpreadsheet\Exception;
 use yii\helpers\ArrayHelper;
 
 /**
+ * Отчет по ректальному исследованию за период
+ *
  * Class ReportExcelRectalList
  * @package backend\models\reports
  */
@@ -57,6 +58,23 @@ class ReportExcelRectalList extends ReportExcel
         $this->dateFrom = $dateFrom;
         $this->dateTo = $dateTo;
         $this->fetchData();
+    }
+
+    /**
+     * @return string
+     */
+    private function getPathTemplateForReport()
+    {
+        $path = '/reports/rectal/rectal-list/templates/' . self::REPORT_TEMPLATE_NAME;
+        return $this->getFullPath($path);
+    }
+
+    /**
+     * Получение данных для генерации отчета
+     */
+    private function fetchData()
+    {
+        $this->data = Rectal::getRectalList($this->dateFrom, $this->dateTo);
 
         $this->reheats = ArrayHelper::map(
             Insemination::getReheatsList($this->dateFrom, $this->dateTo),
@@ -66,22 +84,6 @@ class ReportExcelRectalList extends ReportExcel
             },
             "lastName"
         );
-    }
-
-    /**
-     * @return string
-     */
-    private function getPathTemplateForReport()
-    {
-        return $this->getFullPath(self::REPORT_TEMPLATE_NAME);
-    }
-
-    /**
-     * Получение данных для генерации отчета
-     */
-    private function fetchData()
-    {
-        $this->data = Rectal::getRectalList($this->dateFrom, $this->dateTo);
     }
 
     /**

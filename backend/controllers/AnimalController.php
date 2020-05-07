@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\models\reports\ReportExcelAnimalSickList;
 use common\helpers\DateHelper;
 use common\models\rectal\InseminationRectalLink;
 use common\models\rectal\RectalSettings;
@@ -59,13 +60,6 @@ class AnimalController extends BackendController
      * Какой-то коефициент нормы, нужно дать название правильное
      */
     const NORM_VALUE_KOEF = 0.9;
-
-    const TEMPLATE_NAME = "template_animal_sick_list.xlsx";
-    const TEMPLATE_FILE_NAME = "animal_sick_list";
-    const DIRECTORY_REPORTS = "animal_sick_list";
-
-    const READER_TYPE = "Xlsx";
-    const WRITER_TYPE = "Xlsx";
 
     /**
      * @return string
@@ -766,9 +760,9 @@ class AnimalController extends BackendController
     /**
      * @param null $action
      * @param null $id
-     *
      * @return string|Response
-     * @throws \Exception
+     * @throws Throwable
+     * @throws \yii\db\StaleObjectException
      */
     public function actionActions($action = null, $id = null)
     {
@@ -1029,7 +1023,6 @@ class AnimalController extends BackendController
 
     /**
      * @param $inseminationId
-     *
      * @return string
      */
     public function actionEditInseminationForm($inseminationId)
@@ -1053,8 +1046,8 @@ class AnimalController extends BackendController
 
     /**
      * @param $inseminationId
-     *
      * @return Response
+     * @throws Exception
      */
     public function actionEditInsemination($inseminationId)
     {
@@ -1101,8 +1094,9 @@ class AnimalController extends BackendController
 
     /**
      * @param $id
-     *
      * @return Response
+     * @throws Exception
+     * @throws Throwable
      */
     public function actionDeleteInsemination($id)
     {
@@ -1312,105 +1306,19 @@ class AnimalController extends BackendController
         );
     }
 
-    private function getPathTemplate()
-    {
-        return Yii::getAlias('@webroot') . '/templates/' . self::TEMPLATE_NAME;
-    }
-
-    private function getTimePrefix()
-    {
-        return (new DateTime('now', new DateTimeZone('Europe/Samara')))->format('Y_m_d_H_i_s');
-    }
-
+    /**
+     * Скачивание отчета о больных животных
+     *
+     * @return \yii\console\Response|Response
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
+     */
     public function actionDownloadSickList()
     {
-        /** @var BaseReader $reader */
-        $templatePath = $this->getPathTemplate();
-
-        $reader = new Xlsx();
-
-        /** @var Spreadsheet $spreadsheet */
-        $spreadsheet = $reader->load($templatePath);
-
-        /** @var Worksheet $sheet */
-        $sheet = $spreadsheet->getActiveSheet();
-
-        $sheet->setCellValue("G1", (new DateTime('now', new DateTimeZone('Europe/Samara')))->format('d.m.Y'));
-
-        /** @var Animal[] $animals */
-        $animals = Animal::find()
-            ->alias('a')
-            ->with([
-                'diagnoses'           => function (ActiveQuery $query) {
-                    $query->alias('d');
-                },
-                'appropriationScheme' => function (ActiveQuery $query) {
-                    $query->alias('as');
-                    $query->joinWith([
-                        'scheme' => function (ActiveQuery $query) {
-                            $query->alias('s');
-                            $query->where(['s.status' => Scheme::STATUS_ACTIVE]);
-                            $query->joinWith([
-                                'schemeDays' => function (ActiveQuery $query) {
-                                    $query->alias('sd');
-                                }
-                            ]);
-                        }
-                    ]);
-                    $query->andFilterWhere(['as.status' => AppropriationScheme::STATUS_IN_PROGRESS]);
-                    $query->orderBy(['as.started_at' => SORT_ASC]);
-                }
-            ])
-            ->where([
-                'a.health_status' => Animal::HEALTH_STATUS_SICK
-            ])->all();
-
-        $count = count($animals);
-        if ($count > 1) {
-            $sheet->insertNewRowBefore(4, $count - 1);
-        }
-
-        $offset = 4;
-        foreach ($animals as $index => $animal) {
-            $sheet->setCellValue("A$offset", $index + 1);
-            $sheet->setCellValue("B$offset", ArrayHelper::getValue($animal, "collar"));
-            $sheet->setCellValue("C$offset", ArrayHelper::getValue($animal, "label"));
-            $sheet->setCellValue("D$offset",
-                (new DateTime(ArrayHelper::getValue($animal,
-                    "date_health")))->format('d.m.Y'));
-            $sheet->setCellValue("E$offset", ArrayHelper::getValue($animal, "diagnoses.name"));
-            $sheet->setCellValue("F$offset",
-                (new DateTime(ArrayHelper::getValue($animal,
-                    "appropriationScheme.started_at")))->format('d.m.Y'));
-
-
-            /** @var AppropriationScheme[] $appropriationSchemes */
-            $appropriationSchemes = $animal->onScheme();
-
-            $appropriationSchemesResult = '';
-            foreach ($appropriationSchemes as $appropriationScheme) {
-                $appropriationSchemesResult .= ArrayHelper::getValue($appropriationScheme, "scheme.name") . "\n";
-            }
-
-            $sheet->setCellValue("G$offset", $appropriationSchemesResult);
-            $sheet->setCellValue("H$offset",
-                count(ArrayHelper::getValue($animal, "appropriationScheme.scheme.schemeDays")));
-
-            $offset++;
-        }
-
-        $end = $offset + 1;
-        $spreadsheet->getActiveSheet()->getStyle("A4:H$end")->getAlignment()->setWrapText(true);
-        $spreadsheet->getActiveSheet()->getStyle("A4:H$end")->getFont()->setBold(false)->setSize(10);
-        $spreadsheet->getActiveSheet()->getColumnDimension('G')->setAutoSize(true);
-
-        $sheet->setTitle('Список больных животных');
-
-        $writer = IOFactory::createWriter($spreadsheet, self::WRITER_TYPE);
-        $prefix = $this->getTimePrefix();
-        $newFileName = self::DIRECTORY_REPORTS . "/" . self::TEMPLATE_FILE_NAME . '_' . $prefix . '.xlsx';
-        $writer->save($newFileName);
-
+        $report = new ReportExcelAnimalSickList();
+        $report->generateAndSave();
+        $newFileName = $report->getNewFileName();
         return Yii::$app->response->sendFile($newFileName);
     }
 
@@ -1636,7 +1544,7 @@ class AnimalController extends BackendController
         ));
     }
 
-    /**
+    /**A
      * Редактирование ректального исследования
      * @param $id
      * @return Response
