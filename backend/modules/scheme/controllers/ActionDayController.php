@@ -2,6 +2,8 @@
 
 namespace backend\modules\scheme\controllers;
 
+use Yii;
+use backend\models\reports\ReportExcelActionDay;
 use backend\modules\pharmacy\models\CashBook;
 use backend\modules\pharmacy\models\Preparation;
 use backend\modules\pharmacy\models\Storage;
@@ -12,14 +14,8 @@ use common\models\TypeField;
 use DateTime;
 use DateTimeZone;
 use Exception;
-use Yii;
 use backend\modules\scheme\models\ActionHistory;
 use backend\modules\scheme\models\search\ActionHistorySearch;
-use PhpOffice\PhpSpreadsheet\Reader\BaseReader;
-use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
-use PhpOffice\PhpSpreadsheet\IOFactory;
 use backend\controllers\BackendController;
 use yii\data\ArrayDataProvider;
 use yii\db\ActiveQuery;
@@ -32,13 +28,6 @@ use yii\helpers\ArrayHelper;
  */
 class ActionDayController extends BackendController
 {
-    const TEMPLATE_NAME = "template_works_today.xlsx";
-    const TEMPLATE_FILE_NAME = "works_today";
-    const DIRECTORY_REPORTS = "actions_today";
-
-    const READER_TYPE = "Xlsx";
-    const WRITER_TYPE = "Xlsx";
-
     /**
      * Страничка со списком схем, в которых нужно что-то сделать
      */
@@ -96,21 +85,10 @@ class ActionDayController extends BackendController
         );
     }
 
-    private function getPathTemplate()
-    {
-        return Yii::getAlias('@webroot') . '/templates/' . self::TEMPLATE_NAME;
-    }
-
-    private function getTimePrefix()
-    {
-        return (new DateTime('now', new DateTimeZone('Europe/Samara')))->format('Y_m_d_H_i_s');
-    }
-
     /**
      * Скачивание списка дел на сегодня
      *
      * @param null $filterDate
-     *
      * @return \yii\console\Response|\yii\web\Response
      * @throws \PhpOffice\PhpSpreadsheet\Exception
      * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
@@ -118,95 +96,16 @@ class ActionDayController extends BackendController
      */
     public function actionDownloadActionList($filterDate = null)
     {
-        /** @var BaseReader $reader */
-        $templatePath = $this->getPathTemplate();
-
-        $reader = new Xlsx();
-
-        /** @var Spreadsheet $spreadsheet */
-        $spreadsheet = $reader->load($templatePath);
-
-        /** @var Worksheet $sheet */
-        $sheet = $spreadsheet->getActiveSheet();
-
-        /** @var DateTime $date */
-        if (empty($filterDate)) {
-            $date = new DateTime('now', new DateTimeZone('Europe/Samara'));
-        } else {
-            $date = new DateTime($filterDate);
-        }
-
-        $sheet->setCellValue("H1", $date->format('d.m.Y'));
-
-        /** @var ActionHistory[] $history */
-        $history = ActionHistory::find()
-            ->alias('ah')
-            ->select(['ah.*', 'as.scheme_id', 'as.animal_id'])
-            ->joinWith([
-                'groupsAction',
-                'action',
-                'appropriationScheme' => function (ActiveQuery $query) {
-                    $query->alias('as');
-                    $query->joinWith([
-                        'animal' => function (ActiveQuery $query) {
-                            $query->alias('a');
-                            $query->joinWith(['animalGroup']);
-                        },
-                        'scheme' => function (ActiveQuery $query) {
-                            $query->alias('s');
-                            $query->where(['s.status' => Scheme::STATUS_ACTIVE]);
-                            $query->joinWith(['diagnosis']);
-                        }
-                    ]);
-                },
-            ])
-            ->where([
-                'ah.scheme_day_at' => $date->format('Y-m-d'),
-                'ah.status'        => ActionHistory::STATUS_NEW
-            ])
-            ->all();
-
-        $count = count($history);
-        if ($count > 1) {
-            $sheet->insertNewRowBefore(3, $count - 1);
-        }
-
-        $offset = 3;
-        foreach ($history as $action) {
-            $sheet->setCellValue("A$offset", ArrayHelper::getValue($action, "appropriationScheme.scheme.name"));
-            $sheet->setCellValue("B$offset", ArrayHelper::getValue($action, "scheme_day"));
-            $sheet->setCellValue("C$offset",
-                ArrayHelper::getValue($action, "appropriationScheme.animal.animalGroup.name"));
-            $sheet->setCellValue("D$offset", ArrayHelper::getValue($action, "appropriationScheme.animal.collar"));
-            $sheet->setCellValue("E$offset", ArrayHelper::getValue($action, "appropriationScheme.animal.label"));
-            $sheet->setCellValue("F$offset",
-                ArrayHelper::getValue($action, "appropriationScheme.scheme.diagnosis.name"));
-            $sheet->setCellValue("G$offset", ArrayHelper::getValue($action, "groupsAction.name"));
-            $sheet->setCellValue("H$offset", ArrayHelper::getValue($action, "action.name"));
-            $offset++;
-        }
-
-        $end = $offset + 1;
-        $spreadsheet->getActiveSheet()->getStyle("A3:J$end")->getFont()->setBold(false);
-        $spreadsheet->getActiveSheet()->getProtection()->setSheet(false);
-        $spreadsheet->getActiveSheet()->getPageSetup()->setScale(100);
-        $spreadsheet->getActiveSheet()->getColumnDimension('C')->setAutoSize(true);
-
-        $sheet->setTitle('Список дел на сегодня');
-
-        $writer = IOFactory::createWriter($spreadsheet, self::WRITER_TYPE);
-        $prefix = $this->getTimePrefix();
-        $newFileName = self::DIRECTORY_REPORTS . "/" . self::TEMPLATE_FILE_NAME . '_' . $prefix . '.xlsx';
-        $writer->save($newFileName);
-
-        return Yii::$app->response->sendFile($newFileName);
+        $report = new ReportExcelActionDay($filterDate);
+        $report->generateAndSave();
+        return Yii::$app->response->sendFile($report->getNewFileName());
     }
 
     /**
      * @param $scheme_id
      * @param bool $disable
-     *
      * @return string
+     * @throws Exception
      */
     public function actionDetails($scheme_id, $disable = false)
     {
@@ -265,8 +164,8 @@ class ActionDayController extends BackendController
 
     /**
      * @param $scheme_id
-     *
      * @return string
+     * @throws Exception
      */
     public function actionOverdueDetails($scheme_id)
     {
@@ -336,7 +235,6 @@ class ActionDayController extends BackendController
     /**
      * @param $id
      * @param bool $overdue
-     *
      * @return \yii\web\Response
      * @throws \Throwable
      * @throws \yii\db\Exception

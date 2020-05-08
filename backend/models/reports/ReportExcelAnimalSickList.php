@@ -2,15 +2,10 @@
 
 namespace backend\models\reports;
 
+use Yii;
 use backend\modules\scheme\models\AppropriationScheme;
 use backend\modules\scheme\models\Scheme;
 use common\models\Animal;
-use Yii;
-use backend\modules\reproduction\models\Insemination;
-use common\helpers\DataHelper;
-use common\helpers\DateHelper;
-use common\models\rectal\Rectal;
-use common\models\User;
 use DateTime;
 use DateTimeZone;
 use PhpOffice\PhpSpreadsheet\Exception;
@@ -27,7 +22,7 @@ class ReportExcelAnimalSickList extends ReportExcel
 {
     const REPORT_TEMPLATE_NAME = "template_animal_sick_list.xlsx";
     const REPORT_TEMPLATE_FILE_NAME = "animal_sick_list";
-    const REPORT_DIRECTORY_REPORTS = "animal_sick_list";
+    const REPORT_DIRECTORY_REPORTS = "reports/animal/animal_sick_list";
 
     private $data;
 
@@ -40,23 +35,14 @@ class ReportExcelAnimalSickList extends ReportExcel
      */
     public function __construct()
     {
-        parent::__construct(self::getPathTemplateForReport());
+        parent::__construct(self::REPORT_TEMPLATE_NAME);
         $this->fetchData();
-    }
-
-    /**
-     * @return string
-     */
-    private function getPathTemplateForReport()
-    {
-        $path = '/templates/' . self::REPORT_TEMPLATE_NAME;
-        return $this->getFullPath($path);
     }
 
     /**
      * Получение данных для генерации отчета
      */
-    private function fetchData()
+    public function fetchData()
     {
         $this->data = Animal::find()
             ->alias('a')

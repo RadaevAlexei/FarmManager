@@ -2,8 +2,8 @@
 
 namespace backend\models\reports;
 
-use common\helpers\DateHelper;
 use Yii;
+use common\helpers\DateHelper;
 use DateTime;
 use DateTimeZone;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -49,7 +49,7 @@ abstract class ReportExcel
      */
     public function __construct($templatePath)
     {
-        $this->load($templatePath);
+        $this->load($this->getFullPath($templatePath));
     }
 
     /**
@@ -78,7 +78,7 @@ abstract class ReportExcel
      */
     public function getFullPath($path)
     {
-        return Yii::getAlias('@webroot') . $path;
+        return Yii::getAlias('@webroot') . '/reports/templates/' . $path;
     }
 
     /**
@@ -127,11 +127,19 @@ abstract class ReportExcel
     }
 
     /**
+     * Получение данных, на основе которых будет генерироваться отчет
+     * @return mixed
+     */
+    abstract public function fetchData();
+
+    /**
+     * Генерация отчета
      * @return mixed
      */
     abstract public function generate();
 
     /**
+     * Генерация и сохранение
      * @return mixed
      */
     abstract public function generateAndSave();

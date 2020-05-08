@@ -22,7 +22,7 @@ class ReportExcelRectalList extends ReportExcel
 {
     const REPORT_TEMPLATE_NAME = "template_rectal_list_for_report.xlsx";
     const REPORT_TEMPLATE_FILE_NAME = "rectal_list_for_report";
-    const REPORT_DIRECTORY_REPORTS = "reports/rectal/rectal-list/rectal_list_reports";
+    const REPORT_DIRECTORY_REPORTS = "reports/rectal/rectal_list_reports";
 
     private $dateFrom;
     private $dateTo;
@@ -53,7 +53,7 @@ class ReportExcelRectalList extends ReportExcel
      */
     public function __construct($dateFrom = null, $dateTo = null)
     {
-        parent::__construct(self::getPathTemplateForReport());
+        parent::__construct(self::REPORT_TEMPLATE_NAME);
 
         $this->dateFrom = $dateFrom;
         $this->dateTo = $dateTo;
@@ -61,18 +61,9 @@ class ReportExcelRectalList extends ReportExcel
     }
 
     /**
-     * @return string
-     */
-    private function getPathTemplateForReport()
-    {
-        $path = '/reports/rectal/rectal-list/templates/' . self::REPORT_TEMPLATE_NAME;
-        return $this->getFullPath($path);
-    }
-
-    /**
      * Получение данных для генерации отчета
      */
-    private function fetchData()
+    public function fetchData()
     {
         $this->data = Rectal::getRectalList($this->dateFrom, $this->dateTo);
 

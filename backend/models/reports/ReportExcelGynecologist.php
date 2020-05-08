@@ -20,7 +20,7 @@ class ReportExcelGynecologist extends ReportExcel
 {
     const REPORT_TEMPLATE_NAME = "template_rectal_list_for_gynecologist.xlsx";
     const REPORT_TEMPLATE_FILE_NAME = "rectal_list_for_gynecologist";
-    const REPORT_DIRECTORY_REPORTS = "reports/rectal/rectal-list/rectal_list_for_gynecologist";
+    const REPORT_DIRECTORY_REPORTS = "reports/rectal/rectal_list_for_gynecologist";
 
     private $dateFrom;
     private $dateTo;
@@ -35,7 +35,7 @@ class ReportExcelGynecologist extends ReportExcel
      */
     public function __construct($dateFrom = null, $dateTo = null)
     {
-        parent::__construct(self::getPathTemplateForReport());
+        parent::__construct(self::REPORT_TEMPLATE_NAME);
 
         $this->dateFrom = $dateFrom;
         $this->dateTo = $dateTo;
@@ -43,20 +43,9 @@ class ReportExcelGynecologist extends ReportExcel
     }
 
     /**
-     * Получение полного пути до файла-шаблона,
-     * который будет заполняться данными
-     * @return string
-     */
-    private function getPathTemplateForReport()
-    {
-        $path = '/reports/rectal/rectal-list/templates/' . self::REPORT_TEMPLATE_NAME;
-        return $this->getFullPath($path);
-    }
-
-    /**
      * Получение данных, на основе которых будет генерироваться отчет
      */
-    private function fetchData()
+    public function fetchData()
     {
         $this->data = Rectal::getRectalListForGynecologist($this->dateFrom, $this->dateTo);
     }
