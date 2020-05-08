@@ -49,7 +49,7 @@ class ReportExcelActionDay extends ReportExcel
         if (empty($filterDate)) {
             $this->filterDate = new DateTime('now', new DateTimeZone('Europe/Samara'));
         } else {
-            $this->filterDate = new DateTime($this->filterDate);
+            $this->filterDate = new DateTime($filterDate);
         }
     }
 
