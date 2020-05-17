@@ -33,7 +33,11 @@ class ReportExcelActionDay extends ReportExcel
      */
     public function __construct($filterDate = null)
     {
-        parent::__construct(self::REPORT_TEMPLATE_NAME);
+        parent::__construct(
+            self::REPORT_TEMPLATE_NAME,
+            self::REPORT_DIRECTORY_REPORTS,
+            self::REPORT_TEMPLATE_FILE_NAME
+        );
 
         $this->initDate($filterDate);
         $this->fetchData();
@@ -91,8 +95,10 @@ class ReportExcelActionDay extends ReportExcel
      */
     public function fillHead()
     {
-        $this->sheet->setTitle('Список дел на сегодня');
-        $this->sheet->setCellValue("H1", $this->filterDate->format('d.m.Y'));
+        $this->activeSheet()->setTitle('Список дел на сегодня');
+        $this->activeSheet()->setCellValue(
+            "H1", $this->filterDate->format('d.m.Y')
+        );
     }
 
     /**
@@ -102,39 +108,39 @@ class ReportExcelActionDay extends ReportExcel
     {
         $count = count($this->data);
         if ($count > 1) {
-            $this->sheet->insertNewRowBefore($this->offset + 1, $count - 1);
+            $this->activeSheet()->insertNewRowBefore($this->offset + 1, $count - 1);
         }
 
         foreach ($this->data as $action) {
-            $this->sheet->setCellValue(
+            $this->activeSheet()->setCellValue(
                 "A$this->offset",
                 ArrayHelper::getValue($action, "appropriationScheme.scheme.name")
             );
-            $this->sheet->setCellValue(
+            $this->activeSheet()->setCellValue(
                 "B$this->offset",
                 ArrayHelper::getValue($action, "scheme_day")
             );
-            $this->sheet->setCellValue(
+            $this->activeSheet()->setCellValue(
                 "C$this->offset",
                 ArrayHelper::getValue($action, "appropriationScheme.animal.animalGroup.name")
             );
-            $this->sheet->setCellValue(
+            $this->activeSheet()->setCellValue(
                 "D$this->offset",
                 ArrayHelper::getValue($action, "appropriationScheme.animal.collar")
             );
-            $this->sheet->setCellValue(
+            $this->activeSheet()->setCellValue(
                 "E$this->offset",
                 ArrayHelper::getValue($action, "appropriationScheme.animal.label")
             );
-            $this->sheet->setCellValue(
+            $this->activeSheet()->setCellValue(
                 "F$this->offset",
                 ArrayHelper::getValue($action, "appropriationScheme.scheme.diagnosis.name")
             );
-            $this->sheet->setCellValue(
+            $this->activeSheet()->setCellValue(
                 "G$this->offset",
                 ArrayHelper::getValue($action, "groupsAction.name")
             );
-            $this->sheet->setCellValue(
+            $this->activeSheet()->setCellValue(
                 "H$this->offset",
                 ArrayHelper::getValue($action, "action.name")
             );
@@ -143,10 +149,10 @@ class ReportExcelActionDay extends ReportExcel
         }
 
         $end = $this->offset + 1;
-        $this->sheet->getStyle("A3:J$end")->getFont()->setBold(false);
-        $this->sheet->getProtection()->setSheet(false);
-        $this->sheet->getPageSetup()->setScale(100);
-        $this->sheet->getColumnDimension('C')->setAutoSize(true);
+        $this->activeSheet()->getStyle("A3:J$end")->getFont()->setBold(false);
+        $this->activeSheet()->getProtection()->setSheet(false);
+        $this->activeSheet()->getPageSetup()->setScale(100);
+        $this->activeSheet()->getColumnDimension('C')->setAutoSize(true);
     }
 
     /**
@@ -157,26 +163,5 @@ class ReportExcelActionDay extends ReportExcel
     {
         $this->fillHead();
         $this->fillMainTable();
-    }
-
-    /**
-     * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
-     */
-    public function saveReport()
-    {
-        self::save(
-            self::REPORT_DIRECTORY_REPORTS,
-            self::REPORT_TEMPLATE_FILE_NAME
-        );
-    }
-
-    /**
-     * @return mixed|void
-     * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
-     */
-    public function generateAndSave()
-    {
-        $this->generate();
-        $this->saveReport();
     }
 }

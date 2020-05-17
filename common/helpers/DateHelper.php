@@ -45,4 +45,28 @@ class DateHelper
         return (new DateTime($date, new DateTimeZone('Europe/Samara')))
             ->format('d.m.Y');
     }
+
+    /**
+     * @param $number
+     * @return mixed
+     */
+    public static function getMonthName($number)
+    {
+        $months = [
+            "января",
+            "февраля",
+            "марта",
+            "апреля",
+            "мая",
+            "июня",
+            "июля",
+            "августа",
+            "сентября",
+            "октября",
+            "ноября",
+            "декабря",
+        ];
+
+        return $months[$number - 1];
+    }
 }

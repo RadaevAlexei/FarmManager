@@ -20,7 +20,7 @@ class ReportExcelGynecologist extends ReportExcel
 {
     const REPORT_TEMPLATE_NAME = "template_rectal_list_for_gynecologist.xlsx";
     const REPORT_TEMPLATE_FILE_NAME = "rectal_list_for_gynecologist";
-    const REPORT_DIRECTORY_REPORTS = "reports/rectal/rectal_list_for_gynecologist";
+    const REPORT_DIRECTORY_REPORTS = "reports/rectal/rectal_list_for_gynecologist/";
 
     private $dateFrom;
     private $dateTo;
@@ -35,7 +35,11 @@ class ReportExcelGynecologist extends ReportExcel
      */
     public function __construct($dateFrom = null, $dateTo = null)
     {
-        parent::__construct(self::REPORT_TEMPLATE_NAME);
+        parent::__construct(
+            self::REPORT_TEMPLATE_NAME,
+            self::REPORT_DIRECTORY_REPORTS,
+            self::REPORT_TEMPLATE_FILE_NAME
+        );
 
         $this->dateFrom = $dateFrom;
         $this->dateTo = $dateTo;
@@ -51,65 +55,78 @@ class ReportExcelGynecologist extends ReportExcel
     }
 
     /**
-     * Генерирование отчета
-     *
      * @throws Exception
      */
-    public function generate()
+    private function fillHead()
     {
-        $this->sheet->setTitle('Список для гинеколога');
+        $this->activeSheet()->setTitle('Список для гинеколога');
 
-        $this->sheet->setCellValue("F1",
+        $this->activeSheet()->setCellValue(
+            "F1",
             (new DateTime('now', new DateTimeZone('Europe/Samara')))
                 ->format('d.m.Y')
         );
 
-        $this->sheet->setCellValue("F2", $this->getPeriodText($this->dateFrom, $this->dateTo));
+        $this->activeSheet()->setCellValue(
+            "F2",
+            $this->getPeriodText($this->dateFrom, $this->dateTo)
+        );
+    }
 
+    /**
+     * @throws Exception
+     */
+    private function fillMain()
+    {
         $count = count($this->data);
         if ($count > 1) {
-            $this->sheet->insertNewRowBefore(5, $count - 1);
+            $this->activeSheet()->insertNewRowBefore(5, $count - 1);
         }
 
         $offset = 4;
         $index = 1;
         foreach ($this->data as $ri) {
-            $this->sheet->setCellValue("A$offset", $index);
-            $this->sheet->setCellValue("B$offset", ArrayHelper::getValue($ri, "animal_group_name"));
-            $this->sheet->setCellValue("C$offset", ArrayHelper::getValue($ri, "collar"));
-            $this->sheet->setCellValue("D$offset", ArrayHelper::getValue($ri, "label"));
-            $this->sheet->setCellValue("E$offset", ArrayHelper::getValue($ri, "count_insemination"));
-            $this->sheet->setCellValue(
+            $this->activeSheet()->setCellValue("A$offset", $index);
+            $this->activeSheet()->setCellValue(
+                "B$offset",
+                ArrayHelper::getValue($ri, "animal_group_name")
+            );
+            $this->activeSheet()->setCellValue(
+                "C$offset",
+                ArrayHelper::getValue($ri, "collar")
+            );
+            $this->activeSheet()->setCellValue(
+                "D$offset",
+                ArrayHelper::getValue($ri, "label")
+            );
+            $this->activeSheet()->setCellValue(
+                "E$offset",
+                ArrayHelper::getValue($ri, "count_insemination")
+            );
+            $this->activeSheet()->setCellValue(
                 "F$offset",
-                Insemination::getTypeInseminationLabel(ArrayHelper::getValue($ri, "type_insemination"))
+                Insemination::getTypeInseminationLabel(
+                    ArrayHelper::getValue($ri, "type_insemination")
+                )
             );
             $days = ArrayHelper::getValue($ri, "days");
-            $this->sheet->setCellValue("H$offset", $days ? $days : 0);
+            $this->activeSheet()->setCellValue("H$offset", $days ? $days : 0);
             $index++;
             $offset++;
         }
     }
 
     /**
-     * Сохранение отчета
+     * Генерирование отчета
+     *
+     * @return mixed|void
      * @throws Exception
      */
-    public function saveReport()
+    public function generate()
     {
-        self::save(
-            self::REPORT_DIRECTORY_REPORTS,
-            self::REPORT_TEMPLATE_FILE_NAME
-        );
+        $this->fillHead();
+        $this->fillMain();
+        $this->addNewFile();
     }
 
-    /**
-     * Генерирование и сохранение отчета
-     *
-     * @throws Exception
-     */
-    public function generateAndSave()
-    {
-        $this->generate();
-        $this->saveReport();
-    }
 }

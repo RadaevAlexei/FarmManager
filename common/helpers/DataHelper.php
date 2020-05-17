@@ -36,7 +36,7 @@ class DataHelper
      */
     public static function getFioWithInitials($firstName = null, $lastName = null, $middleName = null)
     {
-        return DataHelper::concatArrayIsNotEmptyElement(
+        return self::concatArrayIsNotEmptyElement(
             [
                 $lastName,
                 ucfirst(mb_substr($firstName, 0, 1, "utf-8")) . ".",

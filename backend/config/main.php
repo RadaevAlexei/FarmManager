@@ -103,5 +103,8 @@ return [
         'rectal' => [
             'class' => 'backend\modules\rectal\Module'
         ],
+        'livestock' => [
+            'class' => 'backend\modules\livestock\Module'
+        ],
     ],
 ];

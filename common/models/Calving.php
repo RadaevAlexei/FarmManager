@@ -222,4 +222,6 @@ class Calving extends ActiveRecord
             (count($animals) == 2);
     }
 
+
+
 }

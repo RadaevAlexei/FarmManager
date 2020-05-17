@@ -41,6 +41,7 @@ use yii\helpers\ArrayHelper;
  * @property integer $fremartin
  * @property integer $rectal_examination
  * @property Insemination $curInsemination
+ * @property integer $color_id
  */
 class Animal extends ActiveRecord
 {
@@ -122,7 +123,7 @@ class Animal extends ActiveRecord
             'birthday'               => 'Дата Рождения',
             'sex'                    => 'Пол животного',
             'birth_weight'           => 'Вес при рождении',
-            'color'                  => 'Масть',
+            'color_id'                  => 'Масть',
             'mother_id'              => 'Мать',
             'father_id'              => 'Отец',
             'group_id'               => 'Группа',
@@ -170,7 +171,7 @@ class Animal extends ActiveRecord
                     'group_id',
                     'animal_group_id',
                     'box',
-                    'color',
+                    'color_id',
                     'mother_id',
                     'father_id',
                     'cowshed_id',
@@ -202,7 +203,7 @@ class Animal extends ActiveRecord
                 'birthday',
                 'sex',
                 'birth_weight',
-                'color',
+                'color_id',
                 'mother_id',
                 'father_id',
                 'group_id',
@@ -225,7 +226,7 @@ class Animal extends ActiveRecord
                 'birthday',
                 'sex',
                 'birth_weight',
-                'color',
+                'color_id',
                 'mother_id',
                 'father_id',
                 'group_id',

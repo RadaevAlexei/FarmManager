@@ -167,12 +167,12 @@ use \yii\helpers\Url;
                             [
                                 'label' => 'Просроченные',
                                 'icon'  => 'users',
-                                'url'   =>  Url::toRoute(['/scheme/action-day/overdue'])
+                                'url'   => Url::toRoute(['/scheme/action-day/overdue'])
                             ],
                             [
                                 'label' => 'Текущие и будущие',
                                 'icon'  => 'users',
-                                'url'   =>  Url::toRoute(['/scheme/action-day/index'])
+                                'url'   => Url::toRoute(['/scheme/action-day/index'])
                             ],
                         ]
                     ],
@@ -222,6 +222,12 @@ use \yii\helpers\Url;
                         'label' => 'Настройки РИ',
                         'icon'  => 'users',
                         'url'   => Url::toRoute(['/rectal/rectal-settings/index']),
+                    ],
+                    ['label' => 'Зоотехническая служба', 'options' => ['class' => 'header']],
+                    [
+                        'label' => 'Формирование актов',
+                        'icon'  => 'users',
+                        'url'   => Url::toRoute(['/livestock/livestock-report/index']),
                     ],
                 ],
             ]

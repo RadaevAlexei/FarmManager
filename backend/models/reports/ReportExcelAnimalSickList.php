@@ -22,7 +22,7 @@ class ReportExcelAnimalSickList extends ReportExcel
 {
     const REPORT_TEMPLATE_NAME = "template_animal_sick_list.xlsx";
     const REPORT_TEMPLATE_FILE_NAME = "animal_sick_list";
-    const REPORT_DIRECTORY_REPORTS = "reports/animal/animal_sick_list";
+    const REPORT_DIRECTORY_REPORTS = "reports/animal/animal_sick_list/";
 
     private $data;
 
@@ -35,7 +35,12 @@ class ReportExcelAnimalSickList extends ReportExcel
      */
     public function __construct()
     {
-        parent::__construct(self::REPORT_TEMPLATE_NAME);
+        parent::__construct(
+            self::REPORT_TEMPLATE_NAME,
+            self::REPORT_DIRECTORY_REPORTS,
+            self::REPORT_TEMPLATE_FILE_NAME
+        );
+
         $this->fetchData();
     }
 
@@ -77,9 +82,9 @@ class ReportExcelAnimalSickList extends ReportExcel
      */
     public function fillHead()
     {
-        $this->sheet->setTitle('Список больных животных');
+        $this->activeSheet()->setTitle('Список больных животных');
 
-        $this->sheet->setCellValue(
+        $this->activeSheet()->setCellValue(
             "G1",
             (new DateTime('now', new DateTimeZone('Europe/Samara')))
                 ->format('d.m.Y')
@@ -93,28 +98,28 @@ class ReportExcelAnimalSickList extends ReportExcel
     {
         $count = count($this->data);
         if ($count > 1) {
-            $this->sheet->insertNewRowBefore($this->offset, $count - 1);
+            $this->activeSheet()->insertNewRowBefore($this->offset, $count - 1);
         }
 
         foreach ($this->data as $index => $animal) {
-            $this->sheet->setCellValue("A$this->offset", $index + 1);
-            $this->sheet->setCellValue("B$this->offset",
+            $this->activeSheet()->setCellValue("A$this->offset", $index + 1);
+            $this->activeSheet()->setCellValue("B$this->offset",
                 ArrayHelper::getValue($animal, "collar")
             );
-            $this->sheet->setCellValue(
+            $this->activeSheet()->setCellValue(
                 "C$this->offset",
                 ArrayHelper::getValue($animal, "label")
             );
-            $this->sheet->setCellValue(
+            $this->activeSheet()->setCellValue(
                 "D$this->offset",
                 (new DateTime(ArrayHelper::getValue($animal,
                     "date_health")))->format('d.m.Y')
             );
-            $this->sheet->setCellValue(
+            $this->activeSheet()->setCellValue(
                 "E$this->offset",
                 ArrayHelper::getValue($animal, "diagnoses.name")
             );
-            $this->sheet->setCellValue(
+            $this->activeSheet()->setCellValue(
                 "F$this->offset",
                 (new DateTime(ArrayHelper::getValue($animal,
                     "appropriationScheme.started_at")))->format('d.m.Y')
@@ -128,8 +133,8 @@ class ReportExcelAnimalSickList extends ReportExcel
                 $appropriationSchemesResult .= ArrayHelper::getValue($appropriationScheme, "scheme.name") . "\n";
             }
 
-            $this->sheet->setCellValue("G$this->offset", $appropriationSchemesResult);
-            $this->sheet->setCellValue("H$this->offset",
+            $this->activeSheet()->setCellValue("G$this->offset", $appropriationSchemesResult);
+            $this->activeSheet()->setCellValue("H$this->offset",
                 count(ArrayHelper::getValue($animal, "appropriationScheme.scheme.schemeDays"))
             );
 
@@ -137,10 +142,10 @@ class ReportExcelAnimalSickList extends ReportExcel
         }
 
         $end = $this->offset + 1;
-        $this->sheet->getStyle("A4:H$end")->getAlignment()->setWrapText(true);
-        $this->sheet->getStyle("A4:H$end")
+        $this->activeSheet()->getStyle("A4:H$end")->getAlignment()->setWrapText(true);
+        $this->activeSheet()->getStyle("A4:H$end")
             ->getFont()->setBold(false)->setSize(10);
-        $this->sheet->getColumnDimension('G')->setAutoSize(true);
+        $this->activeSheet()->getColumnDimension('G')->setAutoSize(true);
     }
 
     /**
@@ -151,26 +156,5 @@ class ReportExcelAnimalSickList extends ReportExcel
     {
         $this->fillHead();
         $this->fillMainTable();
-    }
-
-    /**
-     * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
-     */
-    public function saveReport()
-    {
-        self::save(
-            self::REPORT_DIRECTORY_REPORTS,
-            self::REPORT_TEMPLATE_FILE_NAME
-        );
-    }
-
-    /**
-     * @return mixed|void
-     * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
-     */
-    public function generateAndSave()
-    {
-        $this->generate();
-        $this->saveReport();
     }
 }

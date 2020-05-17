@@ -115,7 +115,6 @@ class RectalListController extends BackendController
         $response->format = Response::FORMAT_HTML;
 
         return $this->renderPartial('forms/rectal-settings-form', compact(
-            'model',
             'dateFrom',
             'dateTo',
             'usersList'

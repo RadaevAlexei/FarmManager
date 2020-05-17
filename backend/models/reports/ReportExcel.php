@@ -12,6 +12,7 @@ use PhpOffice\PhpSpreadsheet\Reader\BaseReader;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use ZipArchive;
 
 /**
  * Class ReportExcel
@@ -20,11 +21,6 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 abstract class ReportExcel
 {
     const WRITER_TYPE = "Xlsx";
-
-    /**
-     * @var Worksheet
-     */
-    public $sheet;
 
     /**
      * @var BaseReader
@@ -37,19 +33,65 @@ abstract class ReportExcel
     public $spreadsheet;
 
     /**
+     * @var array
+     */
+    public $newFiles = [];
+
+    /**
+     * @var string
+     */
+    public $resultFilename = "";
+
+    /**
+     * @var string
+     */
+    private $extension = '.xlsx';
+
+    /**
      * @var
      */
-    public $newFileName;
+    private $directoryReports;
+
+    /**
+     * @var
+     */
+    private $templateFileName;
+
+    /**
+     * @var int
+     */
+    public $curSheetIndex = 0;
+
+    /**
+     * Нужно ли архивировать
+     * @var bool
+     */
+    public $needToArchive = false;
+
+    /**
+     * @var string
+     */
+    public $archiveExtension = ".zip";
+
+    /**
+     * @var int
+     */
+    private $indexFile = 0;
 
     /**
      * ReportExcel constructor.
      * @param $templatePath
+     * @param $directoryReports
+     * @param $templateFileName
      * @throws Exception
      * @throws \PhpOffice\PhpSpreadsheet\Exception
      */
-    public function __construct($templatePath)
+    public function __construct($templatePath, $directoryReports, $templateFileName)
     {
-        $this->load($this->getFullPath($templatePath));
+        $this->load($templatePath);
+
+        $this->directoryReports = $directoryReports;
+        $this->templateFileName = $templateFileName;
     }
 
     /**
@@ -60,8 +102,42 @@ abstract class ReportExcel
     private function load($templatePath)
     {
         $this->reader = new Xlsx();
-        $this->spreadsheet = $this->reader->load($templatePath);
-        $this->sheet = $this->spreadsheet->getActiveSheet();
+        $this->loadTemplate($templatePath);
+    }
+
+    /**
+     * @param $templatePath
+     * @throws Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
+     */
+    public function loadTemplate($templatePath)
+    {
+        $this->spreadsheet = $this->reader->load(
+            $this->getFullPath($templatePath)
+        );
+        $this->switchActiveSheet(0);
+    }
+
+    /**
+     * @return Worksheet
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
+     */
+    public function activeSheet()
+    {
+        return $this->spreadsheet->getActiveSheet();
+    }
+
+    /**
+     *
+     * @param $index
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
+     */
+    public function switchActiveSheet($index)
+    {
+        if ($this->spreadsheet->getActiveSheetIndex() != $index) {
+            $this->spreadsheet->setActiveSheetIndex($index);
+            $this->curSheetIndex = $index;
+        }
     }
 
     /**
@@ -69,7 +145,15 @@ abstract class ReportExcel
      */
     public function getNewFileName()
     {
-        return $this->newFileName;
+        return $this->resultFilename;
+    }
+
+    /**
+     * @param $filename
+     */
+    private function setNewFileName($filename)
+    {
+        $this->resultFilename = $filename;
     }
 
     /**
@@ -92,17 +176,63 @@ abstract class ReportExcel
     }
 
     /**
-     * @param $destinationFolder
-     * @param $fileName
+     * @throws \Exception
+     */
+    public function addNewFile()
+    {
+//        $prefix = $this->getTimePrefix();
+//        $prefix = microtime();
+        $prefix = $this->indexFile++;
+        $this->newFiles[] = $this->directoryReports . $this->templateFileName . '_' . $prefix . $this->extension;
+    }
+
+    /**
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
      * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
      */
-    public function save($destinationFolder, $fileName)
+    public function save()
     {
+        if (empty($this->newFiles)) {
+            return;
+        }
+
         $writer = IOFactory::createWriter($this->spreadsheet, self::WRITER_TYPE);
-        $extension = '.xlsx';
-        $prefix = $this->getTimePrefix();
-        $this->newFileName = $destinationFolder . "/" . $fileName . '_' . $prefix . $extension;
-        $writer->save($this->newFileName);
+        $lastFile = end($this->newFiles);
+        $writer->save($lastFile);
+
+        $this->setNewFileName($lastFile);
+    }
+
+    /**
+     *
+     */
+    private function deleteAllFiles()
+    {
+        foreach ($this->newFiles as $newFile) {
+            if (file_exists($newFile)) {
+                unlink($newFile);
+            }
+        }
+    }
+
+    /**
+     *
+     */
+    public function saveInArchive()
+    {
+        $dateFrom = "01.01.2020";
+        $dateTo = "10.06.2020";
+        $archiveName = "posting_offspring_($dateFrom-$dateTo)";
+        $zipFileName = $this->directoryReports . $archiveName . $this->archiveExtension;
+
+        $zip = new ZipArchive;
+        if ($zip->open($zipFileName, ZipArchive::CREATE) === TRUE) {
+            foreach ($this->newFiles as $newFile) {
+                $zip->addFile($newFile, basename($newFile));
+            }
+            $zip->close();
+            $this->setNewFileName($zipFileName);
+        }
     }
 
     /**
@@ -139,8 +269,12 @@ abstract class ReportExcel
     abstract public function generate();
 
     /**
-     * Генерация и сохранение
-     * @return mixed
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
      */
-    abstract public function generateAndSave();
+    public function generateAndSave()
+    {
+        $this->generate();
+        $this->save();
+    }
 }
