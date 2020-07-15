@@ -156,5 +156,6 @@ class ReportExcelAnimalSickList extends ReportExcel
     {
         $this->fillHead();
         $this->fillMainTable();
+        $this->addNewFile();
     }
 }

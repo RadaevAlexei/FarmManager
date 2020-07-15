@@ -163,5 +163,6 @@ class ReportExcelActionDay extends ReportExcel
     {
         $this->fillHead();
         $this->fillMainTable();
+        $this->addNewFile();
     }
 }
