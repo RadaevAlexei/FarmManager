@@ -2,6 +2,9 @@
 
 namespace backend\modules\scheme\models;
 
+use DateTime;
+use Exception;
+use Throwable;
 use Yii;
 use common\models\Animal;
 use yii\db\ActiveQuery;
@@ -16,8 +19,8 @@ use yii\helpers\ArrayHelper;
  * @property integer $animal_id
  * @property integer $scheme_id
  * @property integer $status
- * @property \DateTime $started_at
- * @property \DateTime $finished_at
+ * @property DateTime $started_at
+ * @property DateTime $finished_at
  */
 class AppropriationScheme extends ActiveRecord
 {
@@ -106,15 +109,17 @@ class AppropriationScheme extends ActiveRecord
 
     /**
      *
+     * @throws Exception|Throwable
      */
     public function removeFromScheme()
     {
         ActionHistory::deleteAll(['appropriation_scheme_id' => $this->id]);
 
-        self::findOne([
-            'animal_id' => $this->animal_id,
-            'scheme_id' => $this->scheme_id,
-        ])->delete();
+        $appropriationScheme = self::findOne($this->id);
+
+        if ($appropriationScheme) {
+            $appropriationScheme->delete();
+        }
 
         $user = Yii::$app->getUser()->getIdentity();
         $userId = ArrayHelper::getValue($user, "id");
@@ -123,11 +128,10 @@ class AppropriationScheme extends ActiveRecord
         $animalName = ArrayHelper::getValue($this, "animal.nickname");
         $schemeName = ArrayHelper::getValue($this, "scheme.name");
 
-        /** @var AnimalHistory $newAnimalHistory */
         $newAnimalHistory = new AnimalHistory([
             'animal_id' => $this->animal_id,
             'user_id' => $userId,
-            'date' => (new \DateTime('now', new \DateTimeZone('Europe/Samara')))->format('Y-m-d H:i:s'),
+            'date' => (new DateTime('now', new \DateTimeZone('Europe/Samara')))->format('Y-m-d H:i:s'),
             'action_type' => AnimalHistory::ACTION_TYPE_DELETE_SCHEME,
             'action_text' => "Убрал \"$animalName\" со схемы лечения \"$schemeName\""
         ]);
@@ -192,7 +196,7 @@ class AppropriationScheme extends ActiveRecord
         $newAnimalHistory = new AnimalHistory([
             'animal_id' => $this->animal_id,
             'user_id' => $userId,
-            'date' => (new \DateTime('now', new \DateTimeZone('Europe/Samara')))->format('Y-m-d H:i:s'),
+            'date' => (new DateTime('now', new \DateTimeZone('Europe/Samara')))->format('Y-m-d H:i:s'),
             'action_type' => AnimalHistory::ACTION_TYPE_APPROPRIATION_SCHEME,
             'action_text' => "Поставил \"$animalName\" на схему лечения \"$schemeName\""
         ]);
