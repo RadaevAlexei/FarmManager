@@ -185,6 +185,12 @@ $animalDiagnosisForm = new AnimalDiagnosisForm();
             'columns'      => [
                 ['class' => 'yii\grid\SerialColumn'],
                 [
+                    'attribute' => 'started_at',
+                    'content'   => function (AppropriationScheme $model) {
+                        return (new DateTime(ArrayHelper::getValue($model, 'started_at')))->format('d.m.Y');
+                    }
+                ],
+                [
                     'attribute' => 'scheme_id',
                     'content'   => function (AppropriationScheme $model) {
                         return Html::a(
