@@ -60,7 +60,7 @@ class AnimalSickSearch extends Animal
             ],
         ]);
 
-        if (!($this->load($params) && $this->validate())) {
+        if (!$this->load($params)) {
             return $dataProvider;
         }
 

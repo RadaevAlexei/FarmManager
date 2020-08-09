@@ -25,23 +25,47 @@ AnimalAsset::register($this);
             'Скачать список больных животных',
             $dataProvider->getModels() ? Url::toRoute(['animal/download-sick-list']) : "#",
             [
-                'class'    => 'btn btn-success',
+                'class' => 'btn btn-success',
                 'disabled' => $dataProvider->getModels() ? false : true
             ]
         ) ?>
     </div>
 
 <?php echo GridView::widget([
-    'formatter'    => [
-        'class'       => 'yii\i18n\Formatter',
+    'formatter' => [
+        'class' => 'yii\i18n\Formatter',
         'nullDisplay' => '',
     ],
     'tableOptions' => [
         'class' => 'table table-striped animal-table-hover',
     ],
     "dataProvider" => $dataProvider,
-    'columns'      => [
+    'columns' => [
         ['class' => 'yii\grid\SerialColumn'],
+        [
+            'label' => 'Статус',
+            'format' => 'raw',
+            'value' => function (Animal $model) {
+                /** @var AppropriationScheme[] $animalOnSchemes */
+                $appropriations = $model->onScheme();
+                if (!$appropriations) {
+                    return '';
+                }
+                $check = false;
+                foreach ($appropriations as $appropriation) {
+                    if (!$appropriation->getListNewActions()) {
+                        $check = true;
+                        break;
+                    }
+                }
+
+                if ($check) {
+                    return '<span class="badge bg-red" title="У данной коровы есть хотя бы одна схема, готовая к завершению"><span class="glyphicon glyphicon-exclamation-sign"></span></span>';
+                }
+
+                return '';
+            }
+        ],
         [
             'label' => '№ Ошейника',
             'value' => function (Animal $model) {
@@ -49,7 +73,7 @@ AnimalAsset::register($this);
             }
         ],
         [
-            'label'   => '№ Бирки',
+            'label' => '№ Бирки',
             'content' => function (Animal $model) {
                 return Html::a(
                     $model->label,
@@ -81,9 +105,9 @@ AnimalAsset::register($this);
             }
         ],
         [
-            'label'  => 'Наименование схемы',
+            'label' => 'Наименование схемы',
             'format' => 'raw',
-            'value'  => function (Animal $model) {
+            'value' => function (Animal $model) {
                 /** @var AppropriationScheme[] $appropriationSchemes */
                 $appropriationSchemes = $model->onScheme();
 
@@ -99,7 +123,7 @@ AnimalAsset::register($this);
         [
             'label' => 'Сколько дней лечения',
             'value' => function (Animal $model) {
-                return count(ArrayHelper::getValue($model, "appropriationScheme.scheme.schemeDays"));
+                return count(ArrayHelper::getValue($model, "appropriationScheme.scheme.schemeDays", []));
             }
         ]
     ]

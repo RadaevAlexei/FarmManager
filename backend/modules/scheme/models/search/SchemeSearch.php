@@ -42,11 +42,11 @@ class SchemeSearch extends Scheme
             ]
         ]);
 
-        if (!($this->load($params) && $this->validate())) {
+        if (!$this->load($params)) {
             return $dataProvider;
         }
 
-        $query->andFilterWhere(['like', 'name', $this->name]);
+        $query->andFilterWhere(['like', 's.name', $this->name]);
 
         return $dataProvider;
     }
