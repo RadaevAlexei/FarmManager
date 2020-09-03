@@ -2,13 +2,13 @@
 
 namespace common\models;
 
-use common\behaviors\DateToTimeBehavior;
 use Yii;
 use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
+use yii\helpers\ArrayHelper;
 
 /**
  * User model
@@ -363,5 +363,14 @@ class User extends ActiveRecord implements IdentityInterface
     public static function getChiefVeterinarian()
     {
         return User::findOne(['position_id' => 3]);
+    }
+
+    /**
+     * @return mixed
+     */
+    public static function getCurRoleCode()
+    {
+        return current(ArrayHelper::getColumn(Yii::$app->authManager->getRolesByUser(Yii::$app->getUser()->getId()),
+            'name'));
     }
 }
