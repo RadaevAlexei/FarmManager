@@ -58,11 +58,11 @@ class StockController extends BackendController
 
 		if ($isLoading && $model->validate()) {
 			$model->save();
-			Yii::$app->session->setFlash('success', 'Успешное создание склада');
+			$this->setFlash('success', 'Успешное создание склада');
 
 			return $this->redirect(["index"]);
 		} else {
-			Yii::$app->session->setFlash('error', 'Ошибка при создании склада');
+			$this->setFlash('error', 'Ошибка при создании склада');
 
 			return $this->render('new',
 				compact("model")
@@ -101,11 +101,11 @@ class StockController extends BackendController
 
 		if ($isLoading && $model->validate()) {
 			$model->save();
-			Yii::$app->session->setFlash('success', 'Успешное обновление данных о складе');
+			$this->setFlash('success', 'Успешное обновление данных о складе');
 
 			return $this->redirect(["index"]);
 		} else {
-			Yii::$app->session->setFlash('error', 'Ошибка при обновлении данных о складе');
+			$this->setFlash('error', 'Ошибка при обновлении данных о складе');
 
 			return $this->render('edit',
 				compact('model')
@@ -127,7 +127,7 @@ class StockController extends BackendController
 		/** @var Stock $model */
 		$model = Stock::findOne($id);
 		$model->delete();
-		Yii::$app->session->setFlash('success', 'Успешное удаление склада');
+		$this->setFlash('success', 'Успешное удаление склада');
 
 		return $this->redirect(['index']);
 	}

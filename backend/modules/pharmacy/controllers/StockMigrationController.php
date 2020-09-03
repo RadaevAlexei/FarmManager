@@ -122,7 +122,7 @@ class StockMigrationController extends BackendController
                 $model->date = (new \DateTime($model->date))->format('Y-m-d H:i:s');
                 $model->save();
                 $transaction->commit();
-                Yii::$app->session->setFlash('success', 'Успешное перемещение');
+                $this->setFlash('success', 'Успешное перемещение');
             } else {
                 throw new \Exception('Ошибка при перемещении');
             }
@@ -130,7 +130,7 @@ class StockMigrationController extends BackendController
             return $this->redirect(["new"]);
         } catch (\Exception $exception) {
             $transaction->rollBack();
-            Yii::$app->session->setFlash('error', $exception->getMessage());
+            $this->setFlash('error', $exception->getMessage());
             return $this->redirect(["new"]);
         }
     }

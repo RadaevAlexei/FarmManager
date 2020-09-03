@@ -58,11 +58,11 @@ class ContainerDuaraController extends BackendController
 
 		if ($isLoading && $model->validate()) {
 			$model->save();
-			Yii::$app->session->setFlash('success', 'Успешное создание сосуда');
+			$this->setFlash('success', 'Успешное создание сосуда');
 
 			return $this->redirect(["index"]);
 		} else {
-			Yii::$app->session->setFlash('error', 'Ошибка при создании сосуда');
+			$this->setFlash('error', 'Ошибка при создании сосуда');
 
 			return $this->render('new',
 				compact("model")
@@ -101,11 +101,11 @@ class ContainerDuaraController extends BackendController
 
 		if ($isLoading && $model->validate()) {
 			$model->save();
-			Yii::$app->session->setFlash('success', 'Успешное обновление данных о сосуде');
+			$this->setFlash('success', 'Успешное обновление данных о сосуде');
 
 			return $this->redirect(["index"]);
 		} else {
-			Yii::$app->session->setFlash('error', 'Ошибка при обновлении данных о сосуде');
+			$this->setFlash('error', 'Ошибка при обновлении данных о сосуде');
 
 			return $this->render('edit',
 				compact('model')
@@ -129,10 +129,10 @@ class ContainerDuaraController extends BackendController
             /** @var ContainerDuara $model */
             $model = ContainerDuara::findOne($id);
             $model->delete();
-            Yii::$app->session->setFlash('success', 'Успешное удаление сосуда');
+            $this->setFlash('success', 'Успешное удаление сосуда');
             $transaction->commit();
         } catch (\Exception $exception) {
-            Yii::$app->session->setFlash('error', 'Ошибка при удалении семени');
+            $this->setFlash('error', 'Ошибка при удалении семени');
             $transaction->rollBack();
         }
 

@@ -143,7 +143,7 @@ class EmployeeController extends BackendController
 
         if ($isLoading && $model->validate()) {
             $model->save();
-            \Yii::$app->session->setFlash('success', \Yii::t('app/back', 'EMPLOYEE_' . strtoupper($action) . '_SUCCESS'));
+            $this->setFlash('success', \Yii::t('app/back', 'EMPLOYEE_' . strtoupper($action) . '_SUCCESS'));
             return $this->redirect(['/employees']);
         } else {
             return $this->render('employee-add', [

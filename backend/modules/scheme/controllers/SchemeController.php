@@ -72,11 +72,11 @@ class SchemeController extends BackendController
 
         if ($isLoading && $model->validate()) {
             $model->save();
-            Yii::$app->session->setFlash('success', Yii::t('app/scheme', 'SCHEME_CREATE_SUCCESS'));
+            $this->setFlash('success', Yii::t('app/scheme', 'SCHEME_CREATE_SUCCESS'));
 
             return $this->redirect(["index"]);
         } else {
-            Yii::$app->session->setFlash('error', Yii::t('app/scheme', 'SCHEME_CREATE_ERROR'));
+            $this->setFlash('error', Yii::t('app/scheme', 'SCHEME_CREATE_ERROR'));
 
             return $this->render('new',
                 compact("model")
@@ -123,11 +123,11 @@ class SchemeController extends BackendController
 
         if ($isLoading && $model->validate()) {
             $model->save();
-            Yii::$app->session->setFlash('success', Yii::t('app/scheme', 'SCHEME_EDIT_SUCCESS'));
+            $this->setFlash('success', Yii::t('app/scheme', 'SCHEME_EDIT_SUCCESS'));
 
             return $this->redirect(["index"]);
         } else {
-            Yii::$app->session->setFlash('error', Yii::t('app/scheme', 'SCHEME_EDIT_ERROR'));
+            $this->setFlash('error', Yii::t('app/scheme', 'SCHEME_EDIT_ERROR'));
 
             return $this->render('edit',
                 compact('model')
@@ -163,10 +163,10 @@ class SchemeController extends BackendController
 
             $model->status = Scheme::STATUS_DELETED;
             $model->updateAttributes(['status']);
-            Yii::$app->session->setFlash('success', 'Успешное удаление схемы');
+            $this->setFlash('success', 'Успешное удаление схемы');
             $transaction->commit();
         } catch (\Exception $exception) {
-            Yii::$app->session->setFlash('error', $exception->getMessage());
+            $this->setFlash('error', $exception->getMessage());
             $transaction->rollBack();
         }
 
@@ -284,10 +284,10 @@ class SchemeController extends BackendController
 
             SchemeDay::deleteAll(['id' => $scheme_day_id]);
 
-            Yii::$app->session->setFlash('success', 'День был успешно удалён из схемы');
+            $this->setFlash('success', 'День был успешно удалён из схемы');
             $transaction->commit();
         } catch (\Exception $exception) {
-            Yii::$app->session->setFlash('error', 'Ошибка при удалении дня из схемы');
+            $this->setFlash('error', 'Ошибка при удалении дня из схемы');
             $transaction->rollBack();
         }
 
@@ -332,7 +332,7 @@ class SchemeController extends BackendController
 
             $transaction->commit();
         } catch (\Exception $exception) {
-            Yii::$app->session->setFlash('error', $exception->getMessage());
+            $this->setFlash('error', $exception->getMessage());
             $transaction->rollBack();
         }
 
@@ -360,10 +360,10 @@ class SchemeController extends BackendController
             $model->approve = true;
             $model->updateAttributes(['approve']);
 
-            Yii::$app->session->setFlash('success', 'Схема была успешно утверждена');
+            $this->setFlash('success', 'Схема была успешно утверждена');
             $transaction->commit();
         } catch (\Exception $exception) {
-            Yii::$app->session->setFlash('error', $exception->getMessage());
+            $this->setFlash('error', $exception->getMessage());
             $transaction->rollBack();
         }
 

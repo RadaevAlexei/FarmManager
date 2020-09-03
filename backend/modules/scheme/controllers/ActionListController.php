@@ -66,11 +66,11 @@ class ActionListController extends BackendController
 
         if ($isLoading && $model->validate()) {
             $model->save();
-            Yii::$app->session->setFlash('success', Yii::t('app/action-list', 'ACTION_LIST_CREATE_SUCCESS'));
+            $this->setFlash('success', Yii::t('app/action-list', 'ACTION_LIST_CREATE_SUCCESS'));
 
             return $this->redirect(["edit", "id" => $model->id]);
         } else {
-            Yii::$app->session->setFlash('error', Yii::t('app/action-list', 'ACTION_LIST_CREATE_ERROR'));
+            $this->setFlash('error', Yii::t('app/action-list', 'ACTION_LIST_CREATE_ERROR'));
 
             return $this->render('new',
                 compact("model")
@@ -112,11 +112,11 @@ class ActionListController extends BackendController
 
         if ($isLoading && $model->validate()) {
             $model->save();
-            Yii::$app->session->setFlash('success', Yii::t('app/action-list', 'ACTION_LIST_EDIT_SUCCESS'));
+            $this->setFlash('success', Yii::t('app/action-list', 'ACTION_LIST_EDIT_SUCCESS'));
 
             return $this->redirect(["index"]);
         } else {
-            Yii::$app->session->setFlash('error', Yii::t('app/action-list', 'ACTION_LIST_EDIT_ERROR'));
+            $this->setFlash('error', Yii::t('app/action-list', 'ACTION_LIST_EDIT_ERROR'));
 
             return $this->render('edit',
                 compact('model')

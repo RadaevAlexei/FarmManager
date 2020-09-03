@@ -58,11 +58,11 @@ class SeedSupplierController extends BackendController
 
 		if ($isLoading && $model->validate()) {
 			$model->save();
-			Yii::$app->session->setFlash('success', 'Успешное создание поставщика');
+			$this->setFlash('success', 'Успешное создание поставщика');
 
 			return $this->redirect(["index"]);
 		} else {
-			Yii::$app->session->setFlash('error', 'Ошибка при создании поставщика');
+			$this->setFlash('error', 'Ошибка при создании поставщика');
 
 			return $this->render('new',
 				compact("model")
@@ -102,11 +102,11 @@ class SeedSupplierController extends BackendController
 
 		if ($isLoading && $model->validate()) {
 			$model->save();
-			Yii::$app->session->setFlash('success', 'Успешное обновление данных о поставщике');
+			$this->setFlash('success', 'Успешное обновление данных о поставщике');
 
 			return $this->redirect(["index"]);
 		} else {
-			Yii::$app->session->setFlash('error', 'Ошибка при обновлении данных о поставщике');
+			$this->setFlash('error', 'Ошибка при обновлении данных о поставщике');
 
 			return $this->render('edit',
 				compact('model')
@@ -132,10 +132,10 @@ class SeedSupplierController extends BackendController
             $model = SeedSupplier::findOne($id);
             $model->delete();
 
-            Yii::$app->session->setFlash('success', 'Успешное удаление поставщика');
+            $this->setFlash('success', 'Успешное удаление поставщика');
             $transaction->commit();
         } catch (\Exception $exception) {
-            Yii::$app->session->setFlash('error', 'Ошибка при удалении поставщика');
+            $this->setFlash('error', 'Ошибка при удалении поставщика');
             $transaction->rollBack();
         }
 

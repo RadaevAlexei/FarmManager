@@ -83,10 +83,10 @@ class PositionController extends BackendController
 
         if ($isLoading && $model->validate()) {
             $model->save();
-            \Yii::$app->session->setFlash('success', Yii::t('app/position', 'POSITION_CREATE_SUCCESS'));
+            $this->setFlash('success', Yii::t('app/position', 'POSITION_CREATE_SUCCESS'));
             return $this->redirect(["position/index"]);
         } else {
-            \Yii::$app->session->setFlash('error', Yii::t('app/position', 'POSITION_CREATE_ERROR'));
+            $this->setFlash('error', Yii::t('app/position', 'POSITION_CREATE_ERROR'));
             return $this->render('new',
                 compact("model")
             );
@@ -123,10 +123,10 @@ class PositionController extends BackendController
 
         if ($isLoading && $model->validate()) {
             $model->save();
-            \Yii::$app->session->setFlash('success', Yii::t('app/position', 'POSITION_EDIT_SUCCESS'));
+            $this->setFlash('success', Yii::t('app/position', 'POSITION_EDIT_SUCCESS'));
             return $this->redirect(["position/index"]);
         } else {
-            \Yii::$app->session->setFlash('error', Yii::t('app/position', 'POSITION_EDIT_ERROR'));
+            $this->setFlash('error', Yii::t('app/position', 'POSITION_EDIT_ERROR'));
             return $this->render('edit',
                 compact('model')
             );
@@ -143,7 +143,7 @@ class PositionController extends BackendController
         /** @var Position $model */
         $model = Position::findOne($id);
         $model->delete();
-        \Yii::$app->session->setFlash('success', Yii::t('app/position', 'POSITION_DELETE_SUCCESS'));
+        $this->setFlash('success', Yii::t('app/position', 'POSITION_DELETE_SUCCESS'));
 
         return $this->redirect(['position/index']);
     }

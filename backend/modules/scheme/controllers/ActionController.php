@@ -69,11 +69,11 @@ class ActionController extends BackendController
 
         if ($isLoading && $model->validate()) {
             $model->save();
-            Yii::$app->session->setFlash('success', Yii::t('app/action', 'ACTION_CREATE_SUCCESS'));
+            $this->setFlash('success', Yii::t('app/action', 'ACTION_CREATE_SUCCESS'));
 
             return $this->redirect(["index"]);
         } else {
-            Yii::$app->session->setFlash('error', Yii::t('app/action', 'ACTION_CREATE_ERROR'));
+            $this->setFlash('error', Yii::t('app/action', 'ACTION_CREATE_ERROR'));
 
             return $this->render('new',
                 compact("model")
@@ -120,11 +120,11 @@ class ActionController extends BackendController
 
         if ($isLoading && $model->validate()) {
             $model->save();
-            Yii::$app->session->setFlash('success', Yii::t('app/action', 'ACTION_EDIT_SUCCESS'));
+            $this->setFlash('success', Yii::t('app/action', 'ACTION_EDIT_SUCCESS'));
 
             return $this->redirect(["index"]);
         } else {
-            Yii::$app->session->setFlash('error', Yii::t('app/action', 'ACTION_EDIT_ERROR'));
+            $this->setFlash('error', Yii::t('app/action', 'ACTION_EDIT_ERROR'));
 
             return $this->render('edit',
                 compact('model')
@@ -145,7 +145,7 @@ class ActionController extends BackendController
         /** @var Action $model */
         $model = Action::findOne($id);
         $model->delete();
-        Yii::$app->session->setFlash('success', Yii::t('app/action', 'ACTION_DELETE_SUCCESS'));
+        $this->setFlash('success', Yii::t('app/action', 'ACTION_DELETE_SUCCESS'));
 
         return $this->redirect(['index']);
     }

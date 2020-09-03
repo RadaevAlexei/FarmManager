@@ -60,11 +60,11 @@ class DiagnosisController extends BackendController
 
 		if ($isLoading && $model->validate()) {
 			$model->save();
-			Yii::$app->session->setFlash('success', Yii::t('app/diagnosis', 'DIAGNOSIS_CREATE_SUCCESS'));
+			$this->setFlash('success', Yii::t('app/diagnosis', 'DIAGNOSIS_CREATE_SUCCESS'));
 
 			return $this->redirect(["index"]);
 		} else {
-			Yii::$app->session->setFlash('error', Yii::t('app/diagnosis', 'DIAGNOSIS_CREATE_ERROR'));
+			$this->setFlash('error', Yii::t('app/diagnosis', 'DIAGNOSIS_CREATE_ERROR'));
 
 			return $this->render('new',
 				compact("model")
@@ -100,11 +100,11 @@ class DiagnosisController extends BackendController
 
 		if ($isLoading && $model->validate()) {
 			$model->save();
-			Yii::$app->session->setFlash('success', Yii::t('app/diagnosis', 'DIAGNOSIS_EDIT_SUCCESS'));
+			$this->setFlash('success', Yii::t('app/diagnosis', 'DIAGNOSIS_EDIT_SUCCESS'));
 
 			return $this->redirect(["index"]);
 		} else {
-			Yii::$app->session->setFlash('error', Yii::t('app/diagnosis', 'DIAGNOSIS_EDIT_ERROR'));
+			$this->setFlash('error', Yii::t('app/diagnosis', 'DIAGNOSIS_EDIT_ERROR'));
 
 			return $this->render('edit',
 				compact('model')
@@ -133,11 +133,11 @@ class DiagnosisController extends BackendController
             $model->delete();
             $transaction->commit();
 
-            \Yii::$app->session->setFlash('success', 'Успешное удаление диагноза');
+            $this->setFlash('success', 'Успешное удаление диагноза');
             return $this->redirect(['index']);
         } catch (\Exception $exception) {
             $transaction->rollBack();
-            \Yii::$app->session->setFlash('error', $exception->getMessage());
+            $this->setFlash('error', $exception->getMessage());
             return $this->redirect(['index']);
         }
 

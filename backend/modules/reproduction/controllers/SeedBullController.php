@@ -68,11 +68,11 @@ class SeedBullController extends BackendController
 		if ($isLoading && $model->validate()) {
 		    $model->birthday = (new \DateTime($model->birthday))->format('Y-m-d H:i:s');
 			$model->save();
-			Yii::$app->session->setFlash('success', 'Успешное создание семени');
+			$this->setFlash('success', 'Успешное создание семени');
 
 			return $this->redirect(["index"]);
 		} else {
-			Yii::$app->session->setFlash('error', 'Ошибка при создании семени');
+			$this->setFlash('error', 'Ошибка при создании семени');
 
 			return $this->render('new',
 				compact("model")
@@ -116,11 +116,11 @@ class SeedBullController extends BackendController
 		if ($isLoading && $model->validate()) {
             $model->birthday = (new \DateTime($model->birthday))->format('Y-m-d H:i:s');
 			$model->save();
-			Yii::$app->session->setFlash('success', 'Успешное обновление данных о семени');
+			$this->setFlash('success', 'Успешное обновление данных о семени');
 
 			return $this->redirect(["index"]);
 		} else {
-			Yii::$app->session->setFlash('error', 'Ошибка при обновлении данных о семени');
+			$this->setFlash('error', 'Ошибка при обновлении данных о семени');
 
 			return $this->render('edit',
 				compact('model')
@@ -145,10 +145,10 @@ class SeedBullController extends BackendController
             $model = SeedBull::findOne($id);
             $model->delete();
 
-            Yii::$app->session->setFlash('success', 'Успешное удаление семени');
+            $this->setFlash('success', 'Успешное удаление семени');
             $transaction->commit();
         } catch (\Exception $exception) {
-            Yii::$app->session->setFlash('error', 'Ошибка при удалении семени');
+            $this->setFlash('error', 'Ошибка при удалении семени');
             $transaction->rollBack();
         }
 

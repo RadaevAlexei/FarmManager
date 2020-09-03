@@ -356,11 +356,11 @@ class ActionDayController extends BackendController
             $newAnimalHistory->save();
             $transaction->commit();
 
-            \Yii::$app->session->setFlash('success', 'Успешное выполнение действия');
+            $this->setFlash('success', 'Успешное выполнение действия');
             return $this->redirect([$returnAction, "scheme_id" => $scheme_id]);
         } catch (Exception $exception) {
             $transaction->rollBack();
-            \Yii::$app->session->setFlash('error', $exception->getMessage());
+            $this->setFlash('error', $exception->getMessage());
             return $this->redirect([$returnAction, "scheme_id" => $scheme_id]);
         }
     }

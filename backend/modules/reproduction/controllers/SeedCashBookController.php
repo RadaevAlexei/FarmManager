@@ -101,13 +101,13 @@ class SeedCashBookController extends BackendController
                     $preparationStorage->save();
                 }
 
-                Yii::$app->session->setFlash('success', 'Успешное добавление прихода');
+                $this->setFlash('success', 'Успешное добавление прихода');
                 $transaction->commit();
             } else {
-                Yii::$app->session->setFlash('error', 'Ошибка валидации');
+                $this->setFlash('error', 'Ошибка валидации');
             }
         } catch (\Exception $exception) {
-            Yii::$app->session->setFlash('error', $exception->getMessage());
+            $this->setFlash('error', $exception->getMessage());
             $transaction->rollBack();
         }
 
@@ -129,10 +129,10 @@ class SeedCashBookController extends BackendController
             $model = CashBook::findOne($id);
             $model->delete();
 
-            Yii::$app->session->setFlash('success', 'Успешное удаление');
+            $this->setFlash('success', 'Успешное удаление');
             $transaction->commit();
         } catch (\Exception $exception) {
-            Yii::$app->session->setFlash('error', $exception->getMessage());
+            $this->setFlash('error', $exception->getMessage());
             $transaction->rollBack();
         }
 

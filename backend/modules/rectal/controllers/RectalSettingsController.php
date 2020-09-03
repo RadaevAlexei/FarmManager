@@ -37,10 +37,10 @@ class RectalSettingsController extends BackendController
 
         if ($isLoading && $model->validate()) {
             $model->save();
-            \Yii::$app->session->setFlash('success', 'Успешное обновление настроек РИ');
+            $this->setFlash('success', 'Успешное обновление настроек РИ');
             return $this->redirect(["index"]);
         } else {
-            \Yii::$app->session->setFlash('error', 'Ошибка при обновлении настроек РИ');
+            $this->setFlash('error', 'Ошибка при обновлении настроек РИ');
             return $this->render('index',
                 compact('model')
             );

@@ -108,7 +108,7 @@ class GroupController extends BackendController
 
         if ($isLoading && $model->validate()) {
             $model->save();
-            \Yii::$app->session->setFlash('success', \Yii::t('app/back', 'GROUP_' . strtoupper($action) . '_SUCCESS'));
+            $this->setFlash('success', \Yii::t('app/back', 'GROUP_' . strtoupper($action) . '_SUCCESS'));
             return $this->redirect(['/groups']);
         } else {
             return $this->render('group-add', [

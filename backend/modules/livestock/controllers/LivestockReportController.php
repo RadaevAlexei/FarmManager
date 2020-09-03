@@ -113,12 +113,12 @@ class LivestockReportController extends BackendController
                 $report->generate();
                 return Yii::$app->response->sendFile($report->getNewFileName());
             } catch (Exception $exception) {
-                Yii::$app->session->setFlash('error', $exception->getMessage());
+                $this->setFlash('error', $exception->getMessage());
                 return $this->redirect(["index"]);
             }
 
         } else {
-            Yii::$app->session->setFlash('error', 'Ошибка запроса');
+            $this->setFlash('error', 'Ошибка запроса');
             return $this->redirect(["index"]);
         }
     }

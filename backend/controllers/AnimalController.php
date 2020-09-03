@@ -113,10 +113,10 @@ class AnimalController extends BackendController
 
         if ($isLoading && $model->validate()) {
             $model->save();
-            Yii::$app->session->setFlash('success', Yii::t('app/animal', 'ANIMAL_CREATE_SUCCESS'));
+            $this->setFlash('success', Yii::t('app/animal', 'ANIMAL_CREATE_SUCCESS'));
             return $this->redirect(["animal/index"]);
         } else {
-            Yii::$app->session->setFlash('error', Yii::t('app/animal', 'ANIMAL_CREATE_ERROR'));
+            $this->setFlash('error', Yii::t('app/animal', 'ANIMAL_CREATE_ERROR'));
             return $this->render('new',
                 compact("model")
             );
@@ -170,10 +170,10 @@ class AnimalController extends BackendController
         if ($isLoading && $model->validate()) {
             $model->birthday = (new DateTime($model->birthday))->format('Y-m-d H:i:s');
             $model->save();
-            \Yii::$app->session->setFlash('success', Yii::t('app/animal', 'ANIMAL_EDIT_SUCCESS'));
+            $this->setFlash('success', Yii::t('app/animal', 'ANIMAL_EDIT_SUCCESS'));
             return $this->redirect(["animal/index"]);
         } else {
-            \Yii::$app->session->setFlash('error', Yii::t('app/animal', 'ANIMAL_EDIT_ERROR'));
+            $this->setFlash('error', Yii::t('app/animal', 'ANIMAL_EDIT_ERROR'));
             return $this->render('edit',
                 compact('model')
             );
@@ -194,7 +194,7 @@ class AnimalController extends BackendController
         /** @var Animal $model */
         $model = Animal::findOne($id);
         $model->delete();
-        \Yii::$app->session->setFlash('success', Yii::t('app/animal', 'ANIMAL_DELETE_SUCCESS'));
+        $this->setFlash('success', Yii::t('app/animal', 'ANIMAL_DELETE_SUCCESS'));
 
         return $this->redirect(['animal/index']);
     }
@@ -349,7 +349,7 @@ class AnimalController extends BackendController
                 }
 
                 $transaction->commit();
-                Yii::$app->session->setFlash('success', 'Успешное добавление осеменения');
+                $this->setFlash('success', 'Успешное добавление осеменения');
                 return $this->redirect(["detail", "id" => $model->animal_id]);
             } else {
                 throw new Exception('Ошибка при добавлении осеменения');
@@ -357,7 +357,7 @@ class AnimalController extends BackendController
         } catch (\Exception $exception) {
             $transaction->rollBack();
 
-            Yii::$app->session->setFlash('error', $exception->getMessage());
+            $this->setFlash('error', $exception->getMessage());
             return $this->redirect(["detail", "id" => $model->animal_id]);
         }
 
@@ -456,11 +456,11 @@ class AnimalController extends BackendController
             }
 
             $transaction->commit();
-            Yii::$app->session->setFlash('success', 'Успешное добавление отёла');
+            $this->setFlash('success', 'Успешное добавление отёла');
             return $this->redirect(["detail", "id" => $model->animal_id]);
         } catch (\Exception $exception) {
             $transaction->rollBack();
-            Yii::$app->session->setFlash('error', $exception->getMessage());
+            $this->setFlash('error', $exception->getMessage());
             return $this->redirect(["detail", "id" => $model->animal_id]);
         }
     }
@@ -499,15 +499,15 @@ class AnimalController extends BackendController
                     throw new Exception('Ошибка при записи действия в историю');
                 }
 
-                Yii::$app->session->setFlash('success', 'Успешное удаление отёла');
+                $this->setFlash('success', 'Успешное удаление отёла');
                 $transaction->commit();
             } else {
-                Yii::$app->session->setFlash('warning', 'Данное отёл найден');
+                $this->setFlash('warning', 'Данное отёл найден');
             }
 
             return $this->redirect(['detail', 'id' => $model->animal_id]);
         } catch (\Exception $exception) {
-            Yii::$app->session->setFlash('error', 'Ошибка при удалении отёла');
+            $this->setFlash('error', 'Ошибка при удалении отёла');
             $transaction->rollBack();
             return $this->redirect(['detail', 'id' => $model->animal_id]);
         }
@@ -533,15 +533,15 @@ class AnimalController extends BackendController
         try {
             if ($calving && $animal) {
                 $calving->deleteChildAnimal($animalId);
-                Yii::$app->session->setFlash('success', 'Успешное удаление животного из отёла');
+                $this->setFlash('success', 'Успешное удаление животного из отёла');
                 $transaction->commit();
             } else {
-                Yii::$app->session->setFlash('warning', 'Ошибка удаления.Отёл или животное отсутствует!');
+                $this->setFlash('warning', 'Ошибка удаления.Отёл или животное отсутствует!');
             }
 
             return $this->redirect(['detail', 'id' => $calving->animal_id]);
         } catch (\Exception $exception) {
-            Yii::$app->session->setFlash('error', 'Ошибка при удалении животного из отёла');
+            $this->setFlash('error', 'Ошибка при удалении животного из отёла');
             $transaction->rollBack();
             return $this->redirect(['detail', 'id' => $calving->animal_id]);
         }
@@ -580,12 +580,12 @@ class AnimalController extends BackendController
                 $model->createActionHistory();
             }
 
-            Yii::$app->session->setFlash('success', 'Успешное назначение схемы на животного');
+            $this->setFlash('success', 'Успешное назначение схемы на животного');
             $transaction->commit();
 
             return $this->redirect(["detail", "id" => $model->animal_id]);
         } catch (\Exception $exception) {
-            Yii::$app->session->setFlash('error', $exception->getMessage());
+            $this->setFlash('error', $exception->getMessage());
             $transaction->rollBack();
 
             return $this->redirect(["detail", "id" => $model->animal_id]);
@@ -606,7 +606,7 @@ class AnimalController extends BackendController
             $appropriation->removeFromScheme();
             $transaction->commit();
 
-            \Yii::$app->session->setFlash('success', 'Животное было удалено со схемы лечения');
+            $this->setFlash('success', 'Животное было удалено со схемы лечения');
             return $this->redirect(["detail", "id" => $appropriation->animal_id]);
         } catch (\Exception $exception) {
             $transaction->rollBack();
@@ -835,7 +835,7 @@ class AnimalController extends BackendController
         if ($isLoading && $model->validate()) {
             $model->save();
 
-            Yii::$app->session->setFlash('success', Yii::t('app/back', 'CALF_' . strtoupper($action) . '_SUCCESS'));
+            $this->setFlash('success', Yii::t('app/back', 'CALF_' . strtoupper($action) . '_SUCCESS'));
             return $this->redirect(['/calfs']);
         } else {
             return $this->render('calf-add', [
@@ -862,12 +862,12 @@ class AnimalController extends BackendController
                     ExcelHelper::updateFields($model->file->tempName);
                 }
 
-                Yii::$app->session->setFlash('success', 'Успешное обновление данных');
+                $this->setFlash('success', 'Успешное обновление данных');
                 $transaction->commit();
                 return $this->redirect(['index']);
             }
         } catch (\Exception $exception) {
-            Yii::$app->session->setFlash('error', 'Ошибка при обновлении данных');
+            $this->setFlash('error', 'Ошибка при обновлении данных');
             $transaction->rollBack();
             return $this->redirect(['index']);
         }
@@ -915,12 +915,12 @@ class AnimalController extends BackendController
                     }
                 }
 
-                Yii::$app->session->setFlash('success', 'Успешное смена состояния здоровья');
+                $this->setFlash('success', 'Успешное смена состояния здоровья');
                 $transaction->commit();
                 return $this->redirect(['detail', 'id' => $model->animal_id]);
             }
         } catch (\Exception $exception) {
-            Yii::$app->session->setFlash('error', 'Ошибка при смене состояния здоровья');
+            $this->setFlash('error', 'Ошибка при смене состояния здоровья');
             $transaction->rollBack();
             return $this->redirect(['detail', 'id' => $model->animal_id]);
         }
@@ -1009,13 +1009,13 @@ class AnimalController extends BackendController
                         throw new Exception('Ошибка при сохранении в амбулаторный журнал');
                     }
 
-                    Yii::$app->session->setFlash('success', 'Успешное редактирование отёла');
+                    $this->setFlash('success', 'Успешное редактирование отёла');
                     $transaction->commit();
                 }
                 return $this->redirect(['detail', 'id' => $model->animal_id]);
             }
         } catch (\Exception $exception) {
-            Yii::$app->session->setFlash('error', 'Ошибка при редактировании отёла');
+            $this->setFlash('error', 'Ошибка при редактировании отёла');
             $transaction->rollBack();
             return $this->redirect(['detail', 'id' => $model->animal_id]);
         }
@@ -1080,13 +1080,13 @@ class AnimalController extends BackendController
 
                     $newAnimalHistory->save();
 
-                    Yii::$app->session->setFlash('success', 'Успешное редактирование осеменения');
+                    $this->setFlash('success', 'Успешное редактирование осеменения');
                     $transaction->commit();
                 }
                 return $this->redirect(['detail', 'id' => $model->animal_id]);
             }
         } catch (\Exception $exception) {
-            Yii::$app->session->setFlash('error', 'Ошибка при редактировании осеменения');
+            $this->setFlash('error', 'Ошибка при редактировании осеменения');
             $transaction->rollBack();
             return $this->redirect(['detail', 'id' => $model->animal_id]);
         }
@@ -1122,15 +1122,15 @@ class AnimalController extends BackendController
 
                 $newAnimalHistory->save();
 
-                Yii::$app->session->setFlash('success', 'Успешное редактирование осеменения');
+                $this->setFlash('success', 'Успешное редактирование осеменения');
                 $transaction->commit();
             } else {
-                Yii::$app->session->setFlash('warning', 'Данное осеменение не найдено');
+                $this->setFlash('warning', 'Данное осеменение не найдено');
             }
 
             return $this->redirect(['detail', 'id' => $model->animal_id]);
         } catch (\Exception $exception) {
-            Yii::$app->session->setFlash('error', 'Ошибка при редактировании осеменения');
+            $this->setFlash('error', 'Ошибка при редактировании осеменения');
             $transaction->rollBack();
             return $this->redirect(['detail', 'id' => $model->animal_id]);
         }
@@ -1206,12 +1206,12 @@ class AnimalController extends BackendController
                     }
                 }
 
-                Yii::$app->session->setFlash('success', 'Успешное смена состояния здоровья');
+                $this->setFlash('success', 'Успешное смена состояния здоровья');
                 $transaction->commit();
                 return $this->redirect(['detail', 'id' => $model->animal_id]);
             }
         } catch (\Exception $exception) {
-            Yii::$app->session->setFlash('error', 'Ошибка при смене состояния здоровья');
+            $this->setFlash('error', 'Ошибка при смене состояния здоровья');
             $transaction->rollBack();
             return $this->redirect(['detail', 'id' => $model->animal_id]);
         }
@@ -1262,12 +1262,12 @@ class AnimalController extends BackendController
                     }
                 }
 
-                Yii::$app->session->setFlash('success', 'Успешное смена состояния здоровья');
+                $this->setFlash('success', 'Успешное смена состояния здоровья');
                 $transaction->commit();
                 return $this->redirect(['detail', 'id' => $model->animal_id]);
             }
         } catch (\Exception $exception) {
-            Yii::$app->session->setFlash('error', 'Ошибка при смене состояния здоровья');
+            $this->setFlash('error', 'Ошибка при смене состояния здоровья');
             $transaction->rollBack();
             return $this->redirect(['detail', 'id' => $model->animal_id]);
         }
@@ -1367,11 +1367,11 @@ class AnimalController extends BackendController
             }
 
             $transaction->commit();
-            Yii::$app->session->setFlash('success', 'Успешное проведение ректального исследования');
+            $this->setFlash('success', 'Успешное проведение ректального исследования');
             return $this->redirect(["detail", "id" => $model->animal_id]);
         } catch (\Exception $exception) {
             $transaction->rollBack();
-            Yii::$app->session->setFlash('error', $exception->getMessage());
+            $this->setFlash('error', $exception->getMessage());
             return $this->redirect(["detail", "id" => $model->animal_id]);
         }
     }
@@ -1440,10 +1440,10 @@ class AnimalController extends BackendController
             }
 
             $transaction->commit();
-            Yii::$app->session->setFlash('success', 'Успешное проведение ректального исследования');
+            $this->setFlash('success', 'Успешное проведение ректального исследования');
             return $this->redirect(['detail', 'id' => $model->animal_id]);
         } catch (\Exception $exception) {
-            Yii::$app->session->setFlash('error', 'Возникла ошибка при проведении ректального исследования');
+            $this->setFlash('error', 'Возникла ошибка при проведении ректального исследования');
             $transaction->rollBack();
             return $this->redirect(['detail', 'id' => $model->animal_id]);
         }
@@ -1485,15 +1485,15 @@ class AnimalController extends BackendController
                     throw new Exception('Ошибка при сохранении в амбулаторный журнал');
                 }
 
-                Yii::$app->session->setFlash('success', 'Успешное удаление ректального исследования');
+                $this->setFlash('success', 'Успешное удаление ректального исследования');
                 $transaction->commit();
             } else {
-                Yii::$app->session->setFlash('warning', 'Данное ректальное исследование не найдено');
+                $this->setFlash('warning', 'Данное ректальное исследование не найдено');
             }
 
             return $this->redirect(['detail', 'id' => $model->animal_id]);
         } catch (\Exception $exception) {
-            Yii::$app->session->setFlash('error', 'Ошибка при удалении ректального исследования');
+            $this->setFlash('error', 'Ошибка при удалении ректального исследования');
             $transaction->rollBack();
             return $this->redirect(['detail', 'id' => $model->animal_id]);
         }
@@ -1585,13 +1585,13 @@ class AnimalController extends BackendController
                         throw new Exception('Ошибка при сохранении в амбулаторный журнал');
                     }
 
-                    Yii::$app->session->setFlash('success', 'Успешное редактирование ректального исследования');
+                    $this->setFlash('success', 'Успешное редактирование ректального исследования');
                     $transaction->commit();
                 }
                 return $this->redirect(['detail', 'id' => $model->animal_id]);
             }
         } catch (\Exception $exception) {
-            Yii::$app->session->setFlash('error', 'Ошибка при редактировании ректального исследования');
+            $this->setFlash('error', 'Ошибка при редактировании ректального исследования');
             $transaction->rollBack();
             return $this->redirect(['detail', 'id' => $model->animal_id]);
         }

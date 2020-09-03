@@ -85,10 +85,10 @@ class ColorController extends BackendController
 
         if ($isLoading && $model->validate()) {
             $model->save();
-            \Yii::$app->session->setFlash('success', Yii::t('app/color', 'COLOR_CREATE_SUCCESS'));
+            $this->setFlash('success', Yii::t('app/color', 'COLOR_CREATE_SUCCESS'));
             return $this->redirect(["color/index"]);
         } else {
-            \Yii::$app->session->setFlash('error', Yii::t('app/color', 'COLOR_CREATE_ERROR'));
+            $this->setFlash('error', Yii::t('app/color', 'COLOR_CREATE_ERROR'));
             return $this->render('new',
                 compact("model")
             );
@@ -125,10 +125,10 @@ class ColorController extends BackendController
 
         if ($isLoading && $model->validate()) {
             $model->save();
-            \Yii::$app->session->setFlash('success', Yii::t('app/color', 'COLOR_EDIT_SUCCESS'));
+            $this->setFlash('success', Yii::t('app/color', 'COLOR_EDIT_SUCCESS'));
             return $this->redirect(["color/index"]);
         } else {
-            \Yii::$app->session->setFlash('error', Yii::t('app/color', 'COLOR_EDIT_ERROR'));
+            $this->setFlash('error', Yii::t('app/color', 'COLOR_EDIT_ERROR'));
             return $this->render('edit',
                 compact('model')
             );
@@ -145,7 +145,7 @@ class ColorController extends BackendController
         /** @var Color $model */
         $model = Color::findOne($id);
         $model->delete();
-        \Yii::$app->session->setFlash('success', Yii::t('app/color', 'COLOR_DELETE_SUCCESS'));
+        $this->setFlash('success', Yii::t('app/color', 'COLOR_DELETE_SUCCESS'));
 
         return $this->redirect(['color/index']);
     }

@@ -61,11 +61,11 @@ class AnimalGroupController extends BackendController
 
         if ($isLoading && $model->validate()) {
             $model->save();
-            Yii::$app->session->setFlash('success', 'Успешное создание группы');
+            $this->setFlash('success', 'Успешное создание группы');
 
             return $this->redirect(["index"]);
         } else {
-            Yii::$app->session->setFlash('error', 'Ошибка при создании группы');
+            $this->setFlash('error', 'Ошибка при создании группы');
 
             return $this->render('new',
                 compact("model")
@@ -99,11 +99,11 @@ class AnimalGroupController extends BackendController
 
         if ($isLoading && $model->validate()) {
             $model->save();
-            Yii::$app->session->setFlash('success', 'Успешное обновление группы');
+            $this->setFlash('success', 'Успешное обновление группы');
 
             return $this->redirect(["index"]);
         } else {
-            Yii::$app->session->setFlash('error', 'Ошибка при обновлении группы');
+            $this->setFlash('error', 'Ошибка при обновлении группы');
 
             return $this->render('edit',
                 compact('model')
@@ -122,7 +122,7 @@ class AnimalGroupController extends BackendController
         /** @var AnimalGroup $model */
         $model = AnimalGroup::findOne($id);
         $model->delete();
-        Yii::$app->session->setFlash('success', 'Успешное удаление группы');
+        $this->setFlash('success', 'Успешное удаление группы');
 
         return $this->redirect(['index']);
     }
