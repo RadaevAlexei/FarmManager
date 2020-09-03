@@ -6,6 +6,7 @@ use common\behaviors\DateToTimeBehavior;
 use Yii;
 use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
 
@@ -67,6 +68,11 @@ class User extends ActiveRecord implements IdentityInterface
      */
     const SCENARIO_FILTER = "filter";
 
+    /**
+     * Роль админа
+     */
+    const ROLE_ADMIN = 'admin';
+
 //    public $birthday_formatted;
 
     /**
@@ -123,9 +129,9 @@ class User extends ActiveRecord implements IdentityInterface
     public function behaviors()
     {
         return [
-            TimestampBehavior::className(),
+            TimestampBehavior::class,
             /*[
-                'class'         => DateToTimeBehavior::className(),
+                'class'         => DateToTimeBehavior::class,
                 'attributes'    => [
                     ActiveRecord::EVENT_BEFORE_VALIDATE => 'birthday_formatted',
                     ActiveRecord::EVENT_AFTER_FIND      => 'birthday_formatted',
@@ -195,11 +201,11 @@ class User extends ActiveRecord implements IdentityInterface
 
     /**
      * Получение должности
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getPos()
     {
-        return $this->hasOne(Position::className(), ['id' => 'position_id']);
+        return $this->hasOne(Position::class, ['id' => 'position_id']);
     }
 
     /**
