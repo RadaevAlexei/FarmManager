@@ -32,7 +32,8 @@
     "yii2tech/ar-softdelete": "^1.0",
     "kartik-v/yii2-tabs-x": "dev-master",
     "kartik-v/yii2-widget-select2": "dev-master",
-    "ext-zip": "*"
+    "ext-zip": "*",
+    "kartik-v/yii2-widget-datepicker": "dev-master"
   },
   "require-dev": {
     "yiisoft/yii2-codeception": "*",

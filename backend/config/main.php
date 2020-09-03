@@ -106,5 +106,8 @@ return [
         'livestock' => [
             'class' => 'backend\modules\livestock\Module'
         ],
+        'report' => [
+            'class' => 'backend\modules\report\Module'
+        ],
     ],
 ];
