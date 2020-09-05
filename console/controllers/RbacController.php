@@ -3,6 +3,7 @@
 namespace console\controllers;
 
 use Yii;
+use common\models\UserRole;
 use Exception;
 use common\models\User;
 use yii\console\Controller;
@@ -70,26 +71,123 @@ class RbacController extends Controller
     }
 
     /**
-     * @throws Exception
+     * @throws \yii\base\Exception
      */
     public function actionInit()
     {
         $this->_auth = Yii::$app->authManager;
 
         // Создаем разрешения
-//        $addUser = $this->secureCreatePermission('addUser',  'Возможность добавления пользователя');
+        // Пользователи
+        $userView = $this->secureCreatePermission('userView',  'Просмотр сотрудников');
+        $userEdit = $this->secureCreatePermission('userEdit',  'Редактирование сотрудников');
+        $userPositionView = $this->secureCreatePermission('userPositionView',  'Просмотр должностей');
+        $userPositionEdit = $this->secureCreatePermission('userPositionEdit',  'Редактирование должностей');
+
+        // Стадо
+        $animalView = $this->secureCreatePermission('animalView',  'Просмотр стада');
+        $animalEdit = $this->secureCreatePermission('animalEdit',  'Редактирование стада');
+        $animalColorView = $this->secureCreatePermission('animalColorView',  'Просмотр мастей');
+        $animalColorEdit = $this->secureCreatePermission('animalColorEdit',  'Редактирование мастей');
+        $cowshedView = $this->secureCreatePermission('cowshedView',  'Просмотр коровников');
+        $cowshedEdit = $this->secureCreatePermission('cowshedEdit',  'Редактирование коровников');
+        $farmView = $this->secureCreatePermission('farmView',  'Просмотр ферм');
+        $farmEdit = $this->secureCreatePermission('farmEdit',  'Редактирование ферм');
+        $animalGroupView = $this->secureCreatePermission('animalGroupView',  'Просмотр списка групп животных');
+        $animalGroupEdit = $this->secureCreatePermission('animalGroupEdit',  'Редактирование списка групп животных');
+
+        // Амбулаторный журнал
+        $schemeManageView = $this->secureCreatePermission('schemeManageView',  'Просмотр управление схемами');
+        $schemeManageEdit = $this->secureCreatePermission('schemeManageEdit',  'Редактирование управление схемами');
+        $diagnosisView = $this->secureCreatePermission('diagnosisView',  'Просмотр диагнозов');
+        $diagnosisEdit = $this->secureCreatePermission('diagnosisEdit',  'Редактирование диагнозов');
+        $managePharmacyView = $this->secureCreatePermission('managePharmacyView',  'Просмотр управление аптекой');
+        $managePharmacyEdit = $this->secureCreatePermission('managePharmacyEdit',  'Редактирование управление аптекой');
+        $schemeActionDayView = $this->secureCreatePermission('schemeActionDayView',  'Просмотр списка дел');
+        $schemeActionDayEdit = $this->secureCreatePermission('schemeActionDayEdit',  'Редактирование списка дел');
+        $animalSickView = $this->secureCreatePermission('animalSickView',  'Просмотр списка больных животных');
+        $animalSickEdit = $this->secureCreatePermission('animalSickEdit',  'Редактирование списка больных животных');
+        $animalAwaitingView = $this->secureCreatePermission('animalAwaitingView',  'Просмотр списка животных в ожидании');
+        $animalAwaitingEdit = $this->secureCreatePermission('animalAwaitingEdit',  'Редактирование списка животных в ожидании');
+
+        // Воспроизводство
+        $seedSupplierView = $this->secureCreatePermission('seedSupplierView',  'Просмотр поставщиков семени');
+        $seedSupplierEdit = $this->secureCreatePermission('seedSupplierEdit',  'Редактирование поставщиков семени');
+        $seedBullView = $this->secureCreatePermission('seedBullView',  'Просмотр списка быков');
+        $seedBullEdit = $this->secureCreatePermission('seedBullEdit',  'Редактирование списка быков');
+        $containerDuaraView = $this->secureCreatePermission('containerDuaraView',  'Просмотр сосудов дьюара');
+        $containerDuaraEdit = $this->secureCreatePermission('containerDuaraEdit',  'Редактирование сосудов дьюара');
+        $seedCashBookView = $this->secureCreatePermission('seedCashBookView',  'Просмотр расхода/прихода');
+        $seedCashBookEdit = $this->secureCreatePermission('seedCashBookEdit',  'Редактирование расхода/прихода');
+
+        // Ректальное исследование
+        $rectalListView = $this->secureCreatePermission('rectalListView',  'Просмотр животных под РИ');
+        $rectalListEdit = $this->secureCreatePermission('rectalListEdit',  'Редактирование животных под РИ');
+        $rectalSettingsView = $this->secureCreatePermission('rectalSettingsView',  'Просмотр настроек РИ');
+        $rectalSettingsEdit = $this->secureCreatePermission('rectalSettingsEdit',  'Редактирование настроек РИ');
+
+        // Зоотехническая служба
+        $liveStockReportView = $this->secureCreatePermission('rectalSettingsView',  'Формирование отчетов');
 
         // Создаем роли
-        $adminRole = $this->secureCreateRole('admin');
+        $adminRole = $this->secureCreateRole(UserRole::ROLE_ADMIN);
+        $veterinaryRole = $this->secureCreateRole(UserRole::ROLE_VETERINARY_SERVICE);
+        $zootechnicalRole = $this->secureCreateRole(UserRole::ROLE_ZOOTECHNICAL_SERVICE);
+        $viewerRole = $this->secureCreateRole(UserRole::ROLE_VIEWER);
 
-//        $this->secureAssign($curatorRole, $createAgent);
-//        $this->secureAssign($adminRole, $createCurator);
+        // Назначаем пермишены на роли
+        $this->secureAssign($viewerRole, $userView);
+        $this->secureAssign($viewerRole, $userPositionView);
+        $this->secureAssign($viewerRole, $animalView);
+        $this->secureAssign($viewerRole, $animalColorView);
+        $this->secureAssign($viewerRole, $cowshedView);
+        $this->secureAssign($viewerRole, $farmView);
+        $this->secureAssign($viewerRole, $animalGroupView);
+        $this->secureAssign($viewerRole, $schemeManageView);
+        $this->secureAssign($viewerRole, $diagnosisView);
+        $this->secureAssign($viewerRole, $managePharmacyView);
+        $this->secureAssign($viewerRole, $schemeActionDayView);
+        $this->secureAssign($viewerRole, $animalSickView);
+        $this->secureAssign($viewerRole, $animalAwaitingView);
+        $this->secureAssign($viewerRole, $rectalListView);
+        $this->secureAssign($viewerRole, $rectalSettingsView);
+        $this->secureAssign($viewerRole, $seedSupplierView);
+        $this->secureAssign($viewerRole, $seedBullView);
+        $this->secureAssign($viewerRole, $containerDuaraView);
+        $this->secureAssign($viewerRole, $seedCashBookView);
+        $this->secureAssign($viewerRole, $liveStockReportView);
+
+        $this->secureAssign($veterinaryRole, $animalEdit);
+        $this->secureAssign($veterinaryRole, $schemeManageEdit);
+        $this->secureAssign($veterinaryRole, $diagnosisEdit);
+        $this->secureAssign($veterinaryRole, $managePharmacyEdit);
+        $this->secureAssign($veterinaryRole, $schemeActionDayEdit);
+        $this->secureAssign($veterinaryRole, $animalSickEdit);
+        $this->secureAssign($veterinaryRole, $animalAwaitingEdit);
+        $this->secureAssign($veterinaryRole, $rectalListEdit);
+        $this->secureAssign($veterinaryRole, $rectalSettingsEdit);
+        $this->secureAssign($veterinaryRole, $viewerRole);
+
+        $this->secureAssign($zootechnicalRole, $seedSupplierEdit);
+        $this->secureAssign($zootechnicalRole, $seedBullEdit);
+        $this->secureAssign($zootechnicalRole, $containerDuaraEdit);
+        $this->secureAssign($zootechnicalRole, $seedCashBookEdit);
+        $this->secureAssign($zootechnicalRole, $viewerRole);
+
+        $this->secureAssign($adminRole, $userEdit);
+        $this->secureAssign($adminRole, $userPositionEdit);
+        $this->secureAssign($adminRole, $animalColorEdit);
+        $this->secureAssign($adminRole, $cowshedEdit);
+        $this->secureAssign($adminRole, $farmEdit);
+        $this->secureAssign($adminRole, $animalGroupEdit);
+        $this->secureAssign($adminRole, $viewerRole);
 
         $this->stdout("RBAC has been initialized!\n", Console::FG_GREEN);
     }
 
     /**
      * Создание админа и назначение ему роли админа
+     * TODO:: Поправить создание админа
      * @throws Exception
      */
     public function actionCreateAdmin()
