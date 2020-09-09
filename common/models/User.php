@@ -94,7 +94,7 @@ class User extends ActiveRecord implements IdentityInterface
 
             [['email'], 'email'],
             [['firstName', 'lastName', 'middleName'], 'string'],
-            [['username', 'lastName'], 'required', 'on' => self::SCENARIO_CREATE_EDIT],
+            [['username'], 'required', 'on' => self::SCENARIO_CREATE_EDIT],
             [['firstName', 'lastName', 'middleName'], 'trim'],
             ['gender', 'in', 'range' => [self::GENDER_MALE, self::GENDER_FEMALE]],
             ['position_id', 'in', 'range' => Position::getAllPositionsIDs()],
@@ -109,16 +109,16 @@ class User extends ActiveRecord implements IdentityInterface
     public function attributeLabels()
     {
         return [
-            'username'    => Yii::t('app/user', 'USER_NAME'),
-            'email'       => Yii::t('app/user', 'USER_EMAIL'),
-            'status'      => Yii::t('app/user', 'USER_STATUS'),
-            'gender'      => Yii::t('app/user', 'USER_GENDER'),
-            'birthday'    => Yii::t('app/user', 'USER_BIRTHDAY'),
-            'position_id' => Yii::t('app/position', 'POSITION'),
-            'firstName'   => Yii::t('app/user', 'USER_FIRSTNAME'),
-            'lastName'    => Yii::t('app/user', 'USER_LASTNAME'),
-            'middleName'  => Yii::t('app/user', 'USER_MIDDLENAME'),
-            'posName'     => Yii::t('app/position', 'POSITION_NAME'),
+            'username'    => "Логин",
+            'email'       => "Почта",
+            'status'      => "Статус",
+            'gender'      => "Пол",
+            'birthday'    => "Дата Рождения",
+            'position_id' => "ID Должности",
+            'firstName'   => "Имя",
+            'lastName'    => "Фамилия",
+            'middleName'  => "Отчество",
+            'posName'     => "Должность",
 //            'birthday_formatted'     => 'форматируемая дата',
         ];
     }
@@ -161,8 +161,8 @@ class User extends ActiveRecord implements IdentityInterface
     public static function getGenderList()
     {
         return [
-            self::GENDER_MALE   => Yii::t('app/user', 'USER_GENDER_' . self::GENDER_MALE),
-            self::GENDER_FEMALE => Yii::t('app/user', 'USER_GENDER_' . self::GENDER_FEMALE)
+            self::GENDER_MALE   => 'Мужской',
+            self::GENDER_FEMALE => 'Женский'
         ];
     }
 

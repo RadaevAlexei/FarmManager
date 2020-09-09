@@ -21,6 +21,8 @@ class RbacController extends Controller
     /** @var ManagerInterface */
     public $_auth;
 
+    const DEFAULT_PASSWORD = '123456';
+
     /**
      * @param $permission
      * @param $description
@@ -60,7 +62,7 @@ class RbacController extends Controller
     /**
      * @param $role
      * @param $child
-     * @throws \yii\base\Exception
+     * @throws Exception
      */
     private function secureAssign($role, $child)
     {
@@ -71,7 +73,7 @@ class RbacController extends Controller
     }
 
     /**
-     * @throws \yii\base\Exception
+     * @throws Exception
      */
     public function actionInit()
     {
@@ -79,55 +81,55 @@ class RbacController extends Controller
 
         // Создаем разрешения
         // Пользователи
-        $userView = $this->secureCreatePermission('userView',  'Просмотр сотрудников');
-        $userEdit = $this->secureCreatePermission('userEdit',  'Редактирование сотрудников');
-        $userPositionView = $this->secureCreatePermission('userPositionView',  'Просмотр должностей');
-        $userPositionEdit = $this->secureCreatePermission('userPositionEdit',  'Редактирование должностей');
+        $userView = $this->secureCreatePermission('userView', 'Просмотр сотрудников');
+        $userEdit = $this->secureCreatePermission('userEdit', 'Редактирование сотрудников');
+        $userPositionView = $this->secureCreatePermission('userPositionView', 'Просмотр должностей');
+        $userPositionEdit = $this->secureCreatePermission('userPositionEdit', 'Редактирование должностей');
 
         // Стадо
-        $animalView = $this->secureCreatePermission('animalView',  'Просмотр стада');
-        $animalEdit = $this->secureCreatePermission('animalEdit',  'Редактирование стада');
-        $animalColorView = $this->secureCreatePermission('animalColorView',  'Просмотр мастей');
-        $animalColorEdit = $this->secureCreatePermission('animalColorEdit',  'Редактирование мастей');
-        $cowshedView = $this->secureCreatePermission('cowshedView',  'Просмотр коровников');
-        $cowshedEdit = $this->secureCreatePermission('cowshedEdit',  'Редактирование коровников');
-        $farmView = $this->secureCreatePermission('farmView',  'Просмотр ферм');
-        $farmEdit = $this->secureCreatePermission('farmEdit',  'Редактирование ферм');
-        $animalGroupView = $this->secureCreatePermission('animalGroupView',  'Просмотр списка групп животных');
-        $animalGroupEdit = $this->secureCreatePermission('animalGroupEdit',  'Редактирование списка групп животных');
+        $animalView = $this->secureCreatePermission('animalView', 'Просмотр стада');
+        $animalEdit = $this->secureCreatePermission('animalEdit', 'Редактирование стада');
+        $animalColorView = $this->secureCreatePermission('animalColorView', 'Просмотр мастей');
+        $animalColorEdit = $this->secureCreatePermission('animalColorEdit', 'Редактирование мастей');
+        $cowshedView = $this->secureCreatePermission('cowshedView', 'Просмотр коровников');
+        $cowshedEdit = $this->secureCreatePermission('cowshedEdit', 'Редактирование коровников');
+        $farmView = $this->secureCreatePermission('farmView', 'Просмотр ферм');
+        $farmEdit = $this->secureCreatePermission('farmEdit', 'Редактирование ферм');
+        $animalGroupView = $this->secureCreatePermission('animalGroupView', 'Просмотр списка групп животных');
+        $animalGroupEdit = $this->secureCreatePermission('animalGroupEdit', 'Редактирование списка групп животных');
 
         // Амбулаторный журнал
-        $schemeManageView = $this->secureCreatePermission('schemeManageView',  'Просмотр управление схемами');
-        $schemeManageEdit = $this->secureCreatePermission('schemeManageEdit',  'Редактирование управление схемами');
-        $diagnosisView = $this->secureCreatePermission('diagnosisView',  'Просмотр диагнозов');
-        $diagnosisEdit = $this->secureCreatePermission('diagnosisEdit',  'Редактирование диагнозов');
-        $managePharmacyView = $this->secureCreatePermission('managePharmacyView',  'Просмотр управление аптекой');
-        $managePharmacyEdit = $this->secureCreatePermission('managePharmacyEdit',  'Редактирование управление аптекой');
-        $schemeActionDayView = $this->secureCreatePermission('schemeActionDayView',  'Просмотр списка дел');
-        $schemeActionDayEdit = $this->secureCreatePermission('schemeActionDayEdit',  'Редактирование списка дел');
-        $animalSickView = $this->secureCreatePermission('animalSickView',  'Просмотр списка больных животных');
-        $animalSickEdit = $this->secureCreatePermission('animalSickEdit',  'Редактирование списка больных животных');
-        $animalAwaitingView = $this->secureCreatePermission('animalAwaitingView',  'Просмотр списка животных в ожидании');
-        $animalAwaitingEdit = $this->secureCreatePermission('animalAwaitingEdit',  'Редактирование списка животных в ожидании');
+        $schemeManageView = $this->secureCreatePermission('schemeManageView', 'Просмотр управление схемами');
+        $schemeManageEdit = $this->secureCreatePermission('schemeManageEdit', 'Редактирование управление схемами');
+        $diagnosisView = $this->secureCreatePermission('diagnosisView', 'Просмотр диагнозов');
+        $diagnosisEdit = $this->secureCreatePermission('diagnosisEdit', 'Редактирование диагнозов');
+        $managePharmacyView = $this->secureCreatePermission('managePharmacyView', 'Просмотр управление аптекой');
+        $managePharmacyEdit = $this->secureCreatePermission('managePharmacyEdit', 'Редактирование управление аптекой');
+        $schemeActionDayView = $this->secureCreatePermission('schemeActionDayView', 'Просмотр списка дел');
+        $schemeActionDayEdit = $this->secureCreatePermission('schemeActionDayEdit', 'Редактирование списка дел');
+        $animalSickView = $this->secureCreatePermission('animalSickView', 'Просмотр списка больных животных');
+        $animalSickEdit = $this->secureCreatePermission('animalSickEdit', 'Редактирование списка больных животных');
+        $animalAwaitingView = $this->secureCreatePermission('animalAwaitingView', 'Просмотр списка животных в ожидании');
+        $animalAwaitingEdit = $this->secureCreatePermission('animalAwaitingEdit', 'Редактирование списка животных в ожидании');
 
         // Воспроизводство
-        $seedSupplierView = $this->secureCreatePermission('seedSupplierView',  'Просмотр поставщиков семени');
-        $seedSupplierEdit = $this->secureCreatePermission('seedSupplierEdit',  'Редактирование поставщиков семени');
-        $seedBullView = $this->secureCreatePermission('seedBullView',  'Просмотр списка быков');
-        $seedBullEdit = $this->secureCreatePermission('seedBullEdit',  'Редактирование списка быков');
-        $containerDuaraView = $this->secureCreatePermission('containerDuaraView',  'Просмотр сосудов дьюара');
-        $containerDuaraEdit = $this->secureCreatePermission('containerDuaraEdit',  'Редактирование сосудов дьюара');
-        $seedCashBookView = $this->secureCreatePermission('seedCashBookView',  'Просмотр расхода/прихода');
-        $seedCashBookEdit = $this->secureCreatePermission('seedCashBookEdit',  'Редактирование расхода/прихода');
+        $seedSupplierView = $this->secureCreatePermission('seedSupplierView', 'Просмотр поставщиков семени');
+        $seedSupplierEdit = $this->secureCreatePermission('seedSupplierEdit', 'Редактирование поставщиков семени');
+        $seedBullView = $this->secureCreatePermission('seedBullView', 'Просмотр списка быков');
+        $seedBullEdit = $this->secureCreatePermission('seedBullEdit', 'Редактирование списка быков');
+        $containerDuaraView = $this->secureCreatePermission('containerDuaraView', 'Просмотр сосудов дьюара');
+        $containerDuaraEdit = $this->secureCreatePermission('containerDuaraEdit', 'Редактирование сосудов дьюара');
+        $seedCashBookView = $this->secureCreatePermission('seedCashBookView', 'Просмотр расхода/прихода');
+        $seedCashBookEdit = $this->secureCreatePermission('seedCashBookEdit', 'Редактирование расхода/прихода');
 
         // Ректальное исследование
-        $rectalListView = $this->secureCreatePermission('rectalListView',  'Просмотр животных под РИ');
-        $rectalListEdit = $this->secureCreatePermission('rectalListEdit',  'Редактирование животных под РИ');
-        $rectalSettingsView = $this->secureCreatePermission('rectalSettingsView',  'Просмотр настроек РИ');
-        $rectalSettingsEdit = $this->secureCreatePermission('rectalSettingsEdit',  'Редактирование настроек РИ');
+        $rectalListView = $this->secureCreatePermission('rectalListView', 'Просмотр животных под РИ');
+        $rectalListEdit = $this->secureCreatePermission('rectalListEdit', 'Редактирование животных под РИ');
+        $rectalSettingsView = $this->secureCreatePermission('rectalSettingsView', 'Просмотр настроек РИ');
+        $rectalSettingsEdit = $this->secureCreatePermission('rectalSettingsEdit', 'Редактирование настроек РИ');
 
         // Зоотехническая служба
-        $liveStockReportView = $this->secureCreatePermission('rectalSettingsView',  'Формирование отчетов');
+        $liveStockReportView = $this->secureCreatePermission('rectalSettingsView', 'Формирование отчетов');
 
         // Создаем роли
         $adminRole = $this->secureCreateRole(UserRole::ROLE_ADMIN);
@@ -183,39 +185,68 @@ class RbacController extends Controller
         $this->secureAssign($adminRole, $viewerRole);
 
         $this->stdout("RBAC has been initialized!\n", Console::FG_GREEN);
+
+        $this->actionCreateDefaultUsers();
     }
 
     /**
-     * Создание админа и назначение ему роли админа
-     * TODO:: Поправить создание админа
+     * Создание пользователя и назначение ему роли админа
+     *
+     * @param $username
+     * @param $role
      * @throws Exception
      */
-    public function actionCreateAdmin()
+    private function createUser($username, $role)
     {
         $user = User::find()
-            ->where(['username' => 'admin'])
+            ->where(['username' => $username])
             ->one();
 
         if ($user) {
-            $this->stdout("Admin already exist!\n", Console::FG_RED);
+            $this->stdout("$username already exist!\n", Console::FG_RED);
+            $this->actionAssignRole($username, $role);
             return;
         }
 
-        $user = new User();
-        $user->username = 'admin';
-        $user->email = 'admin@admin.ru';
-        $user->setPassword(123456);
+        $user = new User([
+            'scenario' => User::SCENARIO_CREATE_EDIT
+        ]);
+        $user->username = $username;
+        $user->email = "$username@test.ru";
+        $user->setPassword(self::DEFAULT_PASSWORD);
         $user->generateAuthKey();
         $user->status = User::STATUS_ACTIVE;
 
-        if ($user->save()) {
-            // Навешиваем ему роль админа
-            $auth = Yii::$app->authManager;
-            $auth->assign($auth->getRole(User::ROLE_ADMIN), $user->id);
-            $this->stdout("Admin was successfully created!\n", Console::FG_GREEN);
-        } else {
-            $this->stdout("Error in admin creation process!\n", Console::FG_RED);
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            if (!$user->validate()) {
+                throw new Exception();
+            }
+            // Сохраняем пользователя
+            $user->save();
+            // Навешиваем ему роль
+            $this->actionAssignRole($username, $role);
+            $transaction->commit();
+            $this->stdout("$username was successfully created!\n", Console::FG_GREEN);
+        } catch (Exception $exception) {
+            $transaction->rollBack();
+            $this->stdout("Error in $username creation process!\n", Console::FG_RED);
         }
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function actionCreateDefaultUsers()
+    {
+        $this->stdout("Create default users ... \n", Console::FG_YELLOW);
+
+        $this->createUser('admin', UserRole::ROLE_ADMIN);
+        $this->createUser('test_veterinarian', UserRole::ROLE_VETERINARY_SERVICE);
+        $this->createUser('test_zootechnical', UserRole::ROLE_ZOOTECHNICAL_SERVICE);
+        $this->createUser('test_viewer', UserRole::ROLE_VIEWER);
+
+        $this->stdout("Default users was successful created ... \n", Console::FG_GREEN);
     }
 
     /**

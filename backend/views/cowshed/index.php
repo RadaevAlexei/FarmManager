@@ -13,34 +13,33 @@ $this->params['breadcrumbs'][] = $this->title;
 
 ?>
 
-<div class="form-group">
-    <?= Html::a(
-        Yii::t('app/cowshed', 'COWSHED_ADD'),
-        Url::toRoute(['cowshed/new']),
-        [
-            'class' => 'btn btn-primary'
-        ]
-    ) ?>
-</div>
+    <div class="form-group">
+        <?php if (Yii::$app->user->can('cowshedEdit')) : ?>
+            <?= Html::a(
+                Yii::t('app/cowshed', 'COWSHED_ADD'),
+                Url::toRoute(['cowshed/new']),
+                [
+                    'class' => 'btn btn-primary'
+                ]
+            ) ?>
+        <?php endif; ?>
+    </div>
 
 <?php echo GridView::widget([
     "dataProvider" => $dataProvider,
-    "filterModel"  => $searchModel,
-    'columns'      => [
+    "filterModel" => $searchModel,
+    'columns' => [
         ['class' => 'yii\grid\SerialColumn'],
         'name',
         [
-            'class'    => 'yii\grid\ActionColumn',
-            'header'   => Yii::t('app/cowshed', 'ACTIONS'),
-            'template' => '<div class="btn-group"> {detail} {update} {delete} </div>',
-            'buttons'  => [
-                'detail'   => function ($url, $model) {
-                    return Html::a(
-                        '<span class="glyphicon glyphicon-eye-open"></span>',
-                        Url::toRoute(['cowshed/detail', 'id' => $model->id]),
-                        ['class' => 'btn btn-success']
-                    );
-                },
+            'class' => 'yii\grid\ActionColumn',
+            'header' => Yii::t('app/cowshed', 'ACTIONS'),
+            'template' => '<div class="btn-group">{update} {delete} </div>',
+            'visibleButtons' => [
+                'update' => Yii::$app->user->can('cowshedEdit'),
+                'delete' => Yii::$app->user->can('cowshedEdit'),
+            ],
+            'buttons' => [
                 'update' => function ($url, $model) {
                     return Html::a(
                         '<span class="glyphicon glyphicon-edit"></span>',

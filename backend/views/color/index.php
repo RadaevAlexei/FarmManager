@@ -13,35 +13,34 @@ $this->params['breadcrumbs'][] = $this->title;
 
 ?>
 
-<div class="form-group">
-    <?= Html::a(
-        Yii::t('app/color', 'COLOR_ADD'),
-        Url::toRoute(['color/new']),
-        [
-            'class' => 'btn btn-primary'
-        ]
-    ) ?>
-</div>
+    <div class="form-group">
+        <?php if (Yii::$app->user->can('animalColorEdit')) : ?>
+            <?= Html::a(
+                Yii::t('app/color', 'COLOR_ADD'),
+                Url::toRoute(['color/new']),
+                [
+                    'class' => 'btn btn-primary'
+                ]
+            ) ?>
+        <?php endif; ?>
+    </div>
 
 <?php echo GridView::widget([
     "dataProvider" => $dataProvider,
-    "filterModel"  => $searchModel,
-    'columns'      => [
+    "filterModel" => $searchModel,
+    'columns' => [
         ['class' => 'yii\grid\SerialColumn'],
         'name',
         'short_name',
         [
-            'class'    => 'yii\grid\ActionColumn',
-            'header'   => Yii::t('app/color', 'ACTIONS'),
-            'template' => '<div class="btn-group"> {detail} {update} {delete} </div>',
-            'buttons'  => [
-                'detail'   => function ($url, $model) {
-                    return Html::a(
-                        '<span class="glyphicon glyphicon-eye-open"></span>',
-                        Url::toRoute(['color/detail', 'id' => $model->id]),
-                        ['class' => 'btn btn-success']
-                    );
-                },
+            'class' => 'yii\grid\ActionColumn',
+            'header' => Yii::t('app/color', 'ACTIONS'),
+            'template' => '<div class="btn-group"> {update} {delete} </div>',
+            'visibleButtons' => [
+                'update' => Yii::$app->user->can('animalColorEdit'),
+                'delete' => Yii::$app->user->can('animalColorEdit'),
+            ],
+            'buttons' => [
                 'update' => function ($url, $model) {
                     return Html::a(
                         '<span class="glyphicon glyphicon-edit"></span>',
