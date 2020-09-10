@@ -14,20 +14,20 @@ $this->params['breadcrumbs'][] = $this->title;
 /** @var $searchModel UserSearch */
 ?>
 
-<div class="form-group">
-    <?= Html::a(
-        Yii::t('app/user', 'USER_ADD'),
-        Url::toRoute(['user/new']),
-        [
-            'class' => 'btn btn-primary'
-        ]
-    ) ?>
-</div>
+    <div class="form-group">
+        <?php if (Yii::$app->user->can('userEdit')) : ?>
+            <?= Html::a(
+                Yii::t('app/user', 'USER_ADD'),
+                Url::toRoute(['user/new']),
+                ['class' => 'btn btn-primary']
+            ) ?>
+        <?php endif; ?>
+    </div>
 
 <?php echo GridView::widget([
     "dataProvider" => $dataProvider,
-    "filterModel"  => $searchModel,
-    'columns'      => [
+    "filterModel" => $searchModel,
+    'columns' => [
         ['class' => 'yii\grid\SerialColumn'],
         'lastName',
         'firstName',
@@ -35,37 +35,40 @@ $this->params['breadcrumbs'][] = $this->title;
         'username',
         [
             'attribute' => 'gender',
-            'value'     => function (User $model) {
+            'value' => function (User $model) {
                 return Yii::t('app/user', 'USER_GENDER_' . $model->gender);
             },
-            'filter'    => Html::activeDropDownList(
+            'filter' => Html::activeDropDownList(
                 $searchModel,
                 "gender",
                 User::getGenderList(),
                 [
                     "prompt" => Yii::t('app/user', 'USER_GENDER'),
-                    'class'  => 'form-control'
+                    'class' => 'form-control'
                 ]
             )
         ],
         [
             'attribute' => 'posName',
-            'value'     => 'posName',
-            'filter'    => Html::activeDropDownList(
+            'value' => 'posName',
+            'filter' => Html::activeDropDownList(
                 $searchModel,
                 "posName",
                 Position::getAllPositions(),
                 [
                     "prompt" => Yii::t('app/position', 'POSITION'),
-                    'class'  => 'form-control'
+                    'class' => 'form-control'
                 ]
             )
         ],
         [
-            'class'  => 'yii\grid\ActionColumn',
+            'class' => 'yii\grid\ActionColumn',
             'header' => Yii::t('app/user', 'ACTIONS'),
             'template' => '<div class="btn-group">{update} {delete} </div>',
-            'buttons'  => [
+            'visibleButtons' => [
+                'delete' => Yii::$app->user->can('userEdit'),
+            ],
+            'buttons' => [
                 'update' => function ($url, $model) {
                     return Html::a(
                         '<span class="glyphicon glyphicon-edit"></span>',

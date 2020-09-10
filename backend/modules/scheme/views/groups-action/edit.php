@@ -52,6 +52,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <?= Html::dropDownList('groups-action-list', null, $actionList, [
                         'class'  => 'form-control',
                         'prompt' => 'Выберите действие',
+                        'disabled' => !Yii::$app->user->can('schemeManageEdit'),
                     ]) ?>
                 </div>
                 <div class="box box-solid">

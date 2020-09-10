@@ -50,7 +50,6 @@ use \yii\helpers\Url;
                         'icon'  => 'users',
                         'url'   => Url::toRoute(['/position/index'])
                     ],
-
                     ['label' => 'Стадо', 'options' => ['class' => 'header']],
                     [
                         'label' => 'Общий список скота',

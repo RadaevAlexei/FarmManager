@@ -22,7 +22,7 @@ $this->title = Yii::t('app/user', 'USER_EDIT');
             <div class="col-sm-12">
                 <?= $form->field($model, 'username')->textInput([
                     'autofocus' => true,
-                    'class'     => 'form-control'
+                    'class' => 'form-control'
                 ]) ?>
             </div>
         </div>
@@ -60,9 +60,9 @@ $this->title = Yii::t('app/user', 'USER_EDIT');
         <div class="form-group">
             <div class="col-sm-12">
                 <?= $form->field($model, 'birthday')->widget(DatePicker::class, [
-                    'language'   => 'ru',
+                    'language' => 'ru',
                     'dateFormat' => 'dd.MM.yyyy',
-                    'options'    => ['class' => 'form-control', 'autocomplete' => 'off']
+                    'options' => ['class' => 'form-control', 'autocomplete' => 'off']
                 ]) ?>
             </div>
         </div>
@@ -76,7 +76,7 @@ $this->title = Yii::t('app/user', 'USER_EDIT');
         <div class="form-group">
             <div class="col-sm-12">
                 <?= $form->field($model, 'position_id')->dropDownList(Position::getAllPositions(), [
-                    'class'  => 'form-control',
+                    'class' => 'form-control',
                     'prompt' => Yii::t('app/position', 'POSITION_CHOOSE'),
                 ]) ?>
             </div>
@@ -84,7 +84,13 @@ $this->title = Yii::t('app/user', 'USER_EDIT');
     </div>
 
     <div class="box-footer">
-        <?= Html::submitButton(Yii::t('app/user', 'EDIT'), ['class' => 'btn btn-info pull-right', 'name' => 'contact-button']) ?>
+        <?php if (Yii::$app->user->can('userEdit')) : ?>
+            <?= Html::submitButton(
+                Yii::t('app/user', 'EDIT'),
+                ['class' => 'btn btn-info pull-right', 'name' => 'contact-button']
+            ) ?>
+
+        <?php endif; ?>
     </div>
     <?php ActiveForm::end(); ?>
 

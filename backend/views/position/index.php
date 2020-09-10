@@ -14,13 +14,15 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <div class="form-group">
-    <?= Html::a(
-        Yii::t('app/position', 'POSITION_ADD'),
-        Url::toRoute(['position/new']),
-        [
-            'class' => 'btn btn-primary'
-        ]
-    ) ?>
+    <?php if (Yii::$app->user->can('userPositionEdit')) : ?>
+        <?= Html::a(
+            Yii::t('app/position', 'POSITION_ADD'),
+            Url::toRoute(['position/new']),
+            [
+                'class' => 'btn btn-primary'
+            ]
+        ) ?>
+    <?php endif; ?>
 </div>
 
 <?php echo GridView::widget([
@@ -33,15 +35,11 @@ $this->params['breadcrumbs'][] = $this->title;
         [
             'class'    => 'yii\grid\ActionColumn',
             'header'   => Yii::t('app/position', 'ACTIONS'),
-            'template' => '<div class="btn-group"> {detail} {update} {delete} </div>',
+            'template' => '<div class="btn-group">{update} {delete} </div>',
+            'visibleButtons' => [
+                'delete' => Yii::$app->user->can('userPositionEdit'),
+            ],
             'buttons'  => [
-                'detail'   => function ($url, $model) {
-                    return Html::a(
-                        '<span class="glyphicon glyphicon-eye-open"></span>',
-                        Url::toRoute(['position/detail', 'id' => $model->id]),
-                        ['class' => 'btn btn-success']
-                    );
-                },
                 'update' => function ($url, $model) {
                     return Html::a(
                         '<span class="glyphicon glyphicon-edit"></span>',

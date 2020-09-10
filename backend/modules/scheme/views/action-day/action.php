@@ -35,6 +35,7 @@ if ($overdue) {
 }
 
 $disabled = $disable ? true : false;
+$disabled = ($disabled || !Yii::$app->user->can('schemeActionDayEdit')) ? true : false;
 
 if ($type === TypeField::TYPE_TEXT) : ?>
     <div class="form-group">

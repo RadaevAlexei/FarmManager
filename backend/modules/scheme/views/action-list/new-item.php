@@ -23,7 +23,12 @@ use \yii\helpers\ArrayHelper;
             ["class" => "form-control"]
         ) ?>
         <span class="input-group-btn">
-            <button remove-action-item type="button" class="btn btn-danger btn-flat">Удалить</button>
+            <?= Html::button('Удалить', [
+                'remove-action-item' => '',
+                'type' => 'button',
+                'class' => 'btn btn-danger btn-flat',
+                'disabled' => !Yii::$app->user->can('schemeManageEdit'),
+            ]) ?>
         </span>
     </div>
 </li>

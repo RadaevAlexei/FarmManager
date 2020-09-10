@@ -22,7 +22,7 @@ $groupsAction = $day->groupsAction;
             <div class="box-header">
                 <h3 class="box-title">Что нужно выполнить в этот день</h3>
                 <?php
-                if (!$scheme->approve) :
+                if (!$scheme->approve && Yii::$app->user->can('schemeManageEdit')) :
                     echo Html::a('<i class="fa fa-trash-o"></i>',
                         Url::to(['remove-day', 'scheme_id' => $scheme->id, 'scheme_day_id' => $day->id]),
                         [
@@ -72,7 +72,7 @@ $groupsAction = $day->groupsAction;
                     <?= Html::dropDownList('groups-action-list', null, $groupsActionList, [
                         'class'    => 'form-control',
                         'prompt'   => 'Выберите группу',
-                        'disabled' => $scheme->approve ? true : false
+                        'disabled' => $scheme->approve || !Yii::$app->user->can('schemeManageEdit') ? true : false
                     ]) ?>
                 </div>
             </div>

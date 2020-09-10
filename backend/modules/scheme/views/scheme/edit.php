@@ -85,7 +85,7 @@ if ($model->approve) {
                     <?= Html::input('number', 'day', null, [
                         'id' => 'new-day',
                         'class' => 'form-control',
-                        'disabled' => $model->approve ? true : false
+                        'disabled' => $model->approve || !Yii::$app->user->can('schemeManageEdit') ? true : false
                     ]) ?>
                 </div>
             </div>
