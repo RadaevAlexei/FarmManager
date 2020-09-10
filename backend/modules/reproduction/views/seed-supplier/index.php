@@ -17,11 +17,13 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <div class="form-group">
-    <?= Html::a(
-        'Добавить поставщика',
-        Url::toRoute(['seed-supplier/new']),
-        ['class' => 'btn btn-primary']
-    ) ?>
+    <?php if (Yii::$app->user->can('seedSupplierEdit')) : ?>
+        <?= Html::a(
+            'Добавить поставщика',
+            Url::toRoute(['seed-supplier/new']),
+            ['class' => 'btn btn-primary']
+        ) ?>
+    <?php endif; ?>
 </div>
 
 <div class="box box-info">
@@ -29,18 +31,22 @@ $this->params['breadcrumbs'][] = $this->title;
 
         <?php echo GridView::widget([
             "dataProvider" => $dataProvider,
-            "filterModel"  => $searchModel,
+            "filterModel" => $searchModel,
             'tableOptions' => [
                 'class' => 'table table-striped',
             ],
-            'columns'      => [
+            'columns' => [
                 ['class' => 'yii\grid\SerialColumn'],
                 'name',
                 [
-                    'class'    => 'yii\grid\ActionColumn',
-                    'header'   => 'Действия',
+                    'class' => 'yii\grid\ActionColumn',
+                    'header' => 'Действия',
                     'template' => '<div class="btn-group">{update} {delete} </div>',
-                    'buttons'  => [
+                    'visibleButtons' => [
+                        'update' => Yii::$app->user->can('seedSupplierEdit'),
+                        'delete' => Yii::$app->user->can('seedSupplierEdit'),
+                    ],
+                    'buttons' => [
                         'update' => function ($url, $model) {
                             return Html::a(
                                 '<span class="glyphicon glyphicon-edit"></span>',
@@ -54,7 +60,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 Url::toRoute(['seed-supplier/delete', 'id' => $model->id]),
                                 [
                                     'class' => 'btn btn-danger',
-                                    'data'  => ['confirm' => 'Вы действительно хотите удалить поставщика?']
+                                    'data' => ['confirm' => 'Вы действительно хотите удалить поставщика?']
                                 ]
                             );
                         },

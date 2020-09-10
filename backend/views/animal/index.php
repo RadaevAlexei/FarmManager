@@ -22,6 +22,8 @@ AnimalAsset::register($this);
 /** @var $searchModel CowSearch */
 
 ?>
+
+<?php if (Yii::$app->user->can('animalEdit')) : ?>
     <div class="box box-success">
         <div class="box-header with-border">
             <h3 class="box-title">Обновление данных</h3>
@@ -29,7 +31,7 @@ AnimalAsset::register($this);
         <?php $form = ActiveForm::begin([
             'action' => Url::toRoute(['update-from-file']),
             'options' => ['enctype' => 'multipart/form-data']
-        ])  ?>
+        ]) ?>
         <div class="box-body">
             <div class="form-group">
                 <?= $form->field($uploadModel, 'file')->fileInput() ?>
@@ -50,6 +52,7 @@ AnimalAsset::register($this);
             ]
         ) ?>
     </div>
+<?php endif; ?>
 
 <?php
 echo GridView::widget([
@@ -169,6 +172,9 @@ echo GridView::widget([
             'class' => 'yii\grid\ActionColumn',
             'header' => Yii::t('app/animal', 'ACTIONS'),
             'template' => '<div class="btn-group">{edit} {delete}</div>',
+            'visibleButtons' => [
+                'delete' => Yii::$app->user->can('animalEdit')
+            ],
             'buttons' => [
                 'edit' => function ($url, $model) {
                     return Html::a(

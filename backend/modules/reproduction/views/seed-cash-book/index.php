@@ -19,16 +19,18 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <div class="form-group">
-    <?= Html::a(
-        'Добавить приход',
-        Url::toRoute(['seed-cash-book/new', 'type' => SeedCashBook::TYPE_DEBIT]),
-        ['class' => 'btn btn-primary']
-    ) ?>
-    <?= Html::a(
-        'Добавить расход',
-        Url::toRoute(['seed-cash-book/new', 'type' => SeedCashBook::TYPE_KREDIT]),
-        ['class' => 'btn btn-primary']
-    ) ?>
+    <?php if (Yii::$app->user->can('seedCashBookEdit')) : ?>
+        <?= Html::a(
+            'Добавить приход',
+            Url::toRoute(['seed-cash-book/new', 'type' => SeedCashBook::TYPE_DEBIT]),
+            ['class' => 'btn btn-primary']
+        ) ?>
+        <?= Html::a(
+            'Добавить расход',
+            Url::toRoute(['seed-cash-book/new', 'type' => SeedCashBook::TYPE_KREDIT]),
+            ['class' => 'btn btn-primary']
+        ) ?>
+    <?php endif; ?>
 </div>
 
 <?php echo GridView::widget([

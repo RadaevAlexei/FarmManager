@@ -17,11 +17,14 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <div class="form-group">
-    <?= Html::a(
-        'Добавить склад',
-        Url::toRoute(['stock/new']),
-        ['class' => 'btn btn-primary']
-    ) ?>
+    <?php if (Yii::$app->user->can('managePharmacyEdit')) : ?>
+        <?= Html::a(
+            'Добавить склад',
+            Url::toRoute(['stock/new']),
+            ['class' => 'btn btn-primary']
+        ) ?>
+    <?php endif; ?>
+
     <?/*= Html::a(
         'Перемещения',
         Url::toRoute(['/pharmacy/stock-migration/new']),
@@ -45,6 +48,10 @@ $this->params['breadcrumbs'][] = $this->title;
                     'class'    => 'yii\grid\ActionColumn',
                     'header'   => 'Действия',
                     'template' => '<div class="btn-group">{update} {delete} </div>',
+                    'visibleButtons' => [
+                        'update' => Yii::$app->user->can('managePharmacyEdit'),
+                        'delete' => Yii::$app->user->can('managePharmacyEdit'),
+                    ],
                     'buttons'  => [
                         'update' => function ($url, $model) {
                             return Html::a(

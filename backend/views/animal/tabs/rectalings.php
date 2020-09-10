@@ -26,18 +26,20 @@ if (!empty($stage) && $stage > Rectal::STAGE_FIRST) {
 ?>
 
 <div class="box-header">
-    <?= Html::button($rectalButtonText, [
-        'id'       => 'add-rectal-button',
-        'class'    => 'btn btn-warning',
-        'disabled' => ArrayHelper::getValue($addRectal, "disable", true),
-        'data'     => [
-            'toggle' => 'modal',
-            'url'    => Url::toRoute([
-                'animal/add-rectal-form',
-                'id' => ArrayHelper::getValue($addRectal, 'stage.rectal_id')
-            ])
-        ]
-    ]) ?>
+    <?php if (Yii::$app->user->can('animalEdit')) : ?>
+        <?= Html::button($rectalButtonText, [
+            'id'       => 'add-rectal-button',
+            'class'    => 'btn btn-warning',
+            'disabled' => ArrayHelper::getValue($addRectal, "disable", true),
+            'data'     => [
+                'toggle' => 'modal',
+                'url'    => Url::toRoute([
+                    'animal/add-rectal-form',
+                    'id' => ArrayHelper::getValue($addRectal, 'stage.rectal_id')
+                ])
+            ]
+        ]) ?>
+    <?php endif; ?>
 </div>
 
 <div class="box box-success">
@@ -87,6 +89,10 @@ if (!empty($stage) && $stage > Rectal::STAGE_FIRST) {
                         'class'    => 'yii\grid\ActionColumn',
                         'header'   => 'Действия',
                         'template' => '<div class="btn-group">{edit} {delete}</div>',
+                        'visibleButtons' => [
+                            'edit' => Yii::$app->user->can('animalEdit'),
+                            'delete' => Yii::$app->user->can('animalEdit'),
+                        ],
                         'buttons'  => [
                             'edit'   => function ($url, $model) {
                                 return Html::button('<span class="glyphicon glyphicon-edit"></span>', [

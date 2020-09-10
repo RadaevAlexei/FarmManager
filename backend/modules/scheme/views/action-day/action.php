@@ -34,7 +34,7 @@ if ($overdue) {
     $date = (new DateTime('now', new DateTimeZone('Europe/Samara')))->format('Y-m-d H:i:s');
 }
 
-$disabled = $disable ? true : false;
+$disabled = $disable || !Yii::$app->user->can('schemeActionDayEdit') ? true : false;
 
 if ($type === TypeField::TYPE_TEXT) : ?>
     <div class="form-group">

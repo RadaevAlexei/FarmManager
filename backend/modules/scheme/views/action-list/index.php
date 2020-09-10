@@ -22,35 +22,37 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 
     <div class="form-group">
-        <?= Html::a(
-            Yii::t('app/action-list', 'ACTION_LIST_ADD'),
-            Url::toRoute(['action-list/new']),
-            [
-                'class' => 'btn btn-primary'
-            ]
-        ) ?>
+        <?php if (Yii::$app->user->can('schemeManageEdit')) : ?>
+            <?= Html::a(
+                Yii::t('app/action-list', 'ACTION_LIST_ADD'),
+                Url::toRoute(['action-list/new']),
+                [
+                    'class' => 'btn btn-primary'
+                ]
+            ) ?>
+        <?php endif; ?>
     </div>
 
 <?php echo GridView::widget([
     "dataProvider" => $dataProvider,
-    "filterModel"  => $searchModel,
+    "filterModel" => $searchModel,
     'tableOptions' => [
         'style' => 'display:block; width:100%; overflow-x:auto',
         'class' => 'table table-striped',
     ],
-    'columns'      => [
+    'columns' => [
         ['class' => 'yii\grid\SerialColumn'],
         'name',
         [
             'attribute' => 'type',
-            'value'     => function (ActionList $model) {
+            'value' => function (ActionList $model) {
                 return TypeList::getType($model->type);
             }
         ],
         [
-            'label'  => 'Элементы списка',
+            'label' => 'Элементы списка',
             'format' => 'raw',
-            'value'  => function (ActionList $model) {
+            'value' => function (ActionList $model) {
                 $items = "";
                 foreach ($model->items as $item) {
                     $items .= Html::tag("li", $item->name);
@@ -59,10 +61,14 @@ $this->params['breadcrumbs'][] = $this->title;
             }
         ],
         [
-            'class'    => 'yii\grid\ActionColumn',
-            'header'   => Yii::t('app/action-list', 'ACTIONS'),
+            'class' => 'yii\grid\ActionColumn',
+            'header' => Yii::t('app/action-list', 'ACTIONS'),
             'template' => '<div class="btn-group">{update} {delete} </div>',
-            'buttons'  => [
+            'visibleButtons' => [
+                'update' => Yii::$app->user->can('schemeManageEdit'),
+                'delete' => Yii::$app->user->can('schemeManageEdit'),
+            ],
+            'buttons' => [
                 'update' => function ($url, $model) {
                     return Html::a(
                         '<span class="glyphicon glyphicon-edit"></span>',
@@ -73,7 +79,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'delete' => function ($url, $model) {
                     return Html::button('<span class="glyphicon glyphicon-trash"></span>', [
                         "class" => "btn btn-danger remove-action-list",
-                        'data'  => [
+                        'data' => [
                             'url' => Url::toRoute(['action-list/delete', 'id' => $model->id]),
                         ]
                     ]);

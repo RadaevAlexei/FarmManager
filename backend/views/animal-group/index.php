@@ -17,11 +17,13 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 
     <div class="form-group">
-        <?= Html::a(
-            'Добавить',
-            Url::toRoute(['animal-group/new']),
-            ['class' => 'btn btn-primary']
-        ) ?>
+        <?php if (Yii::$app->user->can('animalGroupEdit')) : ?>
+            <?= Html::a(
+                'Добавить',
+                Url::toRoute(['animal-group/new']),
+                ['class' => 'btn btn-primary']
+            ) ?>
+        <?php endif; ?>
     </div>
 
 <?php echo GridView::widget([
@@ -41,6 +43,10 @@ $this->params['breadcrumbs'][] = $this->title;
             'class' => 'yii\grid\ActionColumn',
             'header' => 'Действия',
             'template' => '<div class="btn-group">{update} {delete} </div>',
+            'visibleButtons' => [
+                'update' => Yii::$app->user->can('animalGroupEdit'),
+                'delete' => Yii::$app->user->can('animalGroupEdit'),
+            ],
             'buttons' => [
                 'update' => function ($url, $model) {
                     return Html::a(
