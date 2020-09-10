@@ -36,8 +36,10 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
 
     <div class="box-footer">
-        <?= Html::submitButton('Редактировать',
-            ['class' => 'btn btn-info pull-right', 'name' => 'contact-button']) ?>
+        <?php if (Yii::$app->user->can('managePharmacyEdit')) : ?>
+            <?= Html::submitButton('Редактировать',
+                ['class' => 'btn btn-info pull-right', 'name' => 'contact-button']) ?>
+        <?php endif; ?>
     </div>
     <?php ActiveForm::end(); ?>
 

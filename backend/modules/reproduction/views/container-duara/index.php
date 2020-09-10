@@ -17,11 +17,13 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <div class="form-group">
-    <?= Html::a(
-        'Добавить сосуд',
-        Url::toRoute(['container-duara/new']),
-        ['class' => 'btn btn-primary']
-    ) ?>
+    <?php if (Yii::$app->user->can('containerDuaraEdit')) : ?>
+        <?= Html::a(
+            'Добавить сосуд',
+            Url::toRoute(['container-duara/new']),
+            ['class' => 'btn btn-primary']
+        ) ?>
+    <?php endif; ?>
 </div>
 
 <div class="box box-info">
@@ -40,6 +42,9 @@ $this->params['breadcrumbs'][] = $this->title;
                     'class'    => 'yii\grid\ActionColumn',
                     'header'   => 'Действия',
                     'template' => '<div class="btn-group">{update} {delete} </div>',
+                    'visibleButtons' => [
+                        'delete' => Yii::$app->user->can('containerDuaraEdit'),
+                    ],
                     'buttons'  => [
                         'update' => function ($url, $model) {
                             return Html::a(

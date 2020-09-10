@@ -22,8 +22,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?php $form = ActiveForm::begin([
         'action' => Url::toRoute(['action-list/update', 'id' => $model->id]),
-        'id'     => 'action-list-form',
-        'class'  => 'form-horizontal'
+        'id' => 'action-list-form',
+        'class' => 'form-horizontal'
     ]); ?>
     <div class="box-body">
 
@@ -31,7 +31,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="col-sm-12">
                 <?= $form->field($model, 'name')->textInput([
                     'autofocus' => true,
-                    'class'     => 'form-control'
+                    'class' => 'form-control'
                 ]) ?>
             </div>
         </div>
@@ -58,7 +58,11 @@ $this->params['breadcrumbs'][] = $this->title;
                                 disabled="true">Добавить
                         </button>
                     </div>
-                    <input id="new-item" type="text" class="form-control">
+                    <?= Html::textInput('delete', '', [
+                        'id' => 'new-item',
+                        'class' => 'form-control',
+                        'disabled' => !Yii::$app->user->can('schemeManageEdit'),
+                    ]) ?>
                 </div>
                 <div class="box box-solid">
                     <div class="box-body">
@@ -67,7 +71,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <li data-remove-url="<?= Url::to([
                                     'remove-item',
                                     'action_list_id' => $model->id,
-                                    'item_id'        => $item->id
+                                    'item_id' => $item->id
                                 ]) ?>" class="action-list-item">
                                     <div class="input-group input-group-sm">
                                         <?= Html::textInput(
@@ -76,7 +80,12 @@ $this->params['breadcrumbs'][] = $this->title;
                                             ["class" => "form-control"]
                                         ) ?>
                                         <span class="input-group-btn">
-                                            <button remove-action-item type="button" class="btn btn-danger btn-flat">Удалить</button>
+                                            <?= Html::button('Удалить', [
+                                                'remove-action-item' => '',
+                                                'type' => 'button',
+                                                'class' => 'btn btn-danger btn-flat',
+                                                'disabled' => !Yii::$app->user->can('schemeManageEdit'),
+                                            ]) ?>
                                         </span>
                                     </div>
                                 </li>
@@ -90,8 +99,10 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
 
     <div class="box-footer">
-        <?= Html::submitButton(Yii::t('app/action-list', 'EDIT'),
-            ['class' => 'btn btn-info pull-right', 'name' => 'contact-button']) ?>
+        <?php if (Yii::$app->user->can('schemeManageEdit')) : ?>
+            <?= Html::submitButton(Yii::t('app/action-list', 'EDIT'),
+                ['class' => 'btn btn-info pull-right', 'name' => 'contact-button']) ?>
+        <?php endif; ?>
     </div>
     <?php ActiveForm::end(); ?>
 

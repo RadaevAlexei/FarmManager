@@ -17,13 +17,15 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 
     <div class="form-group">
-        <?= Html::a(
-            Yii::t('app/scheme', 'SCHEME_ADD'),
-            Url::toRoute(['scheme/new']),
-            [
-                'class' => 'btn btn-primary'
-            ]
-        ) ?>
+        <?php if (Yii::$app->user->can('schemeManageEdit')) : ?>
+            <?= Html::a(
+                Yii::t('app/scheme', 'SCHEME_ADD'),
+                Url::toRoute(['scheme/new']),
+                [
+                    'class' => 'btn btn-primary'
+                ]
+            ) ?>
+        <?php endif; ?>
     </div>
 
 <?php echo GridView::widget([
@@ -69,6 +71,9 @@ $this->params['breadcrumbs'][] = $this->title;
             'class' => 'yii\grid\ActionColumn',
             'header' => Yii::t('app/scheme', 'ACTIONS'),
             'template' => '<div class="btn-group">{update} {delete} </div>',
+            'visibleButtons' => [
+                'delete' => Yii::$app->user->can('schemeManageEdit'),
+            ],
             'buttons' => [
                 'detail' => function ($url, Scheme $model) {
                     return Html::a(

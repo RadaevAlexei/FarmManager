@@ -14,7 +14,7 @@ use \yii\helpers\ArrayHelper;
 <li data-remove-action-url="<?= Url::to([
     'remove-action',
     'groups_action_id' => $groupsActionId,
-    'action_id'        => $model->id
+    'action_id' => $model->id
 ]) ?>" class="groups-action-item">
     <div class="input-group input-group-sm">
         <?= Html::textInput(
@@ -23,7 +23,12 @@ use \yii\helpers\ArrayHelper;
             ["class" => "form-control"]
         ) ?>
         <span class="input-group-btn">
-            <button remove-action type="button" class="btn btn-danger btn-flat">Удалить</button>
+            <?= Html::button('Удалить', [
+                'remove-action' => '',
+                'type' => 'button',
+                'class' => 'btn btn-danger btn-flat',
+                'disabled' => !Yii::$app->user->can('schemeManageEdit'),
+            ]) ?>
         </span>
     </div>
 </li>
