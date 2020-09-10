@@ -36,10 +36,8 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
 
     <div class="box-footer">
-        <?php if (Yii::$app->user->can('containerDuaraEdit')) : ?>
-            <?= Html::submitButton('Редактировать',
-                ['class' => 'btn btn-info pull-right', 'name' => 'edit-button']) ?>
-        <?php endif; ?>
+        <?= Html::submitButton('Редактировать',
+            ['class' => 'btn btn-info pull-right', 'name' => 'edit-button']) ?>
     </div>
     <?php ActiveForm::end(); ?>
 

@@ -19,13 +19,11 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 
     <div class="form-group">
-        <?php if (Yii::$app->user->can('managePharmacyEdit')) : ?>
-            <?= Html::a(
-                'Переместить препарат на другой склад',
-                Url::toRoute(['stock-migration/new']),
-                ['class' => 'btn btn-primary']
-            ) ?>
-        <?php endif; ?>
+        <?= Html::a(
+            'Переместить препарат на другой склад',
+            Url::toRoute(['stock-migration/new']),
+            ['class' => 'btn btn-primary']
+        ) ?>
         <?= Html::a(
             'История перемещений',
             Url::toRoute(['stock-migration/index']),
@@ -36,19 +34,19 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <?php echo GridView::widget([
     "dataProvider" => $dataProvider,
-    "filterModel" => $searchModel,
+    "filterModel"  => $searchModel,
     'tableOptions' => [
         'class' => 'table table-striped',
     ],
-    'formatter' => [
-        'class' => 'yii\i18n\Formatter',
+    'formatter'    => [
+        'class'       => 'yii\i18n\Formatter',
         'nullDisplay' => '',
     ],
-    'columns' => [
+    'columns'      => [
         ['class' => 'yii\grid\SerialColumn'],
         [
             'attribute' => 'preparation_id',
-            'content' => function (Storage $model) {
+            'content'   => function (Storage $model) {
                 return Html::a(
                     ArrayHelper::getValue($model, "preparation.name"),
                     Url::toRoute(['preparation/edit', 'id' => $model->preparation_id]),
@@ -58,7 +56,7 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
         [
             'attribute' => 'stock_id',
-            'content' => function (Storage $model) {
+            'content'   => function (Storage $model) {
                 return Html::a(
                     ArrayHelper::getValue($model, "stock.name"),
                     Url::toRoute(['stock/edit', 'id' => $model->stock_id]),
@@ -69,7 +67,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'count',
         'volume',
         [
-            'label' => 'Общий объём',
+            'label'   => 'Общий объём',
             'content' => function (Storage $model) {
                 return $model->count * $model->volume;
             }

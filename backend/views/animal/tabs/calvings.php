@@ -21,16 +21,14 @@ $countSterileDaysText = $countSterileDays ? "({$countSterileDays}-й день)" 
 <p>Статус: <?= Animal::getRectalStatusLabel($animal->rectal_examination) . $countSterileDaysText ?></p>
 
 <div class="box-header">
-    <?php if (Yii::$app->user->can('animalEdit')) : ?>
-        <?= Html::button('Добавить отёл', [
-            'class'    => 'btn btn-warning',
-            'disabled' => !$animal->canAddCalving(),
-            'data'     => [
-                'toggle' => 'modal',
-                'target' => '#add-calving-form-button',
-            ]
-        ]) ?>
-    <?php endif; ?>
+    <?= Html::button('Добавить отёл', [
+        'class'    => 'btn btn-warning',
+        'disabled' => !$animal->canAddCalving(),
+        'data'     => [
+            'toggle' => 'modal',
+            'target' => '#add-calving-form-button',
+        ]
+    ]) ?>
 </div>
 
 <div class="box box-success">

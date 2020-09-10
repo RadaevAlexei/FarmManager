@@ -25,16 +25,14 @@ use \yii\data\ArrayDataProvider;
     </div>
 
     <div class="box-footer">
-        <?php if (Yii::$app->user->can('animalEdit')) : ?>
-            <?= Html::button('Добавить осеменение', [
-                'class'    => 'btn btn-warning',
-                'disabled' => !ArrayHelper::getValue($addRectal, "can-insemination") || $animal->canAddCalving(),
-                'data'     => [
-                    'toggle' => 'modal',
-                    'target' => '#add-insemination-form-button',
-                ]
-            ]) ?>
-        <?php endif; ?>
+        <?= Html::button('Добавить осеменение', [
+            'class'    => 'btn btn-warning',
+            'disabled' => !ArrayHelper::getValue($addRectal, "can-insemination") || $animal->canAddCalving(),
+            'data'     => [
+                'toggle' => 'modal',
+                'target' => '#add-insemination-form-button',
+            ]
+        ]) ?>
     </div>
 
     <div class="box-body">
@@ -106,10 +104,6 @@ use \yii\data\ArrayDataProvider;
                     'class'    => 'yii\grid\ActionColumn',
                     'header'   => 'Действия',
                     'template' => '<div class="btn-group">{edit} {delete}</div>',
-                    'visibleButtons' => [
-                        'edit' => Yii::$app->user->can('animalEdit'),
-                        'delete' => Yii::$app->user->can('animalEdit'),
-                    ],
                     'buttons'  => [
                         'edit'   => function ($url, Insemination $model) {
                             return Html::button('<span class="glyphicon glyphicon-edit"></span>', [
