@@ -22,7 +22,7 @@ use \yii\data\ArrayDataProvider;
  */
 
 $healthModel = new HealthForm([
-    'date_health'           => $animal->date_health,
+    'date_health' => $animal->date_health,
     'health_status_comment' => $animal->health_status_comment
 ]);
 $animalDiagnosisForm = new AnimalDiagnosisForm();
@@ -36,8 +36,8 @@ $animalDiagnosisForm = new AnimalDiagnosisForm();
     <?php $formHealth = ActiveForm::begin([
         'action' => Url::toRoute(['update-health']),
         'method' => 'post',
-        'id'     => 'update-health-form',
-        'class'  => 'form-horizontal',
+        'id' => 'update-health-form',
+        'class' => 'form-horizontal',
     ]); ?>
     <div class="box-body">
         <div class="form-group">
@@ -45,18 +45,18 @@ $animalDiagnosisForm = new AnimalDiagnosisForm();
             <?= $formHealth->field($healthModel, 'health_status')->dropDownList(
                 Animal::getHealthStatusList(),
                 [
-                    'id'     => 'health_status_list',
+                    'id' => 'health_status_list',
                     'prompt' => 'Выберите статус здоровья',
-                    'class'  => 'form-control',
-                    'value'  => $animal->health_status,
+                    'class' => 'form-control',
+                    'value' => $animal->health_status,
                 ]
             ) ?>
         </div>
         <div class="form-group">
             <?= $formHealth->field($healthModel, 'date_health')->widget(DatePicker::class, [
-                'language'   => 'ru',
+                'language' => 'ru',
                 'dateFormat' => 'dd.MM.yyyy',
-                'options'    => ['class' => 'form-control', 'autocomplete' => 'off']
+                'options' => ['class' => 'form-control', 'autocomplete' => 'off']
             ]) ?>
         </div>
         <div class="form-group">
@@ -66,10 +66,12 @@ $animalDiagnosisForm = new AnimalDiagnosisForm();
         </div>
     </div>
     <div class="box-footer">
-        <?= Html::submitButton('Сменить состояние здоровья', [
-            'class' => 'btn btn-primary',
-            'data'  => ['confirm' => 'Вы действительно хотите сменить состояние здоровья?']
-        ]) ?>
+        <?php if (Yii::$app->user->can('animalEdit')) : ?>
+            <?= Html::submitButton('Сменить состояние здоровья', [
+                'class' => 'btn btn-primary',
+                'data' => ['confirm' => 'Вы действительно хотите сменить состояние здоровья?']
+            ]) ?>
+        <?php endif; ?>
     </div>
     <?php ActiveForm::end() ?>
 </div>
@@ -83,8 +85,8 @@ $animalDiagnosisForm = new AnimalDiagnosisForm();
         <?php $formDiagnosis = ActiveForm::begin([
             'action' => Url::toRoute(['update-diagnoses']),
             'method' => 'post',
-            'id'     => 'update-diagnoses-form',
-            'class'  => 'form-horizontal',
+            'id' => 'update-diagnoses-form',
+            'class' => 'form-horizontal',
         ]); ?>
         <div class="box-body">
             <div class="form-group">
@@ -96,17 +98,19 @@ $animalDiagnosisForm = new AnimalDiagnosisForm();
                     ArrayHelper::map(Diagnosis::getAllList(), "id", "name"),
                     [
                         'prompt' => 'Выберите диагноз',
-                        'class'  => ['form-control'],
-                        'value'  => $animal->diagnosis,
+                        'class' => ['form-control'],
+                        'value' => $animal->diagnosis,
                     ]
                 ) ?>
             </div>
         </div>
         <div class="box-footer">
-            <?= Html::submitButton('Поставить диагноз', [
-                'class' => 'btn btn-primary',
-                'data'  => ['confirm' => 'Вы действительно хотите поставить такой диагноз?']
-            ]) ?>
+            <?php if (Yii::$app->user->can('animalEdit')) : ?>
+                <?= Html::submitButton('Поставить диагноз', [
+                    'class' => 'btn btn-primary',
+                    'data' => ['confirm' => 'Вы действительно хотите поставить такой диагноз?']
+                ]) ?>
+            <?php endif; ?>
         </div>
         <?php ActiveForm::end() ?>
     </div>
@@ -120,9 +124,9 @@ $animalDiagnosisForm = new AnimalDiagnosisForm();
 
     <?php $form = ActiveForm::begin([
         'action' => Url::toRoute(['appropriation-scheme']),
-        'id'     => 'animal-form',
+        'id' => 'animal-form',
         'method' => 'post',
-        'class'  => 'form-horizontal'
+        'class' => 'form-horizontal'
     ]); ?>
     <div class="box-body">
 
@@ -132,10 +136,10 @@ $animalDiagnosisForm = new AnimalDiagnosisForm();
                 <?= $form->field($appropriationScheme, 'status')->hiddenInput()->label(false); ?>
 
                 <?= $form->field($appropriationScheme, 'started_at')->widget(DatePicker::class, [
-                    'language'   => 'ru',
+                    'language' => 'ru',
                     'dateFormat' => 'yyyy-MM-dd',
-                    'options'    => [
-                        'class'        => 'form-control',
+                    'options' => [
+                        'class' => 'form-control',
                         'autocomplete' => 'off'
                     ]
                 ]) ?>
@@ -147,7 +151,7 @@ $animalDiagnosisForm = new AnimalDiagnosisForm();
                 <?= $form->field($appropriationScheme, 'scheme_id')->dropDownList(
                     $schemeList,
                     [
-                        'class'  => 'form-control',
+                        'class' => 'form-control',
                         'prompt' => 'Выберите схему'
                     ]
                 ) ?>
@@ -156,10 +160,12 @@ $animalDiagnosisForm = new AnimalDiagnosisForm();
     </div>
 
     <div class="box-footer">
-        <?= Html::submitButton('Поставить на схему', [
-            'class' => 'btn btn-primary',
-            'data'  => ['confirm' => 'Вы действительно хотите поставить на эту схему?']
-        ]) ?>
+        <?php if (Yii::$app->user->can('animalEdit')) : ?>
+            <?= Html::submitButton('Поставить на схему', [
+                'class' => 'btn btn-primary',
+                'data' => ['confirm' => 'Вы действительно хотите поставить на эту схему?']
+            ]) ?>
+        <?php endif; ?>
     </div>
     <?php ActiveForm::end(); ?>
 </div>
@@ -172,27 +178,27 @@ $animalDiagnosisForm = new AnimalDiagnosisForm();
 
     <div class="box-body">
         <?php echo GridView::widget([
-            'formatter'    => [
-                'class'       => 'yii\i18n\Formatter',
+            'formatter' => [
+                'class' => 'yii\i18n\Formatter',
                 'nullDisplay' => '',
             ],
             "dataProvider" => $dataProvider,
-            'summary'      => false,
+            'summary' => false,
             'tableOptions' => [
                 'style' => 'display:block; width:100%; overflow-x:auto',
                 'class' => 'table table-striped',
             ],
-            'columns'      => [
+            'columns' => [
                 ['class' => 'yii\grid\SerialColumn'],
                 [
                     'attribute' => 'started_at',
-                    'content'   => function (AppropriationScheme $model) {
+                    'content' => function (AppropriationScheme $model) {
                         return (new DateTime(ArrayHelper::getValue($model, 'started_at')))->format('d.m.Y');
                     }
                 ],
                 [
                     'attribute' => 'scheme_id',
-                    'content'   => function (AppropriationScheme $model) {
+                    'content' => function (AppropriationScheme $model) {
                         return Html::a(
                             ArrayHelper::getValue($model, "scheme.name"),
                             Url::toRoute(['scheme/scheme/edit/', 'id' => $model->scheme_id]),
@@ -201,33 +207,37 @@ $animalDiagnosisForm = new AnimalDiagnosisForm();
                     }
                 ],
                 [
-                    'class'    => 'yii\grid\ActionColumn',
-                    'header'   => '',
+                    'class' => 'yii\grid\ActionColumn',
+                    'header' => '',
                     'template' => '<div class="btn-group">{close-scheme} {delete}</div>',
-                    'buttons'  => [
+                    'visibleButtons' => [
+                        'close-scheme' => Yii::$app->user->can('animalEdit'),
+                        'delete' => Yii::$app->user->can('animalEdit'),
+                    ],
+                    'buttons' => [
                         'close-scheme' => function ($url, AppropriationScheme $model) {
                             return Html::button('Завершить схему', [
-                                'id'       => 'close-form-button',
-                                'class'    => 'btn btn-warning',
-                                'data'     => [
-                                    'toggle'                  => 'modal',
-                                    'url'                     => Url::toRoute([
+                                'id' => 'close-form-button',
+                                'class' => 'btn btn-warning',
+                                'data' => [
+                                    'toggle' => 'modal',
+                                    'url' => Url::toRoute([
                                         'animal/close-scheme-form',
                                         'id' => $model->id
                                     ]),
-                                    'animal_id'               => $model->animal_id,
+                                    'animal_id' => $model->animal_id,
                                     'appropriation_scheme_id' => $model->id,
                                 ],
                                 'disabled' => $model->getListNewActions() ? true : false,
                             ]);
                         },
-                        'delete'       => function ($url, $model) {
+                        'delete' => function ($url, $model) {
                             return Html::a(
                                 'Убрать со схемы',
                                 Url::toRoute(['animal/remove-from-scheme', 'id' => $model->id]),
                                 [
                                     'class' => 'btn btn-danger',
-                                    'data'  => ['confirm' => 'Вы действительно хотите убрать животное со схемы?']
+                                    'data' => ['confirm' => 'Вы действительно хотите убрать животное со схемы?']
                                 ]
                             );
                         },

@@ -20,29 +20,31 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 
     <div class="form-group">
-        <?= Html::a(
-            Yii::t('app/groups-action', 'GROUPS_ACTION_ADD'),
-            Url::toRoute(['groups-action/new']),
-            [
-                'class' => 'btn btn-primary'
-            ]
-        ) ?>
+        <?php if (Yii::$app->user->can('schemeManageEdit')) : ?>
+            <?= Html::a(
+                Yii::t('app/groups-action', 'GROUPS_ACTION_ADD'),
+                Url::toRoute(['groups-action/new']),
+                [
+                    'class' => 'btn btn-primary'
+                ]
+            ) ?>
+        <?php endif; ?>
     </div>
 
 <?php echo GridView::widget([
     "dataProvider" => $dataProvider,
-    "filterModel"  => $searchModel,
+    "filterModel" => $searchModel,
     'tableOptions' => [
         'style' => 'display:block; width:100%; overflow-x:auto',
         'class' => 'table table-striped',
     ],
-    'columns'      => [
+    'columns' => [
         ['class' => 'yii\grid\SerialColumn'],
         'name',
         [
-            'label'  => 'Действия',
+            'label' => 'Действия',
             'format' => 'raw',
-            'value'  => function (GroupsAction $model) {
+            'value' => function (GroupsAction $model) {
                 $actions = "";
                 foreach ($model->actions as $action) {
                     $actions .= Html::tag("li", $action->name);
@@ -51,10 +53,13 @@ $this->params['breadcrumbs'][] = $this->title;
             }
         ],
         [
-            'class'    => 'yii\grid\ActionColumn',
-            'header'   => Yii::t('app/groups-action', 'ACTIONS'),
+            'class' => 'yii\grid\ActionColumn',
+            'header' => Yii::t('app/groups-action', 'ACTIONS'),
             'template' => '<div class="btn-group">{update} {delete} </div>',
-            'buttons'  => [
+            'visibleButtons' => [
+                'delete' => Yii::$app->user->can('schemeManageEdit'),
+            ],
+            'buttons' => [
                 'update' => function ($url, $model) {
                     return Html::a(
                         '<span class="glyphicon glyphicon-edit"></span>',
@@ -65,7 +70,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'delete' => function ($url, $model) {
                     return Html::button('<span class="glyphicon glyphicon-trash"></span>', [
                         "class" => "btn btn-danger remove-groups-action",
-                        'data'  => [
+                        'data' => [
                             'url' => Url::toRoute(['groups-action/delete', 'id' => $model->id]),
                         ]
                     ]);
