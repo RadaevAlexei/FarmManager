@@ -72,10 +72,8 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
 
     <div class="box-footer">
-        <?php if (Yii::$app->user->can('schemeManageEdit')) : ?>
-            <?= Html::submitButton(Yii::t('app/groups-action', 'EDIT'),
-                ['class' => 'btn btn-info pull-right', 'name' => 'contact-button']) ?>
-        <?php endif; ?>
+        <?= Html::submitButton(Yii::t('app/groups-action', 'EDIT'),
+            ['class' => 'btn btn-info pull-right', 'name' => 'contact-button']) ?>
     </div>
     <?php ActiveForm::end(); ?>
 

@@ -93,11 +93,9 @@ $this->title = 'Настройки РИ';
     </div>
 
     <div class="box-footer">
-        <?php if (Yii::$app->user->can('rectalSettingsEdit')) : ?>
-            <?= Html::submitButton('Обновить', [
-                'class' => 'btn btn-info pull-right'
-            ]) ?>
-        <?php endif; ?>
+        <?= Html::submitButton('Обновить', [
+            'class' => 'btn btn-info pull-right'
+        ]) ?>
     </div>
     <?php ActiveForm::end(); ?>
 

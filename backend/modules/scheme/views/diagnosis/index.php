@@ -15,15 +15,13 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 
     <div class="form-group">
-        <?php if (Yii::$app->user->can('diagnosisEdit')) : ?>
-            <?= Html::a(
-                Yii::t('app/diagnosis', 'DIAGNOSIS_ADD'),
-                Url::toRoute(['diagnosis/new']),
-                [
-                    'class' => 'btn btn-primary'
-                ]
-            ) ?>
-        <?php endif; ?>
+		<?= Html::a(
+			Yii::t('app/diagnosis', 'DIAGNOSIS_ADD'),
+			Url::toRoute(['diagnosis/new']),
+			[
+				'class' => 'btn btn-primary'
+			]
+		) ?>
     </div>
 
 <?php echo GridView::widget([
@@ -40,10 +38,6 @@ $this->params['breadcrumbs'][] = $this->title;
 			'class'    => 'yii\grid\ActionColumn',
 			'header'   => Yii::t('app/diagnosis', 'ACTIONS'),
 			'template' => '<div class="btn-group"> {update} {delete} </div>',
-            'visibleButtons' => [
-                'update' => Yii::$app->user->can('diagnosisEdit'),
-                'delete' => Yii::$app->user->can('diagnosisEdit'),
-            ],
 			'buttons'  => [
 				'update' => function ($url, $model) {
 					return Html::a(

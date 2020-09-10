@@ -97,10 +97,6 @@ $calvingId = current($calving)['calving_id'];
                     'class'    => 'yii\grid\ActionColumn',
                     'header'   => 'Действия',
                     'template' => '<div class="btn-group">{edit} {delete}</div>',
-                    'visibleButtons' => [
-                        'edit' => Yii::$app->user->can('animalEdit'),
-                        'delete' => Yii::$app->user->can('animalEdit'),
-                    ],
                     'buttons'  => ['delete' => function ($url, $model) use ($calvingId) {
                         return Html::a(
                             '<span class="glyphicon glyphicon-trash"></span>',
