@@ -28,6 +28,10 @@ $this->params['breadcrumbs'][] = $this->title;
 <?php echo GridView::widget([
     "dataProvider" => $dataProvider,
     "filterModel"  => $searchModel,
+    'formatter' => [
+        'class' => 'yii\i18n\Formatter',
+        'nullDisplay' => '',
+    ],
     'columns'      => [
         ['class' => 'yii\grid\SerialColumn'],
         'name',
@@ -42,14 +46,14 @@ $this->params['breadcrumbs'][] = $this->title;
             'buttons'  => [
                 'update' => function ($url, $model) {
                     return Html::a(
-                        '<span class="glyphicon glyphicon-edit"></span>',
+                        '<span class="fas fa-edit"></span>',
                         Url::toRoute(['position/edit', 'id' => $model->id]),
                         ['class' => 'btn btn-warning']
                     );
                 },
                 'delete' => function ($url, $model) {
                     return Html::a(
-                        '<span class="glyphicon glyphicon-trash"></span>',
+                        '<span class="fas fa-trash"></span>',
                         Url::toRoute(['position/delete', 'id' => $model->id]),
                         ['class' => 'btn btn-danger']
                     );

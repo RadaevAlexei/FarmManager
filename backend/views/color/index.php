@@ -43,14 +43,14 @@ $this->params['breadcrumbs'][] = $this->title;
             'buttons' => [
                 'update' => function ($url, $model) {
                     return Html::a(
-                        '<span class="glyphicon glyphicon-edit"></span>',
+                        '<span class="fas fa-edit"></span>',
                         Url::toRoute(['color/edit', 'id' => $model->id]),
                         ['class' => 'btn btn-warning']
                     );
                 },
                 'delete' => function ($url, $model) {
                     return Html::a(
-                        '<span class="glyphicon glyphicon-trash"></span>',
+                        '<span class="fas fa-trash"></span>',
                         Url::toRoute(['color/delete', 'id' => $model->id]),
                         ['class' => 'btn btn-danger']
                     );
