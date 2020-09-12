@@ -1,6 +1,6 @@
 <?php
 
-use \yii\bootstrap\ActiveForm;
+use \yii\bootstrap4\ActiveForm;
 use \common\models\Farm;
 
 /** @var Farm $model */

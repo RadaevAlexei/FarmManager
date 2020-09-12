@@ -1,7 +1,7 @@
 <?php
 
 use \yii\helpers\Url;
-use \yii\bootstrap\ActiveForm;
+use \yii\bootstrap4\ActiveForm;
 use \yii\helpers\Html;
 use \backend\modules\rectal\models\forms\RectalSettingsForm;
 use \common\models\User;

@@ -3,7 +3,7 @@
 use \yii\helpers\Url;
 use \common\models\Animal;
 use \backend\modules\scheme\models\Scheme;
-use \yii\bootstrap\ActiveForm;
+use \yii\bootstrap4\ActiveForm;
 use \backend\modules\scheme\models\AppropriationScheme;
 use \yii\jui\DatePicker;
 use \yii\helpers\Html;

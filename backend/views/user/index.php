@@ -6,6 +6,7 @@ use \common\models\search\UserSearch;
 use \yii\helpers\Html;
 use \yii\helpers\Url;
 use \common\models\Position;
+use \hail812\adminlte3\widgets\FlashAlert;
 
 $this->title = Yii::t('app/user', 'USER_LIST');
 $this->params['breadcrumbs'][] = $this->title;
@@ -18,6 +19,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-12">
+            <?= FlashAlert::widget(); ?>
             <div class="card card-primary">
                 <div class="card-body">
                     <?php if (Yii::$app->user->can('userEdit')) : ?>

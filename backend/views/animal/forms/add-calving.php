@@ -3,7 +3,7 @@
 use common\models\User;
 use yii\helpers\ArrayHelper;
 use \yii\helpers\Url;
-use \yii\bootstrap\ActiveForm;
+use \yii\bootstrap4\ActiveForm;
 use \yii\jui\DatePicker;
 use \yii\helpers\Html;
 use common\models\Animal;

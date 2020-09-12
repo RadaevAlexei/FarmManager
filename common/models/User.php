@@ -114,7 +114,7 @@ class User extends ActiveRecord implements IdentityInterface
             'status'      => "Статус",
             'gender'      => "Пол",
             'birthday'    => "Дата Рождения",
-            'position_id' => "ID Должности",
+            'position_id' => "Должность",
             'firstName'   => "Имя",
             'lastName'    => "Фамилия",
             'middleName'  => "Отчество",
