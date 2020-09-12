@@ -1,7 +1,7 @@
 <?php
 
-use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
+use \hail812\adminlte3\widgets\Menu;
 
 ?>
 
@@ -31,167 +31,167 @@ use yii\helpers\ArrayHelper;
         <nav class="mt-2">
 
             <?php
-            echo \hail812\adminlte3\widgets\Menu::widget([
+            echo Menu::widget([
                 'items' => [
                     ['label' => 'ПОЛЬЗОВАТЕЛИ', 'header' => true],
                     [
                         'label' => 'Сотрудники',
                         'icon' => 'users',
-                        'url' => Url::toRoute(['/user/index']),
+                        'url' => ['/user/index'],
                     ],
                     [
                         'label' => 'Должности',
-                        'icon' => 'users',
-                        'url' => Url::toRoute(['/position/index']),
+                        'icon' => 'th',
+                        'url' => ['/position/index'],
                     ],
                     ['label' => 'СТАДО', 'header' => true],
                     [
                         'label' => 'Общий список скота',
-                        'icon' => 'users',
-                        'url' => Url::toRoute(['/animal/index'])
+                        'icon' => 'list',
+                        'url' => ['/animal/index'],
                     ],
                     [
                         'label' => 'Масти',
-                        'icon' => 'users',
-                        'url' => Url::toRoute(['/color/index'])
+                        'icon' => 'copy',
+                        'url' => ['/color/index'],
                     ],
                     [
                         'label' => 'Коровники',
-                        'icon' => 'users',
-                        'url' => Url::toRoute(['/cowshed/index'])
+                        'icon' => 'home',
+                        'url' => ['/cowshed/index'],
                     ],
                     [
                         'label' => 'Фермы',
-                        'icon' => 'users',
-                        'url' => Url::toRoute(['/farm/index'])
+                        'icon' => 'home',
+                        'url' => ['/farm/index'],
                     ],
                     [
                         'label' => 'Группы животных',
-                        'icon' => 'users',
-                        'url' => Url::toRoute(['/animal-group/index'])
+                        'icon' => 'file',
+                        'url' => ['/animal-group/index'],
                     ],
                     ['label' => 'АМБУЛАТОРНЫЙ ЖУРНАЛ', 'header' => true],
                     [
                         'label' => 'Управление схемами',
-                        'icon' => 'users',
+                        'icon' => 'file',
                         'items' => [
                             [
                                 'label' => 'Группы действий',
                                 'iconStyle' => 'far',
-                                'url' => Url::toRoute(['/scheme/groups-action/index']),
+                                'url' => ['/scheme/groups-action/index'],
                             ],
                             [
                                 'label' => 'Действия',
                                 'iconStyle' => 'far',
-                                'url' => Url::toRoute(['/scheme/action/index']),
+                                'url' => ['/scheme/action/index'],
                             ],
                             [
                                 'label' => 'Списки',
                                 'iconStyle' => 'far',
-                                'url' => Url::toRoute(['/scheme/action-list/index']),
+                                'url' => ['/scheme/action-list/index'],
                             ],
                             [
                                 'label' => 'Схемы лечения',
                                 'iconStyle' => 'far',
-                                'url' => Url::toRoute(['/scheme/scheme/index'])
+                                'url' => ['/scheme/scheme/index'],
                             ],
                         ]
                     ],
                     [
                         'label' => 'Диагнозы',
-                        'icon' => 'users',
-                        'url' => Url::toRoute(['/scheme/diagnosis/index'])
+                        'icon' => 'file',
+                        'url' => ['/scheme/diagnosis/index'],
                     ],
                     [
                         'label' => 'Управление аптекой',
-                        'icon' => 'users',
+                        'icon' => 'file',
                         'url' => '#',
                         'items' => [
                             [
                                 'label' => 'Упр-е препаратами',
                                 'iconStyle' => 'far',
-                                'url' => Url::toRoute(['/pharmacy/preparation/index']),
+                                'url' => ['/pharmacy/preparation/index'],
                             ],
                             [
                                 'label' => 'Управление складами',
                                 'iconStyle' => 'far',
-                                'url' => Url::toRoute(['/pharmacy/stock/index']),
+                                'url' => ['/pharmacy/stock/index'],
                             ],
                             [
                                 'label' => 'Хранилище препаратов',
                                 'iconStyle' => 'far',
-                                'url' => Url::toRoute(['/pharmacy/storage/index']),
+                                'url' => ['/pharmacy/storage/index'],
                             ],
                             [
                                 'label' => 'Расход / Приход',
                                 'iconStyle' => 'far',
-                                'url' => Url::toRoute(['/pharmacy/cash-book/index']),
+                                'url' => ['/pharmacy/cash-book/index'],
                             ],
                         ],
                     ],
                     [
                         'label' => 'Список дел',
-                        'icon' => 'users',
+                        'icon' => 'file',
                         'items' => [
                             [
                                 'label' => 'Просроченные',
                                 'iconStyle' => 'far',
-                                'url' => Url::toRoute(['/scheme/action-day/overdue'])
+                                'url' => ['/scheme/action-day/overdue'],
                             ],
                             [
                                 'label' => 'Текущие и будущие',
                                 'iconStyle' => 'far',
-                                'url' => Url::toRoute(['/scheme/action-day/index'])
+                                'url' => ['/scheme/action-day/index'],
                             ],
                         ]
                     ],
                     [
                         'label' => 'Список больных ж-х',
-                        'icon' => 'users',
-                        'url' => Url::toRoute(['/animal/sick-index'])
+                        'icon' => 'minus',
+                        'url' => ['/animal/sick-index'],
                     ],
                     [
                         'label' => 'Список ж-х в ожидании',
-                        'icon' => 'users',
-                        'url' => Url::toRoute(['/animal/awaiting-index'])
+                        'icon' => 'eye',
+                        'url' => ['/animal/awaiting-index'],
                     ],
                     ['label' => 'ВОСПРОИЗВОДСТВО', 'header' => true],
                     [
                         'label' => 'Поставщики семени',
-                        'icon' => 'users',
-                        'url' => Url::toRoute(['/reproduction/seed-supplier/index'])
+                        'icon' => 'file',
+                        'url' => ['/reproduction/seed-supplier/index'],
                     ],
                     [
                         'label' => 'Список быков',
-                        'icon' => 'users',
-                        'url' => Url::toRoute(['/reproduction/seed-bull/index'])
+                        'icon' => 'file',
+                        'url' => ['/reproduction/seed-bull/index'],
                     ],
                     [
                         'label' => 'Упр-е Сосудами Дьюара',
-                        'icon' => 'users',
-                        'url' => Url::toRoute(['/reproduction/container-duara/index'])
+                        'icon' => 'file',
+                        'url' => ['/reproduction/container-duara/index'],
                     ],
                     [
                         'label' => 'Расход / Приход',
-                        'icon' => 'users',
-                        'url' => Url::toRoute(['/reproduction/seed-cash-book/index']),
+                        'icon' => 'table',
+                        'url' => ['/reproduction/seed-cash-book/index'],
                     ],
                     ['label' => 'РЕКТАЛЬНОЕ ИССЛЕДОВАНИЕ', 'header' => true],
                     [
                         'label' => 'Список животных под РИ',
-                        'icon' => 'users',
-                        'url' => Url::toRoute(['/rectal/rectal-list/index']),
+                        'icon' => 'list',
+                        'url' => ['/rectal/rectal-list/index'],
                     ],
                     [
                         'label' => 'Настройки РИ',
-                        'icon' => 'users',
-                        'url' => Url::toRoute(['/rectal/rectal-settings/index']),
+                        'icon' => 'list',
+                        'url' => ['/rectal/rectal-settings/index'],
                     ],
                     ['label' => 'ЗООТЕХНИЧЕСКАЯ СЛУЖБА', 'header' => true],
                     [
                         'label' => 'Формирование актов',
-                        'icon' => 'users',
-                        'url' => Url::toRoute(['/livestock/livestock-report/index']),
+                        'icon' => 'file',
+                        'url' => ['/livestock/livestock-report/index'],
                     ],
                 ],
             ]);
