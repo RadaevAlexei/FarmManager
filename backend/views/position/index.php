@@ -13,7 +13,6 @@ $this->params['breadcrumbs'][] = $this->title;
 
 ?>
 
-
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-12">
@@ -25,9 +24,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             <?= Html::a(
                                 Yii::t('app/position', 'POSITION_ADD'),
                                 Url::toRoute(['position/new']),
-                                [
-                                    'class' => 'btn btn-primary'
-                                ]
+                                ['class' => 'btn btn-primary']
                             ) ?>
                         </div>
                     <?php endif; ?>

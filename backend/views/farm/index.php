@@ -19,7 +19,6 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="card card-primary">
                 <div class="card-body">
                     <?php if (Yii::$app->user->can('farmEdit')) : ?>
-
                         <div class="form-group">
                             <?= Html::a(
                                 Yii::t('app/farm', 'FARM_ADD'),

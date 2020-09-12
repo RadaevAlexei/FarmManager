@@ -16,7 +16,6 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <div class="container-fluid">
     <div class="row">
-        <!-- left column -->
         <div class="col-md-12">
             <div class="card card-primary">
                 <div class="card-header">
@@ -102,7 +101,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 </div>
 
                 <div class="card-footer">
-                    <?= Html::submitButton(Yii::t('app/user', 'ADD'), ['class' => 'btn btn-primary']) ?>
+                    <?php if (Yii::$app->user->can('userEdit')) : ?>
+                        <?= Html::submitButton(Yii::t('app/user', 'ADD'), ['class' => 'btn btn-sm btn-primary']) ?>
+                    <?php endif; ?>
                 </div>
 
                 <?php ActiveForm::end(); ?>

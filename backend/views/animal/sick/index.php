@@ -60,7 +60,7 @@ AnimalAsset::register($this);
                                     }
 
                                     if ($check) {
-                                        return '<span class="badge bg-red" title="У данной коровы есть хотя бы одна схема, готовая к завершению"><span class="glyphicon glyphicon-exclamation-sign"></span></span>';
+                                        return '<span title="У данной коровы есть хотя бы одна схема, готовая к завершению" class="far fa-circle text-danger"></span>';
                                     }
 
                                     return '';

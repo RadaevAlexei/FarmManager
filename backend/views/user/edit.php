@@ -105,7 +105,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <?php if (Yii::$app->user->can('userEdit')) : ?>
                         <?= Html::submitButton(
                             Yii::t('app/user', 'EDIT'),
-                            ['class' => 'btn btn-primary', 'name' => 'contact-button']
+                            ['class' => 'btn btn-sm btn-primary', 'name' => 'contact-button']
                         ) ?>
                     <?php endif; ?>
                 </div>
