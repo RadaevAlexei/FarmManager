@@ -33,7 +33,7 @@ use yii\helpers\ArrayHelper;
             <?php
             echo \hail812\adminlte3\widgets\Menu::widget([
                 'items' => [
-                    ['label' => 'Пользователи', 'header' => true],
+                    ['label' => 'ПОЛЬЗОВАТЕЛИ', 'header' => true],
                     [
                         'label' => 'Сотрудники',
                         'icon' => 'users',
@@ -44,7 +44,7 @@ use yii\helpers\ArrayHelper;
                         'icon' => 'users',
                         'url' => Url::toRoute(['/position/index']),
                     ],
-                    ['label' => 'Стадо', 'header' => true],
+                    ['label' => 'СТАДО', 'header' => true],
                     [
                         'label' => 'Общий список скота',
                         'icon' => 'users',
@@ -70,7 +70,7 @@ use yii\helpers\ArrayHelper;
                         'icon' => 'users',
                         'url' => Url::toRoute(['/animal-group/index'])
                     ],
-                    ['label' => 'Амбулаторный журнал', 'header' => true],
+                    ['label' => 'АМБУЛАТОРНЫЙ ЖУРНАЛ', 'header' => true],
                     [
                         'label' => 'Управление схемами',
                         'icon' => 'users',
@@ -155,7 +155,7 @@ use yii\helpers\ArrayHelper;
                         'icon' => 'users',
                         'url' => Url::toRoute(['/animal/awaiting-index'])
                     ],
-                    ['label' => 'Воспроизводство', 'header' => true],
+                    ['label' => 'ВОСПРОИЗВОДСТВО', 'header' => true],
                     [
                         'label' => 'Поставщики семени',
                         'icon' => 'users',
@@ -176,7 +176,7 @@ use yii\helpers\ArrayHelper;
                         'icon' => 'users',
                         'url' => Url::toRoute(['/reproduction/seed-cash-book/index']),
                     ],
-                    ['label' => 'Ректальное исследование', 'header' => true],
+                    ['label' => 'РЕКТАЛЬНОЕ ИССЛЕДОВАНИЕ', 'header' => true],
                     [
                         'label' => 'Список животных под РИ',
                         'icon' => 'users',
@@ -187,7 +187,7 @@ use yii\helpers\ArrayHelper;
                         'icon' => 'users',
                         'url' => Url::toRoute(['/rectal/rectal-settings/index']),
                     ],
-                    ['label' => 'Зоотехническая служба', 'header' => true],
+                    ['label' => 'ЗООТЕХНИЧЕСКАЯ СЛУЖБА', 'header' => true],
                     [
                         'label' => 'Формирование актов',
                         'icon' => 'users',

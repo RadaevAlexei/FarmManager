@@ -16,57 +16,60 @@ $this->params['breadcrumbs'][] = $this->title;
 
 ?>
 
-<div class="form-group">
-    <?php if (Yii::$app->user->can('seedSupplierEdit')) : ?>
-        <?= Html::a(
-            'Добавить поставщика',
-            Url::toRoute(['seed-supplier/new']),
-            ['class' => 'btn btn-primary']
-        ) ?>
-    <?php endif; ?>
-</div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card card-primary">
+                <div class="card-body">
+                    <?php if (Yii::$app->user->can('seedSupplierEdit')) : ?>
+                        <div class="form-group">
+                            <?= Html::a(
+                                'Добавить поставщика',
+                                Url::toRoute(['seed-supplier/new']),
+                                ['class' => 'btn btn-primary']
+                            ) ?>
+                        </div>
+                    <?php endif; ?>
 
-<div class="box box-info">
-    <div class="box-body">
-
-        <?php echo GridView::widget([
-            "dataProvider" => $dataProvider,
-            "filterModel" => $searchModel,
-            'tableOptions' => [
-                'class' => 'table table-striped',
-            ],
-            'columns' => [
-                ['class' => 'yii\grid\SerialColumn'],
-                'name',
-                [
-                    'class' => 'yii\grid\ActionColumn',
-                    'header' => 'Действия',
-                    'template' => '<div class="btn-group">{update} {delete} </div>',
-                    'visibleButtons' => [
-                        'delete' => Yii::$app->user->can('seedSupplierEdit'),
-                    ],
-                    'buttons' => [
-                        'update' => function ($url, $model) {
-                            return Html::a(
-                                '<span class="glyphicon glyphicon-edit"></span>',
-                                Url::toRoute(['seed-supplier/edit', 'id' => $model->id]),
-                                ['class' => 'btn btn-warning']
-                            );
-                        },
-                        'delete' => function ($url, $model) {
-                            return Html::a(
-                                '<span class="glyphicon glyphicon-trash"></span>',
-                                Url::toRoute(['seed-supplier/delete', 'id' => $model->id]),
-                                [
-                                    'class' => 'btn btn-danger',
-                                    'data' => ['confirm' => 'Вы действительно хотите удалить поставщика?']
-                                ]
-                            );
-                        },
-                    ],
-                ],
-            ]
-        ]); ?>
-
+                    <?php echo GridView::widget([
+                        "dataProvider" => $dataProvider,
+                        "filterModel" => $searchModel,
+                        'formatter' => ['class' => 'yii\i18n\Formatter', 'nullDisplay' => '',],
+                        'tableOptions' => ['class' => 'table table-sm table-striped table-hover table-condensed'],
+                        'columns' => [
+                            ['class' => 'yii\grid\SerialColumn'],
+                            'name',
+                            [
+                                'class' => 'yii\grid\ActionColumn',
+                                'header' => 'Действия',
+                                'template' => '<div class="btn-group">{update} {delete} </div>',
+                                'visibleButtons' => [
+                                    'delete' => Yii::$app->user->can('seedSupplierEdit'),
+                                ],
+                                'buttons' => [
+                                    'update' => function ($url, $model) {
+                                        return Html::a(
+                                            '<span class="fas fa-sm fa-edit"></span>',
+                                            Url::toRoute(['seed-supplier/edit', 'id' => $model->id]),
+                                            ['class' => 'btn btn-warning']
+                                        );
+                                    },
+                                    'delete' => function ($url, $model) {
+                                        return Html::a(
+                                            '<span class="fas fa-sm fa-trash"></span>',
+                                            Url::toRoute(['seed-supplier/delete', 'id' => $model->id]),
+                                            [
+                                                'class' => 'btn btn-danger',
+                                                'data' => ['confirm' => 'Вы действительно хотите удалить поставщика?']
+                                            ]
+                                        );
+                                    },
+                                ],
+                            ],
+                        ]
+                    ]); ?>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
