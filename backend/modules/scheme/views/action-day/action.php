@@ -6,7 +6,7 @@ use \common\models\TypeField;
 use yii\helpers\Url;
 use yii\helpers\Html;
 use backend\modules\scheme\assets\ActionDayAsset;
-use \yii\bootstrap\ActiveForm;
+use \yii\bootstrap4\ActiveForm;
 use \kartik\select2\Select2;
 use \common\models\TypeList;
 use \backend\modules\pharmacy\models\Stock;

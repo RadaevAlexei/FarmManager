@@ -1,7 +1,7 @@
 <?php
 
 use \yii\helpers\Url;
-use \yii\bootstrap\ActiveForm;
+use \yii\bootstrap4\ActiveForm;
 use \yii\jui\DatePicker;
 use \yii\helpers\Html;
 use \yii\data\ArrayDataProvider;

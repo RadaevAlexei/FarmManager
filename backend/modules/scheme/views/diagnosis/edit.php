@@ -1,6 +1,6 @@
 <?php
 
-use \yii\bootstrap\ActiveForm;
+use \yii\bootstrap4\ActiveForm;
 use \yii\helpers\Html;
 use \yii\helpers\Url;
 use \backend\modules\scheme\models\Diagnosis;
