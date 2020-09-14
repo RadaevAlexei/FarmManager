@@ -27,17 +27,17 @@ $this->params['breadcrumbs'][] = $this->title;
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="form-group">
-                                    <?= $form->field($model, 'name')->textInput([
-                                        'autofocus' => true,
-                                        'class'     => 'form-control form-control-sm'
-                                    ]) ?>
+                                <?= $form->field($model, 'name')->textInput([
+                                    'autofocus' => true,
+                                    'class' => 'form-control form-control-sm'
+                                ]) ?>
                             </div>
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
-                                    <?= $form->field($model, 'short_name')->textInput([
-                                        'class' => 'form-control form-control-sm'
-                                    ]) ?>
+                                <?= $form->field($model, 'short_name')->textInput([
+                                    'class' => 'form-control form-control-sm'
+                                ]) ?>
                             </div>
                         </div>
                     </div>

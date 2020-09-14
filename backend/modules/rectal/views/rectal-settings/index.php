@@ -10,95 +10,105 @@ use \yii\helpers\ArrayHelper;
 /** @var RectalSettings $model */
 
 $this->title = 'Настройки РИ';
+$this->params['breadcrumbs'][] = $this->title;
 
 ?>
 
-<div class="box box-info">
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Какие настройки хотите изменить?</h3>
+                </div>
 
-    <?php $form = ActiveForm::begin([
-        'action' => Url::toRoute([
-            "/rectal/rectal-settings/update",
-            'id' => ArrayHelper::getValue($model, "id")
-        ]),
-        'id' => 'rectal-settings-form',
-        'class' => 'form-horizontal'
-    ]); ?>
-    <div class="box-body">
+                <?php $form = ActiveForm::begin([
+                    'action' => Url::toRoute([
+                        "/rectal/rectal-settings/update",
+                        'id' => ArrayHelper::getValue($model, "id")
+                    ])
+                ]); ?>
 
-        <div class="form-group">
-            <div class="col-sm-12">
-                <?= $form->field($model, 'pregnancy_time')->input(
-                    'number',
-                    [
-                        'class' => 'form-control',
-                        'min' => 1,
-                        'step' => 1,
-                    ]
-                ) ?>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <?= $form->field($model, 'pregnancy_time')->input(
+                                    'number',
+                                    [
+                                        'class' => 'form-control',
+                                        'min' => 1,
+                                        'step' => 1,
+                                    ]
+                                ) ?>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <?= $form->field($model, 'confirm_first')->input(
+                                    'number',
+                                    [
+                                        'class' => 'form-control',
+                                        'min' => 1,
+                                        'step' => 1,
+                                    ]
+                                ) ?>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <?= $form->field($model, 'end_time')->input(
+                                    'number',
+                                    [
+                                        'class' => 'form-control',
+                                        'min' => 1,
+                                        'step' => 1,
+                                    ]
+                                ) ?>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <?= $form->field($model, 'confirm_second')->input(
+                                    'number',
+                                    [
+                                        'class' => 'form-control',
+                                        'min' => 1,
+                                        'step' => 1,
+                                    ]
+                                ) ?>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <?= $form->field($model, 'first_day')->input(
+                                    'number',
+                                    [
+                                        'class' => 'form-control',
+                                        'min' => 1,
+                                        'step' => 1,
+                                    ]
+                                ) ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-footer">
+                    <?php if (Yii::$app->user->can('rectalSettingsEdit')) : ?>
+                        <?= Html::submitButton('Обновить', ['class' => 'btn btn-sm btn-primary']) ?>
+                    <?php endif; ?>
+                </div>
+
+                <?php ActiveForm::end(); ?>
             </div>
         </div>
-
-        <div class="form-group">
-            <div class="col-sm-12">
-                <?= $form->field($model, 'end_time')->input(
-                    'number',
-                    [
-                        'class' => 'form-control',
-                        'min' => 1,
-                        'step' => 1,
-                    ]
-                ) ?>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-sm-12">
-                <?= $form->field($model, 'first_day')->input(
-                    'number',
-                    [
-                        'class' => 'form-control',
-                        'min' => 1,
-                        'step' => 1,
-                    ]
-                ) ?>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-sm-12">
-                <?= $form->field($model, 'confirm_first')->input(
-                    'number',
-                    [
-                        'class' => 'form-control',
-                        'min' => 1,
-                        'step' => 1,
-                    ]
-                ) ?>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-sm-12">
-                <?= $form->field($model, 'confirm_second')->input(
-                    'number',
-                    [
-                        'class' => 'form-control',
-                        'min' => 1,
-                        'step' => 1,
-                    ]
-                ) ?>
-            </div>
-        </div>
-
     </div>
-
-    <div class="box-footer">
-        <?php if (Yii::$app->user->can('rectalSettingsEdit')) : ?>
-            <?= Html::submitButton('Обновить', [
-                'class' => 'btn btn-info pull-right'
-            ]) ?>
-        <?php endif; ?>
-    </div>
-    <?php ActiveForm::end(); ?>
-
 </div>

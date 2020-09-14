@@ -3,8 +3,6 @@
 use \yii\widgets\LinkPager;
 use \yii\bootstrap4\LinkPager as LinkPagerBootstrap4;
 
-;
-
 $params = array_merge(
     require(__DIR__ . '/../../common/config/params.php'),
     require(__DIR__ . '/../../common/config/params-local.php'),

@@ -20,13 +20,13 @@ use \yii\helpers\ArrayHelper;
         <?= Html::textInput(
             'action-name',
             ArrayHelper::getValue($model, "name"),
-            ["class" => "form-control"]
+            ["class" => "form-control form-control-sm"]
         ) ?>
-        <span class="input-group-btn">
+        <span class="input-group-append">
             <?= Html::button('Удалить', [
                 'remove-action' => '',
                 'type' => 'button',
-                'class' => 'btn btn-danger btn-flat',
+                'class' => 'btn btn-sm btn-danger btn-flat',
                 'disabled' => !Yii::$app->user->can('schemeManageEdit'),
             ]) ?>
         </span>

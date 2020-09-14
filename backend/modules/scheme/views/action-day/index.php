@@ -34,14 +34,18 @@ ActionDayAsset::register($this);
                     <?php $form = ActiveForm::begin([
                         'action' => Url::toRoute(['index'])
                     ]) ?>
+
                     <div class="form-group">
-                        <div class="col-sm-3">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <button type="submit" class="btn btn-sm btn-primary">Показать</button>
+                            </div>
                             <?= DatePicker::widget([
                                 'name' => 'filter_date',
                                 'value' => (new DateTime($filterDate))->format('d.m.Y'),
                                 'language' => 'ru',
                                 'dateFormat' => 'dd.MM.yyyy',
-                                'options' => ['class' => 'form-control'],
+                                'options' => ['class' => 'form-control form-control-sm'],
                                 'clientOptions' => [
                                     'changeMonth' => true,
                                     'changeYear' => true,
@@ -49,9 +53,6 @@ ActionDayAsset::register($this);
                                         new DateTimeZone('Europe/Samara')))->format('d.m.Y'),
                                 ]
                             ]) ?>
-                        </div>
-                        <div class="col-sm-3">
-                            <button type="submit" class="btn btn-primary">Показать</button>
                         </div>
                     </div>
                     <?php ActiveForm::end() ?>
@@ -64,7 +65,7 @@ ActionDayAsset::register($this);
                                 'filterDate' => $filterDate
                             ]) : "#",
                             [
-                                'class' => 'btn btn-success',
+                                'class' => 'btn btn-sm btn-success',
                                 'disabled' => $dataProvider->getModels() ? false : true
                             ]
                         ) ?>
@@ -96,7 +97,7 @@ ActionDayAsset::register($this);
                                     'buttons' => [
                                         'detail' => function ($url, $model) use ($disableExecuteAction) {
                                             return Html::a(
-                                                '<span class="glyphicon glyphicon-eye-open"></span>',
+                                                '<span class="fas fa-sm fa-eye"></span>',
                                                 Url::toRoute([
                                                     'action-day/details',
                                                     'scheme_id' => ArrayHelper::getValue($model, "scheme_id"),
