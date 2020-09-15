@@ -15,100 +15,115 @@ use backend\modules\reproduction\models\ContainerDuara;
  */
 
 $this->title = 'Добавление';
+$this->params['breadcrumbs'][] = $this->title;
 
 ?>
 
-<div class="box box-info">
-
-    <?php $form = ActiveForm::begin([
-        'action' => Url::toRoute(['seed-cash-book/create']),
-        'id'     => 'seed-cash-book-form',
-        'class'  => 'form-horizontal'
-    ]); ?>
-    <div class="box-body">
-
-        <div class="form-group">
-            <div class="col-sm-12">
-                <?= $form->field($model, 'user_id')->dropDownList(ArrayHelper::map(User::getAllList(),
-                    "id", "lastName"), [
-                    'id'     => 'select-user',
-                    'class'  => 'form-control',
-                    'prompt' => 'Кто проводит?'
-                ]) ?>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-sm-12">
-                <?= $form->field($model, 'type')->hiddenInput(['value' => $model->type])->label(false) ?>
-                <?= $form->field($model, 'type')->dropDownList(SeedCashBook::getTypeList(), [
-                    'id'       => 'select-type',
-                    'class'    => 'form-control',
-                    'disabled' => true,
-                    'prompt'   => 'Выберите тип'
-                ]) ?>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-sm-12">
-                <?= $form->field($model, 'date')->widget(DatePicker::class, [
-                    'language'   => 'ru',
-                    'dateFormat' => 'dd.MM.yyyy',
-                    'options'    => ['class' => 'form-control', 'autocomplete' => 'off']
-                ]) ?>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-sm-12">
-                <?= $form->field($model, 'seed_bull_id')->dropDownList(ArrayHelper::map(SeedBull::getAllList(),
-                    "id", "nickname"), [
-                    'id'     => 'select-seed-bull',
-                    'class'  => 'form-control',
-                    'prompt' => 'Выберите быка?'
-                ]) ?>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-sm-12">
-                <?= $form->field($model, 'container_duara_id')->dropDownList(ArrayHelper::map(ContainerDuara::getAllList(),
-                    "id", "name"), [
-                    'id'     => 'select-container-duara',
-                    'class'  => 'form-control',
-                    'prompt' => 'Выберите сосуд?'
-                ]) ?>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-sm-12">
-                <?= $form->field($model, 'count')->input('number', ['class' => 'form-control', 'min' => 1]) ?>
-            </div>
-        </div>
-
-        <?php if ($model->type == SeedCashBook::TYPE_DEBIT) : ?>
-
-            <div class="form-group">
-                <div class="col-sm-12">
-                    <?= $form->field($model, 'vat_percent')->input('number', [
-                        'class' => 'form-control',
-                        'min'   => 0,
-                        'max'   => 100,
-                        'step'  => 0.01,
-                    ]) ?>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Заполните форму для создания</h3>
                 </div>
+
+                <?php $form = ActiveForm::begin(['action' => Url::toRoute(['seed-cash-book/create'])]); ?>
+
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <?= $form->field($model, 'type')->dropDownList(SeedCashBook::getTypeList(), [
+                                    'id' => 'select-type',
+                                    'class' => 'form-control form-control-sm',
+                                    'disabled' => true,
+                                    'prompt' => 'Выберите тип'
+                                ]) ?>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <?= $form->field($model, 'container_duara_id')->dropDownList(ArrayHelper::map(ContainerDuara::getAllList(),
+                                    "id", "name"), [
+                                    'id' => 'select-container-duara',
+                                    'class' => 'form-control form-control-sm',
+                                    'prompt' => 'Выберите сосуд?'
+                                ]) ?>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <?= $form->field($model, 'user_id')->dropDownList(ArrayHelper::map(User::getAllList(),
+                                    "id", "lastName"), [
+                                    'id' => 'select-user',
+                                    'class' => 'form-control form-control-sm',
+                                    'prompt' => 'Кто проводит?'
+                                ]) ?>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <?= $form->field($model, 'count')
+                                    ->input('number', [
+                                        'class' => 'form-control form-control-sm', 'min' => 1
+                                    ])
+                                ?>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <?= $form->field($model, 'date')->widget(DatePicker::class, [
+                                    'language' => 'ru',
+                                    'dateFormat' => 'dd.MM.yyyy',
+                                    'options' => ['class' => 'form-control form-control-sm', 'autocomplete' => 'off']
+                                ]) ?>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <?php if ($model->type == SeedCashBook::TYPE_DEBIT) : ?>
+                                <div class="form-group">
+                                    <?= $form->field($model, 'vat_percent')->input('number', [
+                                        'class' => 'form-control form-control-sm',
+                                        'min' => 0,
+                                        'max' => 100,
+                                        'step' => 0.01,
+                                    ]) ?>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <?= $form->field($model, 'seed_bull_id')->dropDownList(ArrayHelper::map(SeedBull::getAllList(),
+                                    "id", "nickname"), [
+                                    'id' => 'select-seed-bull',
+                                    'class' => 'form-control form-control-sm',
+                                    'prompt' => 'Выберите быка?'
+                                ]) ?>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <?= $form->field($model, 'type')
+                                ->hiddenInput(['value' => $model->type])
+                                ->label(false)
+                            ?>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-footer">
+                    <?php if (Yii::$app->user->can('seedCashBookEdit')) : ?>
+                        <?= Html::submitButton('Добавить', ['class' => 'btn btn-sm btn-primary']) ?>
+                    <?php endif; ?>
+                </div>
+
+                <?php ActiveForm::end(); ?>
             </div>
-        <?php endif; ?>
-
+        </div>
     </div>
-
-    <div class="box-footer">
-        <?= Html::submitButton('Добавить',
-            ['class' => 'btn btn-info pull-right', 'name' => 'add-button']) ?>
-    </div>
-
-    <?php ActiveForm::end(); ?>
-
 </div>

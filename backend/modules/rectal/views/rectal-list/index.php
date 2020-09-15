@@ -19,6 +19,7 @@ use backend\modules\rectal\assets\RectalAsset;
 RectalAsset::register($this);
 
 $this->title = 'Список животных находящиеся под ректальным исследованием';
+$this->params['breadcrumbs'][] = $this->title;
 
 ?>
 
@@ -27,22 +28,24 @@ $this->title = 'Список животных находящиеся под ре
         <div class="col-md-12">
             <div class="card card-primary">
                 <div class="card-header">Период осеменения коров</div>
+
+                <?php $form = ActiveForm::begin([
+                    'action' => Url::toRoute(['index']),
+                    'class' => 'form-horizontal'
+                ]) ?>
+
                 <div class="card-body">
-                    <?php $form = ActiveForm::begin([
-                        'action' => Url::toRoute(['index']),
-                        'class' => 'form-horizontal'
-                    ]) ?>
-                    <div class="form-group">
-                        <label for="filter_date_from_id" class="col-sm-2 control-label">Начало периода</label>
-                        <div class="col-sm-10">
+                    <div class="row">
+                        <div class="col-sm-6">
                             <div class="form-group">
+                                <label for="filter_date_from_id" class="control-label">Начало периода</label>
                                 <?= DatePicker::widget([
                                     'id' => 'filter_date_from_id',
                                     'name' => 'filter_date_from',
                                     'value' => $filterDateFrom ? (new DateTime($filterDateFrom))->format('d.m.Y') : null,
                                     'language' => 'ru',
                                     'dateFormat' => 'dd.MM.yyyy',
-                                    'options' => ['class' => 'form-control'],
+                                    'options' => ['class' => 'form-control form-control-sm'],
                                     'clientOptions' => [
                                         'changeMonth' => true,
                                         'changeYear' => true,
@@ -51,18 +54,16 @@ $this->title = 'Список животных находящиеся под ре
                                 ]) ?>
                             </div>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="filter_date_to_id" class="col-sm-2 control-label">Конец периода</label>
-                        <div class="col-sm-10">
+                        <div class="col-sm-6">
                             <div class="form-group">
+                                <label for="filter_date_to_id" class="control-label">Конец периода</label>
                                 <?= DatePicker::widget([
                                     'id' => 'filter_date_to_id',
                                     'name' => 'filter_date_to',
                                     'value' => $filterDateTo ? (new DateTime($filterDateTo))->format('d.m.Y') : null,
                                     'language' => 'ru',
                                     'dateFormat' => 'dd.MM.yyyy',
-                                    'options' => ['class' => 'form-control'],
+                                    'options' => ['class' => 'form-control form-control-sm'],
                                     'clientOptions' => [
                                         'changeMonth' => true,
                                         'changeYear' => true
@@ -71,13 +72,11 @@ $this->title = 'Список животных находящиеся под ре
                             </div>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <button type="submit" class="btn btn-primary pull-right">Показать</button>
-                    </div>
-                    <?php ActiveForm::end() ?>
                 </div>
 
-                <div class="form-group">
+                <div class="card-footer">
+                    <button type="submit" class="btn btn-sm btn-primary pull-right">Показать</button>
+
                     <?= Html::a(
                         'Список для гинеколога',
                         $dataProvider->getModels() ?
@@ -87,13 +86,13 @@ $this->title = 'Список животных находящиеся под ре
                                 'dateTo' => $filterDateTo
                             ]) : "#",
                         [
-                            'class' => 'btn btn-success',
+                            'class' => 'btn btn-sm btn-success',
                             'disabled' => $dataProvider->getModels() ? false : true
                         ]
                     ) ?>
                     <?= Html::button('Отчет РИ', [
                         'id' => 'print-rectal-report-button',
-                        'class' => 'btn btn-primary',
+                        'class' => 'btn btn-sm btn-primary',
                         'disabled' => $disableReport,
                         'data' => [
                             'toggle' => 'modal',
@@ -105,21 +104,32 @@ $this->title = 'Список животных находящиеся под ре
                         ]
                     ]); ?>
                     <? /*= Html::a(
-                        'Отчет РИ',
-                        !$disableReport ?
-                            Url::toRoute([
-                                '/rectal/rectal-list/download-rectal-list',
-                                'dateFrom' => $filterDateFrom,
-                                'dateTo'   => $filterDateTo
-                            ]) : "#",
-                        [
-                            'class'    => 'btn btn-primary',
-                            'disabled' => $disableReport ? true : false
-                        ]
-                    )*/ ?>
+                            'Отчет РИ',
+                            !$disableReport ?
+                                Url::toRoute([
+                                    '/rectal/rectal-list/download-rectal-list',
+                                    'dateFrom' => $filterDateFrom,
+                                    'dateTo'   => $filterDateTo
+                                ]) : "#",
+                            [
+                                'class'    => 'btn btn-primary',
+                                'disabled' => $disableReport ? true : false
+                            ]
+                        )*/ ?>
                 </div>
 
-                <div id="grid_actions">
+                <?php ActiveForm::end() ?>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card card-success">
+                <div class="card-header"><?= $this->title ?></div>
+                <div class="card-body">
                     <?php echo GridView::widget([
                         "dataProvider" => $dataProvider,
                         'formatter' => ['class' => 'yii\i18n\Formatter', 'nullDisplay' => '',],
