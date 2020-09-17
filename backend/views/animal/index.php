@@ -11,6 +11,7 @@ use \backend\models\forms\UploadForm;
 use \backend\assets\AnimalAsset;
 use \backend\modules\scheme\models\AppropriationScheme;
 use \yii\helpers\ArrayHelper;
+use \kartik\file\FileInput;
 
 $this->title = Yii::t('app/animal', 'ANIMAL_LIST');
 $this->params['breadcrumbs'][] = $this->title;
@@ -47,18 +48,24 @@ AnimalAsset::register($this);
                                     <?= Html::a(
                                         Yii::t('app/animal', 'ANIMAL_ADD'),
                                         Url::toRoute(['animal/new']),
-                                        [
-                                            'class' => 'btn btn-primary'
-                                        ]
+                                        ['class' => 'btn btn-primary']
                                     ) ?>
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <?= $form->field($uploadModel, 'file')->fileInput() ?>
-                                </div>
-                                <div class="form-group">
-                                    <button type="submit" class="btn btn-primary">Обновить</button>
+                                    <?= $form->field($uploadModel, 'file')->widget(FileInput::class, [
+                                        'options' => ['multiple' => false],
+                                        'pluginOptions' => [
+                                            'previewFileType' => 'xlsx',
+                                            'browseClass' => 'btn btn-success',
+                                            'uploadClass' => 'btn btn-primary',
+                                            'showPreview' => false,
+                                            'showCaption' => true,
+                                            'showRemove' => true,
+                                            'showUpload' => true,
+                                        ],
+                                    ]); ?>
                                 </div>
                             </div>
                         </div>

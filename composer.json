@@ -23,7 +23,6 @@
     "yiisoft/yii2": "~2.0.14",
     "yiisoft/yii2-bootstrap": "*",
     "yiisoft/yii2-swiftmailer": "*",
-    "alexgx/yii2-phpexcel": "*",
     "cornernote/yii2-softdelete": "*",
     "yiisoft/yii2-jui": "^2.0",
     "phpoffice/phpexcel": "^1.8",
@@ -32,7 +31,8 @@
     "kartik-v/yii2-tabs-x": "dev-master",
     "kartik-v/yii2-widget-select2": "dev-master",
     "ext-zip": "*",
-    "hail812/yii2-adminlte3": "*"
+    "hail812/yii2-adminlte3": "*",
+    "kartik-v/yii2-widget-fileinput": "^1.0"
   },
   "require-dev": {
     "yiisoft/yii2-codeception": "*",
