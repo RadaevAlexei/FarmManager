@@ -18,7 +18,7 @@ if (!empty($schemeDays)) :
         $dayName = "День {$day->number}-й";
 
         $items[] = [
-            'label'   => '<i class="fa fa-user"></i>&nbsp;' . $dayName,
+            'label'   => '<i class="fas fa-user"></i>&nbsp;' . $dayName,
             'content' => $this->render('groups-action', [
                 'scheme'           => $model,
                 'day'              => $day,
@@ -29,11 +29,11 @@ if (!empty($schemeDays)) :
     endforeach; ?>
 <?php endif; ?>
 
-<?php echo TabsX::widget([
+<?= TabsX::widget([
     'items'            => $items,
     'position'         => TabsX::POS_LEFT,
     'encodeLabels'     => false,
-    'bordered'         => true,
+    'bordered'         => false,
     'sideways'         => false,
     'containerOptions' => ['style' => 'margin-top: 15px']
 ]); ?>
