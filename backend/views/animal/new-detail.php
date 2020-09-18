@@ -150,7 +150,9 @@ $isFremartinText = $model->fremartin ? "(фримартин)" : ""
                         </div>
 
                         <div class="tab-pane" id="animal-history">
-
+                            <?= $this->render('/animal/tabs/animal-history', [
+                                'history' => $history
+                            ]) ?>
                         </div>
 
                         <div class="tab-pane" id="inseminations">

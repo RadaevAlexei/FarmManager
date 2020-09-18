@@ -1,45 +1,42 @@
 <?php
 
 use \yii\helpers\ArrayHelper;
+use yii\grid\GridView;
 
 /**
  * @var $history
  */
 
+$historyDataProvider = new \yii\data\ArrayDataProvider([
+    'allModels' => $history,
+]);
+
 ?>
 
-<div class="row day_block" style="margin-left: auto">
-    <div class="col-xs-12">
-        <div class="box box-info">
-            <div class="box-header">
-                <h3 class="box-title">ИСТОРИЯ ПЫТОК ЭТОГО ЖИВОТНОГО</h3>
-            </div>
-
-            <div class="box-body table-responsive no-padding">
-                <table class="table table-hover">
-                    <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Дата</th>
-                        <th>Кто сделал?</th>
-                        <th>Что сделал?</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <?php if (!empty($history)) :
-                        foreach ($history as $index => $action) : ?>
-                            <tr>
-                                <td><?= ($index + 1) ?></td>
-                                <td><?= (new DateTime(ArrayHelper::getValue($action, "date")))->format('d.m.Y H:i:s') ?></td>
-                                <td><?= ArrayHelper::getValue($action, "user.lastName") ?></td>
-                                <td><?= ArrayHelper::getValue($action, "action_text") ?></td>
-                            </tr>
-                        <?php endforeach;
-                    endif; ?>
-                    </tbody>
-                </table>
-            </div>
-
-        </div>
-    </div>
-</div>
+<?php echo GridView::widget([
+    "dataProvider" => $historyDataProvider,
+    'summary' => false,
+    'formatter' => ['class' => 'yii\i18n\Formatter', 'nullDisplay' => '',],
+    'tableOptions' => ['class' => 'table table-sm table-striped table-hover table-condensed'],
+    'columns' => [
+        ['class' => 'yii\grid\SerialColumn'],
+        [
+            'label' => 'Дата',
+            'value' => function ($action) {
+                return (new DateTime(ArrayHelper::getValue($action, "date")))->format('d.m.Y H:i:s');
+            }
+        ],
+        [
+            'label' => 'Кто сделал?',
+            'value' => function ($action) {
+                return ArrayHelper::getValue($action, "user.lastName");
+            }
+        ],
+        [
+            'label' => 'Что сделал?',
+            'value' => function ($action) {
+                return ArrayHelper::getValue($action, "action_text");
+            }
+        ],
+    ]
+]); ?>
