@@ -212,13 +212,10 @@ $animalDiagnosisForm = new AnimalDiagnosisForm();
                     <h3 class="card-title">Животное находится на следующих схемах</h3>
                 </div>
                 <div class="card-body">
-                    <?php echo GridView::widget([
+                    <?= GridView::widget([
                         "dataProvider" => $dataProvider,
                         'summary' => false,
-                        'formatter' => [
-                            'class' => 'yii\i18n\Formatter',
-                            'nullDisplay' => '',
-                        ],
+                        'formatter' => ['class' => 'yii\i18n\Formatter', 'nullDisplay' => '',],
                         'tableOptions' => ['class' => 'table table-sm table-striped table-hover table-condensed'],
                         'columns' => [
                             ['class' => 'yii\grid\SerialColumn'],

@@ -13,7 +13,7 @@ $historyDataProvider = new \yii\data\ArrayDataProvider([
 
 ?>
 
-<?php echo GridView::widget([
+<?= GridView::widget([
     "dataProvider" => $historyDataProvider,
     'summary' => false,
     'formatter' => ['class' => 'yii\i18n\Formatter', 'nullDisplay' => '',],

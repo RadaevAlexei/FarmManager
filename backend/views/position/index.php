@@ -33,10 +33,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <?php echo GridView::widget([
                         "dataProvider" => $dataProvider,
                         "filterModel" => $searchModel,
-                        'formatter' => [
-                            'class' => 'yii\i18n\Formatter',
-                            'nullDisplay' => '',
-                        ],
+                        'formatter' => ['class' => 'yii\i18n\Formatter', 'nullDisplay' => '',],
                         'tableOptions' => ['class' => 'table table-sm table-striped table-hover table-condensed'],
                         'columns' => [
                             ['class' => 'yii\grid\SerialColumn'],

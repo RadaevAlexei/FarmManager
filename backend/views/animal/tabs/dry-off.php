@@ -47,16 +47,10 @@ if (!empty($stage) && $stage > Rectal::STAGE_FIRST) {
 
     <div class="box-body">
         <?php echo GridView::widget([
-                'formatter'    => [
-                    'class'       => 'yii\i18n\Formatter',
-                    'nullDisplay' => ''
-                ],
+                'formatter' => ['class' => 'yii\i18n\Formatter', 'nullDisplay' => '',],
+                'tableOptions' => ['class' => 'table table-sm table-striped table-hover table-condensed'],
                 "dataProvider" => $dataProviderRectal,
                 'summary'      => false,
-                'tableOptions' => [
-                    'style' => 'display:block; width:100%; overflow-x:auto',
-                    'class' => 'table table-striped'
-                ],
                 'columns'      => [
                     ['class' => 'yii\grid\SerialColumn'],
                     [
@@ -89,9 +83,9 @@ if (!empty($stage) && $stage > Rectal::STAGE_FIRST) {
                         'template' => '<div class="btn-group">{edit} {delete}</div>',
                         'buttons'  => [
                             'edit'   => function ($url, $model) {
-                                return Html::button('<span class="glyphicon glyphicon-edit"></span>', [
+                                return Html::button('<span class="fas fa-edit"></span>', [
                                     'id'    => 'edit-rectal-button',
-                                    'class' => 'btn btn-warning btn-sm',
+                                    'class' => 'btn btn-sm btn-warning',
                                     'data'  => [
                                         'toggle' => 'modal',
                                         'url'    => Url::toRoute([
@@ -103,13 +97,13 @@ if (!empty($stage) && $stage > Rectal::STAGE_FIRST) {
                             },
                             'delete' => function ($url, $model) {
                                 return Html::a(
-                                    '<span class="glyphicon glyphicon-trash"></span>',
+                                    '<span class="fas fa-trash"></span>',
                                     Url::toRoute([
                                         'animal/remove-rectal',
                                         'id' => ArrayHelper::getValue($model, 'id')
                                     ]),
                                     [
-                                        'class' => 'btn btn-danger btn-sm',
+                                        'class' => 'btn btn-sm btn-danger',
                                         'data'  => ['confirm' => 'Вы действительно хотите удалить это РИ?']
                                     ]
                                 );

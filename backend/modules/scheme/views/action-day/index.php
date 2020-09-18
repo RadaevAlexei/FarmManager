@@ -72,7 +72,7 @@ ActionDayAsset::register($this);
                     </div>
 
                     <div id="grid_actions">
-                        <?php echo GridView::widget([
+                        <?= GridView::widget([
                             "dataProvider" => $dataProvider,
                             'formatter' => ['class' => 'yii\i18n\Formatter', 'nullDisplay' => '',],
                             'tableOptions' => ['class' => 'table table-sm table-striped table-hover table-condensed'],

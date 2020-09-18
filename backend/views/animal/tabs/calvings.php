@@ -18,34 +18,37 @@ use \yii\data\ArrayDataProvider;
 $countSterileDaysText = $countSterileDays ? "({$countSterileDays}-й день)" : "";
 ?>
 
-<p>Статус: <?= Animal::getRectalStatusLabel($animal->rectal_examination) . $countSterileDaysText ?></p>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card card-success">
+                <div class="card-header">
+                    <h3 class="card-title">История отёлов</h3>
+                </div>
+                <div class="card-body">
+                    <p>
+                        Статус: <?= Animal::getRectalStatusLabel($animal->rectal_examination) . $countSterileDaysText ?></p>
 
-<div class="box-header">
-    <?php if (Yii::$app->user->can('animalEdit')) : ?>
-        <?= Html::button('Добавить отёл', [
-            'class'    => 'btn btn-warning',
-            'disabled' => !$animal->canAddCalving(),
-            'data'     => [
-                'toggle' => 'modal',
-                'target' => '#add-calving-form-button',
-            ]
-        ]) ?>
-    <?php endif; ?>
-</div>
+                    <?php if (Yii::$app->user->can('animalEdit')) : ?>
+                        <?= Html::button('Добавить отёл', [
+                            'class' => 'btn btn-sm btn-warning',
+                            'disabled' => !$animal->canAddCalving(),
+                            'data' => [
+                                'toggle' => 'modal',
+                                'target' => '#add-calving-form-button',
+                            ]
+                        ]) ?>
+                    <?php endif; ?>
 
-<div class="box box-success">
-    <div class="box-header with-border" style="background-color: #0ead0e78">
-        <h3 class="box-title">История отёлов</h3>
+                    <?php foreach ($dataProviderCalvings->getModels() as $calving) :
+                        echo $this->render('/animal/tabs/calving-table', compact(
+                            'calving'
+                        ));
+                    endforeach; ?>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <div class="box-body">
-        <?php foreach ($dataProviderCalvings->getModels() as $calving) :
-            echo $this->render('/animal/tabs/calving-table', compact(
-                'calving'
-            ));
-        endforeach; ?>
-    </div>
-
 </div>
 
 <!-- Модальное окно добавления осеменения -->

@@ -156,16 +156,33 @@ $isFremartinText = $model->fremartin ? "(фримартин)" : ""
                         </div>
 
                         <div class="tab-pane" id="inseminations">
-
+                            <?= $this->render('/animal/tabs/inseminations', [
+                                'animal'             => $model,
+                                'dataProvider'       => $inseminationDataProvider,
+                                'usersList'          => $usersList,
+                                'seedBullList'       => $seedBullList,
+                                'containerDuaraList' => $containerDuaraList,
+                                'addRectal'          => $addRectal,
+                            ]) ?>
                         </div>
 
                         <?php if ($model->isWoman()) : ?>
                             <div class="tab-pane" id="rectalings">
-
+                                <?= $this->render('/animal/tabs/rectalings', [
+                                    'animal'             => $model,
+                                    'usersList'          => $usersList,
+                                    'rectalResults'      => $rectalResults,
+                                    'dataProviderRectal' => $dataProviderRectal,
+                                    'addRectal'          => $addRectal,
+                                ]) ?>
                             </div>
 
                             <div class="tab-pane" id="calvings">
-
+                                <?= $this->render('/animal/tabs/calvings', [
+                                    'animal'               => $model,
+                                    'dataProviderCalvings' => $dataProviderCalvings,
+                                    'countSterileDays'     => $countSterileDays,
+                                ]) ?>
                             </div>
                         <?php endif; ?>
                     </div>
