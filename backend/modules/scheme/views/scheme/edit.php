@@ -111,17 +111,17 @@ if ($model->approve) {
 
                 <div class="card-footer">
                     <?php if (Yii::$app->user->can('schemeManageEdit')) :
-                        if ($canApprove) :
-                            echo Html::a('Утвердить', Url::to(['approve', 'id' => $model->id]),
+                        if ($canApprove) : ?>
+                            <?= Html::a('Утвердить', Url::to(['approve', 'id' => $model->id]),
                                 [
                                     'class' => 'btn btn-sm btn-success',
                                     'name' => 'approve-button',
                                     'data' => [
                                         'confirm' => 'Вы действительно хотите утвердить схему?'
                                     ]
-                                ]);
+                                ]); ?>
 
-                            echo Html::submitButton(Yii::t('app/scheme', 'EDIT'),
+                            <?= Html::submitButton(Yii::t('app/scheme', 'EDIT'),
                                 ['class' => 'btn btn-sm btn-info pull-right']);
                         endif;
                     endif; ?>

@@ -38,7 +38,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             'class' => 'yii\i18n\Formatter',
                             'nullDisplay' => '',
                         ],
-                        'tableOptions' => ['class' => 'table table-sm table-hover table-bordered'],
+                        'tableOptions' => ['class' => 'table table-sm table-striped table-hover table-condensed'],
                         'columns' => [
                             ['class' => 'yii\grid\SerialColumn'],
                             'lastName',
