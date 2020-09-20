@@ -12,23 +12,27 @@ use \yii\helpers\ArrayHelper;
 //$groupsAction = $day->groupsAction;
 ?>
 
-<div class="row day_block" style="margin-left: auto">
+<div class="container-fluid">
+    <div class="row">
 
-    <?php foreach ($actions_data as $groupId => $data) : ?>
-        <div class="col-xs-12">
-            <div class="box box-success">
-                <div class="box-header">
-                    <h3 class="box-title"><?= ArrayHelper::getValue($data, "group_action_name") ?></h3>
+        <?php foreach ($actions_data as $groupId => $data) : ?>
+
+        <div class="col-md-12">
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title"><?= ArrayHelper::getValue($data, "group_action_name") ?></h3>
                 </div>
 
-                <div class="box-body table-responsive" style="padding: 0 0 10px 0">
-                    <?php foreach ($data["actions"] as $actionHistory) :
-                        echo $this->render('action', compact('actionHistory', 'overdue', 'disable'));
-                    endforeach; ?>
+                <div class="card-body">
+                    <?php foreach ($data["actions"] as $actionHistory) : ?>
+                        <?= $this->render('action', compact('actionHistory', 'overdue', 'disable')); ?>
+                    <?php endforeach; ?>
                 </div>
 
             </div>
         </div>
 
-    <?php endforeach; ?>
+        <?php endforeach; ?>
+    </div>
+
 </div>

@@ -23,8 +23,5 @@ class ActionListAsset extends AssetBundle
 
     public $depends = [
         'yii\web\YiiAsset',
-        'yii\bootstrap\BootstrapAsset',
     ];
-
-//    public $jsOptions = ['position' => \yii\web\View::POS_END];
 }

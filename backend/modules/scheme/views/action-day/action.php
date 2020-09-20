@@ -6,7 +6,7 @@ use \common\models\TypeField;
 use yii\helpers\Url;
 use yii\helpers\Html;
 use backend\modules\scheme\assets\ActionDayAsset;
-use \yii\bootstrap\ActiveForm;
+use \yii\bootstrap4\ActiveForm;
 use \kartik\select2\Select2;
 use \common\models\TypeList;
 use \backend\modules\pharmacy\models\Stock;
@@ -24,8 +24,8 @@ $preparation = ArrayHelper::getValue($actionHistory, "action.preparation");
 
 $form = ActiveForm::begin([
     'action' => Url::toRoute(['action-day/execute', 'id' => $actionHistory->id, 'overdue' => $overdue]),
-    'id'     => 'execute-action-form',
-    'class'  => 'form-horizontal'
+    'id' => 'execute-action-form',
+    'class' => 'form-horizontal',
 ]);
 
 if ($overdue) {
@@ -38,139 +38,159 @@ $disabled = $disable ? true : false;
 $disabled = ($disabled || !Yii::$app->user->can('schemeActionDayEdit')) ? true : false;
 
 if ($type === TypeField::TYPE_TEXT) : ?>
-    <div class="form-group">
-        <div class="col-sm-6" style="margin-top: 20px">
-            <label><?= ArrayHelper::getValue($actionHistory, "action.name") ?></label>
-            <div class="input-group">
-                <div class="input-group-btn">
-                    <?= Html::button('Применить', [
-                        'class'    => 'btn btn-warning execute-action',
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label><?= ArrayHelper::getValue($actionHistory, "action.name") ?></label>
+                <div class="input-group input-group-sm">
+                    <div class="input-group-prepend">
+                        <?= Html::button('Применить', [
+                            'class' => 'btn btn-sm btn-warning execute-action',
+                            'disabled' => $disabled,
+                        ]) ?>
+                    </div>
+                    <?= Html::textInput('ExecuteForm[value]', '', [
+                        'autofocus' => true,
+                        'class' => 'form-control form-control-sm',
                         'disabled' => $disabled,
                     ]) ?>
+                    <?= Html::hiddenInput('ExecuteForm[type]', TypeField::TYPE_TEXT, ['disabled' => $disabled]) ?>
                 </div>
-                <?= Html::textInput('ExecuteForm[value]', '', [
-                    'autofocus' => true,
-                    'class'     => 'form-control',
-                    'disabled'  => $disabled,
-                ]) ?>
-                <?= Html::hiddenInput('ExecuteForm[type]', TypeField::TYPE_TEXT, ['disabled' => $disabled]) ?>
             </div>
         </div>
-        <div class="col-sm-6" style="margin-top: 20px">
-            <?= $this->render('date', [
-                'label'   => 'Дата выполнения:',
-                'name'    => 'ExecuteForm[execute_at]',
-                'date'    => $date,
-                'options' => [
-                    'class'    => 'form-control',
-                    'disabled' => $disabled,
-                ],
-            ]) ?>
+        <div class="col-sm-6">
+            <div class="form-group">
+                <?= $this->render('date', [
+                    'label' => 'Дата выполнения:',
+                    'name' => 'ExecuteForm[execute_at]',
+                    'date' => $date,
+                    'options' => [
+                        'class' => 'form-control form-control-sm',
+                        'disabled' => $disabled,
+                    ],
+                ]) ?>
+            </div>
         </div>
     </div>
 <?php else :
     if ($type === TypeField::TYPE_NUMBER) :
         if (!empty($preparation)) : ?>
-            <div class="form-group">
-                <div class="col-sm-2" style="margin-top: 20px">
-                    <label><?= ArrayHelper::getValue($actionHistory, "action.name") ?></label>
-                    <div class="input-group">
-                        <div class="input-group-btn">
-                            <?= Html::button('Применить', [
-                                'class'    => 'btn btn-warning execute-action',
+            <div class="row">
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <label><?= ArrayHelper::getValue($actionHistory, "action.name") ?></label>
+                        <div class="input-group input-group-sm">
+                            <div class="input-group-prepend">
+                                <?= Html::button('Применить', [
+                                    'class' => 'btn btn-sm btn-warning execute-action',
+                                    'disabled' => $disabled,
+                                ]) ?>
+                            </div>
+                            <?= Html::input('number', 'ExecuteForm[value]', null, [
+                                'autofocus' => true,
+                                'class' => 'form-control form-control-sm',
                                 'disabled' => $disabled,
                             ]) ?>
+                            <?= Html::hiddenInput('ExecuteForm[type]', TypeField::TYPE_NUMBER, ['disabled' => $disabled]) ?>
                         </div>
-                        <?= Html::input('number', 'ExecuteForm[value]', null, [
-                            'autofocus' => true,
-                            'class'     => 'form-control',
-                            'disabled'  => $disabled,
-                        ]) ?>
-                        <?= Html::hiddenInput('ExecuteForm[type]', TypeField::TYPE_NUMBER, ['disabled' => $disabled]) ?>
                     </div>
                 </div>
-                <div class="col-sm-2" style="margin-top: 20px">
-                    <label>Препарат</label>
-                    <?= Html::hiddenInput('ExecuteForm[preparation_id]',
-                        ArrayHelper::getValue($actionHistory, "action.preparation.id")) ?>
-                    <?= Html::textInput('ExecuteForm[preparation_name]',
-                        ArrayHelper::getValue($actionHistory, "action.preparation.name"), [
-                            'class'    => 'form-control',
-                            'disabled' => true,
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <label>Препарат</label>
+                        <?= Html::hiddenInput('ExecuteForm[preparation_id]',
+                            ArrayHelper::getValue($actionHistory, "action.preparation.id")) ?>
+                        <?= Html::textInput('ExecuteForm[preparation_name]',
+                            ArrayHelper::getValue($actionHistory, "action.preparation.name"), [
+                                'class' => 'form-control form-control-sm',
+                                'disabled' => true,
+                            ]) ?>
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <label>Склад</label>
+                        <?= Html::dropDownList('ExecuteForm[stock_id]',
+                            [],
+                            ArrayHelper::map(Stock::getAllList(), "id", "name"),
+                            [
+                                'class' => 'form-control form-control-sm',
+                                'prompt' => 'Из какого склада списать?',
+                            ]
+                        ) ?>
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <label>Объём</label>
+                        <?= Html::hiddenInput('ExecuteForm[preparation_volume]',
+                            ArrayHelper::getValue($actionHistory, "action.preparation.volume")) ?>
+                        <?= Html::textInput('ExecuteForm[volume]',
+                            ArrayHelper::getValue($actionHistory, "action.preparation.volume"), [
+                                'class' => 'form-control form-control-sm',
+                                'disabled' => true,
+                            ]
+                        ) ?>
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <label>Единица измерения</label>
+                        <?= Html::textInput('ExecuteForm[measure]',
+                            Measure::getName(ArrayHelper::getValue($actionHistory, "action.preparation.measure")), [
+                                'class' => 'form-control form-control-sm',
+                                'disabled' => true,
+                            ]
+                        ) ?>
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <?= $this->render('date', [
+                            'label' => 'Дата выполнения:',
+                            'name' => 'ExecuteForm[execute_at]',
+                            'date' => $date,
+                            'options' => [
+                                'class' => 'form-control form-control-sm',
+                                'disabled' => $disabled,
+                            ],
                         ]) ?>
-                </div>
-                <div class="col-sm-2" style="margin-top: 20px">
-                    <label>Склад</label>
-                    <?= Html::dropDownList('ExecuteForm[stock_id]',
-                        [],
-                        ArrayHelper::map(Stock::getAllList(), "id", "name"),
-                        [
-                            'class'  => 'form-control',
-                            'prompt' => 'Из какого склада списать?',
-                        ]
-                    ) ?>
-                </div>
-                <div class="col-sm-2" style="margin-top: 20px">
-                    <label>Объём</label>
-                    <?= Html::hiddenInput('ExecuteForm[preparation_volume]',
-                        ArrayHelper::getValue($actionHistory, "action.preparation.volume")) ?>
-                    <?= Html::textInput('ExecuteForm[volume]',
-                        ArrayHelper::getValue($actionHistory, "action.preparation.volume"), [
-                            'class'    => 'form-control',
-                            'disabled' => true,
-                        ]
-                    ) ?>
-                </div>
-                <div class="col-sm-2" style="margin-top: 20px">
-                    <label>Единица измерения</label>
-                    <?= Html::textInput('ExecuteForm[measure]',
-                        Measure::getName(ArrayHelper::getValue($actionHistory, "action.preparation.measure")), [
-                            'class'    => 'form-control',
-                            'disabled' => true,
-                        ]
-                    ) ?>
-                </div>
-                <div class="col-sm-2" style="margin-top: 20px">
-                    <?= $this->render('date', [
-                        'label'   => 'Дата выполнения:',
-                        'name'    => 'ExecuteForm[execute_at]',
-                        'date'    => $date,
-                        'options' => [
-                            'class'    => 'form-control',
-                            'disabled' => $disabled,
-                        ],
-                    ]) ?>
+                    </div>
                 </div>
             </div>
         <?php else: ?>
-            <div class="form-group">
-                <div class="col-sm-6" style="margin-top: 20px">
-                    <label><?= ArrayHelper::getValue($actionHistory, "action.name") ?></label>
-                    <div class="input-group">
-                        <div class="input-group-btn">
-                            <?= Html::button('Применить', [
-                                'class'    => 'btn btn-warning execute-action',
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label><?= ArrayHelper::getValue($actionHistory, "action.name") ?></label>
+                        <div class="input-group input-group">
+                            <div class="input-group-prepend">
+                                <?= Html::button('Применить', [
+                                    'class' => 'btn btn-sm btn-warning execute-action',
+                                    'disabled' => $disabled,
+                                ]) ?>
+                            </div>
+                            <?= Html::input('number', 'ExecuteForm[value]', null, [
+                                'autofocus' => true,
+                                'class' => 'form-control form-control-sm',
                                 'disabled' => $disabled,
                             ]) ?>
+                            <?= Html::hiddenInput('ExecuteForm[type]', TypeField::TYPE_NUMBER, ['disabled' => $disabled]) ?>
                         </div>
-                        <?= Html::input('number', 'ExecuteForm[value]', null, [
-                            'autofocus' => true,
-                            'class'     => 'form-control',
-                            'disabled'  => $disabled,
-                        ]) ?>
-                        <?= Html::hiddenInput('ExecuteForm[type]', TypeField::TYPE_NUMBER, ['disabled' => $disabled]) ?>
                     </div>
                 </div>
-                <div class="col-sm-6" style="margin-top: 20px">
-                    <?= $this->render('date', [
-                        'label'   => 'Дата выполнения:',
-                        'name'    => 'ExecuteForm[execute_at]',
-                        'date'    => $date,
-                        'options' => [
-                            'class'    => 'form-control',
-                            'disabled' => $disabled,
-                        ],
-                    ]) ?>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <?= $this->render('date', [
+                            'label' => 'Дата выполнения:',
+                            'name' => 'ExecuteForm[execute_at]',
+                            'date' => $date,
+                            'options' => [
+                                'class' => 'form-control form-control-sm',
+                                'disabled' => $disabled,
+                            ],
+                        ]) ?>
+                    </div>
                 </div>
             </div>
         <?php endif;
@@ -182,47 +202,51 @@ if ($type === TypeField::TYPE_TEXT) : ?>
             if ($items) :
                 $list = ArrayHelper::map($items, "id", "name");
             endif; ?>
-            <div class="form-group">
-                <div class="col-sm-6" style="margin-top: 20px">
-                    <label><?= ArrayHelper::getValue($actionHistory, "action.name") ?></label>
-                    <div class="input-group">
-                        <div class="input-group-btn">
-                            <?= Html::button('Применить', [
-                                'class'    => 'btn btn-warning execute-action',
-                                'disabled' => $disabled,
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label><?= ArrayHelper::getValue($actionHistory, "action.name") ?></label>
+                        <div class="input-group input-group-sm">
+                            <div class="input-group-prepend">
+                                <?= Html::button('Применить', [
+                                    'class' => 'btn btn-sm btn-warning execute-action',
+                                    'disabled' => $disabled,
+                                ]) ?>
+                            </div>
+                            <?= Select2::widget([
+                                'name' => 'ExecuteForm[value]',
+                                'data' => $list,
+                                'size' => Select2::MEDIUM,
+                                'options' => [
+                                    'placeholder' => 'Выберите значения из списка',
+                                    'class' => 'form-control form-control-sm',
+                                    'disabled' => $disabled,
+                                    'multiple' => ($listType === TypeList::MULTIPLE) ? true : false
+                                ],
+                                'pluginOptions' => [
+                                    'allowClear' => true
+                                ],
                             ]) ?>
+                            <?= Html::hiddenInput('ExecuteForm[type]', TypeField::TYPE_LIST,
+                                ['disabled' => $disabled]) ?>
                         </div>
-                        <?= Select2::widget([
-                            'name'          => 'ExecuteForm[value]',
-                            'data'          => $list,
-                            'size'          => Select2::MEDIUM,
-                            'options'       => [
-                                'placeholder' => 'Выберите значения из списка',
-                                'class'       => 'form-control',
-                                'disabled'    => $disabled,
-                                'multiple'    => ($listType === TypeList::MULTIPLE) ? true : false
-                            ],
-                            'pluginOptions' => [
-                                'allowClear' => true
-                            ],
-                        ]) ?>
-                        <?= Html::hiddenInput('ExecuteForm[type]', TypeField::TYPE_LIST,
-                            ['disabled' => $disabled]) ?>
                     </div>
                 </div>
-                <div class="col-sm-6" style="margin-top: 20px">
-                    <?= $this->render('date', [
-                        'label'   => 'Дата выполнения:',
-                        'name'    => 'ExecuteForm[execute_at]',
-                        'date'    => $date,
-                        'options' => [
-                            'class'    => 'form-control',
-                            'disabled' => $disabled,
-                        ],
-                    ]) ?>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <?= $this->render('date', [
+                            'label' => 'Дата выполнения:',
+                            'name' => 'ExecuteForm[execute_at]',
+                            'date' => $date,
+                            'options' => [
+                                'class' => 'form-control form-control-sm',
+                                'disabled' => $disabled,
+                            ],
+                        ]) ?>
+                    </div>
                 </div>
             </div>
-            <?php
+        <?php
         endif;
     endif;
 endif; ?>

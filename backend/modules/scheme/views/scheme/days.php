@@ -1,9 +1,11 @@
 <?php
 
-use kartik\tabs\TabsX;
 use \backend\modules\scheme\models\Scheme;
 use \backend\modules\scheme\models\SchemeDay;
 use \backend\modules\scheme\models\GroupsAction;
+use yii\data\ArrayDataProvider;
+use yii\grid\GridView;
+use \yii\helpers\ArrayHelper;
 
 /**
  * @var Scheme $model
@@ -18,22 +20,49 @@ if (!empty($schemeDays)) :
         $dayName = "День {$day->number}-й";
 
         $items[] = [
-            'label'   => '<i class="fa fa-user"></i>&nbsp;' . $dayName,
+            'label' => $dayName,
             'content' => $this->render('groups-action', [
-                'scheme'           => $model,
-                'day'              => $day,
+                'scheme' => $model,
+                'day' => $day,
                 'groupsActionList' => $groupsActionList,
             ]),
-            'active'  => ($index == 0) ? true : false
         ];
-    endforeach; ?>
-<?php endif; ?>
+    endforeach;
+endif;
 
-<?php echo TabsX::widget([
-    'items'            => $items,
-    'position'         => TabsX::POS_LEFT,
-    'encodeLabels'     => false,
-    'bordered'         => true,
-    'sideways'         => false,
-    'containerOptions' => ['style' => 'margin-top: 15px']
+$dataProvider = new ArrayDataProvider([
+    'allModels' => $items
 ]); ?>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card card-primary">
+                <div class="card-body">
+
+                    <?= GridView::widget([
+                        "dataProvider" => $dataProvider,
+                        'formatter' => ['class' => 'yii\i18n\Formatter', 'nullDisplay' => '',],
+                        'tableOptions' => ['class' => 'table table-sm table-striped table-hover table-condensed'],
+                        'summary' => false,
+                        'columns' => [
+                            [
+                                'label' => 'День',
+                                'value' => function ($item) {
+                                    return ArrayHelper::getValue($item, "label");
+                                }
+                            ],
+                            [
+                                'label' => 'Действия',
+                                'format' => 'raw',
+                                'value' => function ($item) {
+                                    return ArrayHelper::getValue($item, "content");
+                                }
+                            ],
+                        ]
+                    ]); ?>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

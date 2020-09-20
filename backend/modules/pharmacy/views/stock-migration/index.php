@@ -18,51 +18,54 @@ $this->params['breadcrumbs'][] = $this->title;
 
 ?>
 
-<div class="box box-info">
-    <div class="box-body">
-
-        <?php echo GridView::widget([
-            "dataProvider" => $dataProvider,
-            "filterModel"  => $searchModel,
-            'tableOptions' => [
-                'class' => 'table table-striped',
-            ],
-            'columns'      => [
-                ['class' => 'yii\grid\SerialColumn'],
-                [
-                    'attribute' => 'date',
-                    'content' => function (StockMigration $model) {
-                        return (new DateTime($model->date))->format('d.m.Y');
-                    }
-                ],
-                [
-                    'attribute' => 'user_id',
-                    'content' => function (StockMigration $model) {
-                        return ArrayHelper::getValue($model, "user.lastName");
-                    }
-                ],
-                [
-                    'attribute' => 'preparation_id',
-                    'content' => function (StockMigration $model) {
-                        return ArrayHelper::getValue($model, "preparation.name");
-                    }
-                ],
-                [
-                    'attribute' => 'stock_from_id',
-                    'content' => function (StockMigration $model) {
-                        return ArrayHelper::getValue($model, "stockFrom.name");
-                    }
-                ],
-                [
-                    'attribute' => 'stock_to_id',
-                    'content' => function (StockMigration $model) {
-                        return ArrayHelper::getValue($model, "stockTo.name");
-                    }
-                ],
-                'count',
-                'volume'
-            ]
-        ]); ?>
-
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card card-primary">
+                <div class="card-body">
+                    <?php echo GridView::widget([
+                        "dataProvider" => $dataProvider,
+                        "filterModel" => $searchModel,
+                        'formatter' => ['class' => 'yii\i18n\Formatter', 'nullDisplay' => '',],
+                        'tableOptions' => ['class' => 'table table-sm table-striped table-hover table-condensed'],
+                        'columns' => [
+                            ['class' => 'yii\grid\SerialColumn'],
+                            [
+                                'attribute' => 'date',
+                                'content' => function (StockMigration $model) {
+                                    return (new DateTime($model->date))->format('d.m.Y');
+                                }
+                            ],
+                            [
+                                'attribute' => 'user_id',
+                                'content' => function (StockMigration $model) {
+                                    return ArrayHelper::getValue($model, "user.lastName");
+                                }
+                            ],
+                            [
+                                'attribute' => 'preparation_id',
+                                'content' => function (StockMigration $model) {
+                                    return ArrayHelper::getValue($model, "preparation.name");
+                                }
+                            ],
+                            [
+                                'attribute' => 'stock_from_id',
+                                'content' => function (StockMigration $model) {
+                                    return ArrayHelper::getValue($model, "stockFrom.name");
+                                }
+                            ],
+                            [
+                                'attribute' => 'stock_to_id',
+                                'content' => function (StockMigration $model) {
+                                    return ArrayHelper::getValue($model, "stockTo.name");
+                                }
+                            ],
+                            'count',
+                            'volume'
+                        ]
+                    ]); ?>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

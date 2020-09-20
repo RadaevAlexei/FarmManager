@@ -1,6 +1,6 @@
 <?php
 
-use \yii\bootstrap\ActiveForm;
+use \yii\bootstrap4\ActiveForm;
 use \common\models\User;
 use \common\models\Position;
 

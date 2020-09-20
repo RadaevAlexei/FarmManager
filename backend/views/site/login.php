@@ -1,60 +1,48 @@
 <?php
 
 use yii\helpers\Html;
-use yii\bootstrap\ActiveForm;
+use \yii\bootstrap4\ActiveForm;
+use hail812\adminlte3\widgets\FlashAlert;
 
-/* @var $this yii\web\View */
-/* @var $form yii\bootstrap\ActiveForm */
-/* @var $model \common\models\LoginForm */
-
-$this->title = 'Sign In';
-
-$fieldOptions1 = [
-    'options'       => ['class' => 'form-group has-feedback'],
-    'inputTemplate' => "{input}<span class='glyphicon glyphicon-envelope form-control-feedback'></span>"
-];
-
-$fieldOptions2 = [
-    'options'       => ['class' => 'form-group has-feedback'],
-    'inputTemplate' => "{input}<span class='glyphicon glyphicon-lock form-control-feedback'></span>"
-];
 ?>
+<div class="card">
+    <div class="card-body login-card-body">
+        <p class="login-box-msg">Авторизация</p>
 
-<div class="login-box">
-    <div class="login-logo">
-        <a href="#"><b>LIFE</b>CATTLE</a>
-    </div>
-    <!-- /.login-logo -->
-    <div class="login-box-body">
-        <?php $form = ActiveForm::begin(['id' => 'login-form', 'enableClientValidation' => false]); ?>
+        <?= FlashAlert::widget() ?>
 
-        <?= $form
-            ->field($model, 'username', $fieldOptions1)
+        <?php $form = ActiveForm::begin(['id' => 'login-form']) ?>
+
+        <?= $form->field($model, 'username', [
+            'options' => ['class' => 'form-group has-feedback'],
+            'inputTemplate' => '{input}<div class="input-group-append"><div class="input-group-text"><span class="fas fa-envelope"></span></div></div>',
+            'template' => '{beginWrapper}{input}{error}{endWrapper}',
+            'wrapperOptions' => ['class' => 'input-group mb-3']
+        ])
             ->label(false)
             ->textInput(['placeholder' => $model->getAttributeLabel('username')]) ?>
 
-        <?= $form
-            ->field($model, 'password', $fieldOptions2)
+        <?= $form->field($model, 'password', [
+            'options' => ['class' => 'form-group has-feedback'],
+            'inputTemplate' => '{input}<div class="input-group-append"><div class="input-group-text"><span class="fas fa-lock"></span></div></div>',
+            'template' => '{beginWrapper}{input}{error}{endWrapper}',
+            'wrapperOptions' => ['class' => 'input-group mb-3']
+        ])
             ->label(false)
             ->passwordInput(['placeholder' => $model->getAttributeLabel('password')]) ?>
 
         <div class="row">
-            <div class="col-xs-8">
-                <?= $form->field($model, 'rememberMe')->checkbox() ?>
+            <div class="col-8">
+                <div class="icheck-primary">
+                    <?= Html::a('Забыли пароль?', ['/site/request-password-reset/']) ?>
+                </div>
             </div>
-            <div class="col-xs-4">
-                <?= Html::submitButton('Войти',
-                    ['class' => 'btn btn-primary btn-block btn-flat', 'name' => 'login-button']
-                ) ?>
+            <div class="col-4">
+                <?= Html::submitButton('Войти', ['class' => 'btn btn-primary btn-block']) ?>
             </div>
         </div>
 
-
-        <?php ActiveForm::end(); ?>
-
-        <!--<a href="#">Забыли пароль?</a><br>
-        <a href="register.html" class="text-center">Зарегистрироваться</a>-->
-
+        <?php \yii\bootstrap4\ActiveForm::end(); ?>
     </div>
-    <!-- /.login-box-body -->
-</div><!-- /.login-box -->
+</div>
+

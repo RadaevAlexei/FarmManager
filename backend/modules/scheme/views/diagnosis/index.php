@@ -14,51 +14,62 @@ $this->params['breadcrumbs'][] = $this->title;
 
 ?>
 
-    <div class="form-group">
-        <?php if (Yii::$app->user->can('diagnosisEdit')) : ?>
-            <?= Html::a(
-                Yii::t('app/diagnosis', 'DIAGNOSIS_ADD'),
-                Url::toRoute(['diagnosis/new']),
-                [
-                    'class' => 'btn btn-primary'
-                ]
-            ) ?>
-        <?php endif; ?>
-    </div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card card-primary">
+                <div class="card-body">
+                    <?php if (Yii::$app->user->can('diagnosisEdit')) : ?>
+                        <div class="form-group">
+                            <?= Html::a(
+                                Yii::t('app/diagnosis', 'DIAGNOSIS_ADD'),
+                                Url::toRoute(['diagnosis/new']),
+                                [
+                                    'class' => 'btn btn-primary'
+                                ]
+                            ) ?>
+                        </div>
+                    <?php endif; ?>
 
-<?php echo GridView::widget([
-	"dataProvider" => $dataProvider,
-	"filterModel"  => $searchModel,
-    'tableOptions' => [
-        'style' => 'display:block; width:100%; overflow-x:auto',
-        'class' => 'table table-striped',
-    ],
-	'columns'      => [
-		['class' => 'yii\grid\SerialColumn'],
-		'name',
-		[
-			'class'    => 'yii\grid\ActionColumn',
-			'header'   => Yii::t('app/diagnosis', 'ACTIONS'),
-			'template' => '<div class="btn-group"> {update} {delete} </div>',
-            'visibleButtons' => [
-                'delete' => Yii::$app->user->can('diagnosisEdit'),
-            ],
-			'buttons'  => [
-				'update' => function ($url, $model) {
-					return Html::a(
-						'<span class="glyphicon glyphicon-edit"></span>',
-						Url::toRoute(['diagnosis/edit', 'id' => $model->id]),
-						['class' => 'btn btn-warning']
-					);
-				},
-				'delete' => function ($url, $model) {
-					return Html::a(
-						'<span class="glyphicon glyphicon-trash"></span>',
-						Url::toRoute(['diagnosis/delete', 'id' => $model->id]),
-						['class' => 'btn btn-danger']
-					);
-				},
-			],
-		],
-	]
-]);
+                    <?php echo GridView::widget([
+                        "dataProvider" => $dataProvider,
+                        "filterModel" => $searchModel,
+                        'formatter' => [
+                            'class' => 'yii\i18n\Formatter',
+                            'nullDisplay' => '',
+                        ],
+                        'tableOptions' => ['class' => 'table table-sm table-striped table-hover table-condensed'],
+                        'columns' => [
+                            ['class' => 'yii\grid\SerialColumn'],
+                            'name',
+                            [
+                                'class' => 'yii\grid\ActionColumn',
+                                'header' => Yii::t('app/diagnosis', 'ACTIONS'),
+                                'template' => '<div class="btn-group"> {update} {delete} </div>',
+                                'visibleButtons' => [
+                                    'delete' => Yii::$app->user->can('diagnosisEdit'),
+                                ],
+                                'buttons' => [
+                                    'update' => function ($url, $model) {
+                                        return Html::a(
+                                            '<span class="fas fa-sm fa-edit"></span>',
+                                            Url::toRoute(['diagnosis/edit', 'id' => $model->id]),
+                                            ['class' => 'btn btn-warning']
+                                        );
+                                    },
+                                    'delete' => function ($url, $model) {
+                                        return Html::a(
+                                            '<span class="fas fa-sm fa-trash"></span>',
+                                            Url::toRoute(['diagnosis/delete', 'id' => $model->id]),
+                                            ['class' => 'btn btn-danger']
+                                        );
+                                    },
+                                ],
+                            ],
+                        ]
+                    ]); ?>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

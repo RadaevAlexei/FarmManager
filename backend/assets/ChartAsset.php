@@ -24,7 +24,7 @@ class ChartAsset extends AssetBundle
     ];
     public $depends = [
         'yii\web\YiiAsset',
-        'yii\bootstrap\BootstrapAsset',
+//        'yii\bootstrap\BootstrapAsset',
     ];
 
     public $jsOptions = ['position' => \yii\web\View::POS_END];
