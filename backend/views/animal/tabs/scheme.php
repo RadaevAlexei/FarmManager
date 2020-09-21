@@ -164,7 +164,7 @@ $animalDiagnosisForm = new AnimalDiagnosisForm();
 
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-sm-6">
+                        <div class="col-sm-3">
                             <?= $formOnScheme->field($appropriationScheme, 'started_at')->widget(DatePicker::class, [
                                 'language' => 'ru',
                                 'dateFormat' => 'yyyy-MM-dd',
@@ -174,7 +174,7 @@ $animalDiagnosisForm = new AnimalDiagnosisForm();
                                 ]
                             ]) ?>
                         </div>
-                        <div class="col-sm-6">
+                        <div class="col-sm-7">
                             <?= $formOnScheme->field($appropriationScheme, 'scheme_id')->dropDownList(
                                 $schemeList,
                                 [
@@ -185,16 +185,16 @@ $animalDiagnosisForm = new AnimalDiagnosisForm();
                             <?= $formOnScheme->field($appropriationScheme, 'animal_id')->hiddenInput()->label(false); ?>
                             <?= $formOnScheme->field($appropriationScheme, 'status')->hiddenInput()->label(false); ?>
                         </div>
+                        <div class="col-sm-2">
+                            <label>&nbsp;</label>
+                            <?php if (Yii::$app->user->can('animalEdit')) : ?>
+                                <?= Html::submitButton('Поставить на схему', [
+                                    'class' => 'btn btn-sm btn-success',
+                                    'data' => ['confirm' => 'Вы действительно хотите поставить на эту схему?']
+                                ]) ?>
+                            <?php endif; ?>
+                        </div>
                     </div>
-                </div>
-
-                <div class="card-footer">
-                    <?php if (Yii::$app->user->can('animalEdit')) : ?>
-                        <?= Html::submitButton('Поставить на схему', [
-                            'class' => 'btn btn-sm btn-success',
-                            'data' => ['confirm' => 'Вы действительно хотите поставить на эту схему?']
-                        ]) ?>
-                    <?php endif; ?>
                 </div>
 
                 <?php ActiveForm::end(); ?>
