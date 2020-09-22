@@ -30,7 +30,7 @@ use \yii\helpers\Html;
     <td style="text-align: center">
         <?php if (!$scheme->approve) : ?>
             <button remove-groups-action type="button" class="btn btn-danger">
-                <span class="glyphicon glyphicon-trash"></span>
+                <span class="fas fa-trash"></span>
             </button>
         <?php endif; ?>
     </td>

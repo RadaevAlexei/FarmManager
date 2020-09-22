@@ -19,127 +19,123 @@ use \yii\data\ArrayDataProvider;
 
 ?>
 
-<div class="box box-success">
-    <div class="box-header with-border" style="background-color: #0ead0e78">
-        <h3 class="box-title">История осеменений</h3>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card card-success">
+                <div class="card-header">
+                    <h3 class="card-title">История осеменений</h3>
+                </div>
+                <div class="card-body">
+                    <?php if (Yii::$app->user->can('animalEdit')) : ?>
+                        <?= Html::button('Добавить осеменение', [
+                            'class'    => 'btn btn-warning',
+                            'disabled' => !ArrayHelper::getValue($addRectal, "can-insemination") || $animal->canAddCalving(),
+                            'data'     => [
+                                'toggle' => 'modal',
+                                'target' => '#add-insemination-form-button',
+                            ]
+                        ]) ?>
+                    <?php endif; ?>
+
+                    <?php echo GridView::widget([
+                        'formatter' => ['class' => 'yii\i18n\Formatter', 'nullDisplay' => '',],
+                        'tableOptions' => ['class' => 'table table-sm table-striped table-hover table-condensed'],
+                        "dataProvider" => $dataProvider,
+                        'summary'      => false,
+                        'columns'      => [
+                            ['class' => 'yii\grid\SerialColumn'],
+                            'id',
+                            [
+                                'attribute' => 'date',
+                                'content'   => function (Insemination $model) {
+                                    return (new DateTime($model->date))->format('d.m.Y');
+                                }
+                            ],
+                            [
+                                'attribute' => 'status',
+                                'content'   => function (Insemination $model) {
+                                    if ($model->status == Insemination::STATUS_SEMINAL) {
+                                        return "<span class='label label-success'>" . $model->getStatusLabel() . "</span>";
+                                    }
+
+                                    return "";
+                                }
+                            ],
+                            [
+                                'attribute' => 'user_id',
+                                'content'   => function (Insemination $model) {
+                                    return ArrayHelper::getValue($model, "user.lastName");
+                                }
+                            ],
+                            'count',
+                            [
+                                'attribute' => 'type_insemination',
+                                'content'   => function (Insemination $model) {
+                                    return $model->getTypeInsemination();
+                                }
+                            ],
+                            'comment',
+                            [
+                                'attribute' => 'seed_bull_id',
+                                'content'   => function (Insemination $model) {
+                                    return Html::a(
+                                        ArrayHelper::getValue($model, "seedBull.nickname"),
+                                        Url::toRoute(['reproduction/seed-bull/edit/', 'id' => $model->seed_bull_id]),
+                                        ["target" => "_blank"]
+                                    );
+                                }
+                            ],
+                            [
+                                'attribute' => 'container_duara_id',
+                                'content'   => function (Insemination $model) {
+                                    return Html::a(
+                                        ArrayHelper::getValue($model, "containerDuara.name"),
+                                        Url::toRoute(['reproduction/container-duara/edit/', 'id' => $model->container_duara_id]),
+                                        ["target" => "_blank"]
+                                    );
+                                }
+                            ],
+                            [
+                                'class'    => 'yii\grid\ActionColumn',
+                                'header'   => 'Действия',
+                                'template' => '<div class="btn-group">{edit} {delete}</div>',
+                                'visibleButtons' => [
+                                    'edit' => Yii::$app->user->can('animalEdit'),
+                                    'delete' => Yii::$app->user->can('animalEdit'),
+                                ],
+                                'buttons'  => [
+                                    'edit'   => function ($url, Insemination $model) {
+                                        return Html::button('<span class="fas fa-edit"></span>', [
+                                            'id'    => 'edit-insemination-button',
+                                            'class' => 'btn btn-sm btn-warning',
+                                            'data'  => [
+                                                'toggle' => 'modal',
+                                                'url'    => Url::toRoute([
+                                                    'animal/edit-insemination-form',
+                                                    'inseminationId' => $model->id
+                                                ])
+                                            ]
+                                        ]);
+                                    },
+                                    'delete' => function ($url, Insemination $model) {
+                                        return Html::a(
+                                            '<span class="fas fa-trash"></span>',
+                                            Url::toRoute(['animal/delete-insemination', 'id' => $model->id]),
+                                            [
+                                                'class' => 'btn btn-sm btn-danger',
+                                                'data'  => ['confirm' => 'Вы действительно хотите удалить осеменение?'],
+                                            ]
+                                        );
+                                    },
+                                ],
+                            ]
+                        ]
+                    ]); ?>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <div class="box-footer">
-        <?php if (Yii::$app->user->can('animalEdit')) : ?>
-            <?= Html::button('Добавить осеменение', [
-                'class'    => 'btn btn-warning',
-                'disabled' => !ArrayHelper::getValue($addRectal, "can-insemination") || $animal->canAddCalving(),
-                'data'     => [
-                    'toggle' => 'modal',
-                    'target' => '#add-insemination-form-button',
-                ]
-            ]) ?>
-        <?php endif; ?>
-    </div>
-
-    <div class="box-body">
-        <?php echo GridView::widget([
-            'formatter'    => [
-                'class'       => 'yii\i18n\Formatter',
-                'nullDisplay' => '',
-            ],
-            "dataProvider" => $dataProvider,
-            'summary'      => false,
-            'tableOptions' => [
-                'style' => 'display:block; width:100%; overflow-x:auto',
-                'class' => 'table table-striped',
-            ],
-            'columns'      => [
-                ['class' => 'yii\grid\SerialColumn'],
-                'id',
-                [
-                    'attribute' => 'date',
-                    'content'   => function (Insemination $model) {
-                        return (new DateTime($model->date))->format('d.m.Y');
-                    }
-                ],
-                [
-                    'attribute' => 'status',
-                    'content'   => function (Insemination $model) {
-                        if ($model->status == Insemination::STATUS_SEMINAL) {
-                            return "<span class='label label-success'>" . $model->getStatusLabel() . "</span>";
-                        }
-
-                        return "";
-                    }
-                ],
-                [
-                    'attribute' => 'user_id',
-                    'content'   => function (Insemination $model) {
-                        return ArrayHelper::getValue($model, "user.lastName");
-                    }
-                ],
-                'count',
-                [
-                    'attribute' => 'type_insemination',
-                    'content'   => function (Insemination $model) {
-                        return $model->getTypeInsemination();
-                    }
-                ],
-                'comment',
-                [
-                    'attribute' => 'seed_bull_id',
-                    'content'   => function (Insemination $model) {
-                        return Html::a(
-                            ArrayHelper::getValue($model, "seedBull.nickname"),
-                            Url::toRoute(['reproduction/seed-bull/edit/', 'id' => $model->seed_bull_id]),
-                            ["target" => "_blank"]
-                        );
-                    }
-                ],
-                [
-                    'attribute' => 'container_duara_id',
-                    'content'   => function (Insemination $model) {
-                        return Html::a(
-                            ArrayHelper::getValue($model, "containerDuara.name"),
-                            Url::toRoute(['reproduction/container-duara/edit/', 'id' => $model->container_duara_id]),
-                            ["target" => "_blank"]
-                        );
-                    }
-                ],
-                [
-                    'class'    => 'yii\grid\ActionColumn',
-                    'header'   => 'Действия',
-                    'template' => '<div class="btn-group">{edit} {delete}</div>',
-                    'visibleButtons' => [
-                        'edit' => Yii::$app->user->can('animalEdit'),
-                        'delete' => Yii::$app->user->can('animalEdit'),
-                    ],
-                    'buttons'  => [
-                        'edit'   => function ($url, Insemination $model) {
-                            return Html::button('<span class="glyphicon glyphicon-edit"></span>', [
-                                'id'    => 'edit-insemination-button',
-                                'class' => 'btn btn-warning',
-                                'data'  => [
-                                    'toggle' => 'modal',
-                                    'url'    => Url::toRoute([
-                                        'animal/edit-insemination-form',
-                                        'inseminationId' => $model->id
-                                    ])
-                                ]
-                            ]);
-                        },
-                        'delete' => function ($url, Insemination $model) {
-                            return Html::a(
-                                '<span class="glyphicon glyphicon-trash"></span>',
-                                Url::toRoute(['animal/delete-insemination', 'id' => $model->id]),
-                                [
-                                    'class' => 'btn btn-danger',
-                                    'data'  => ['confirm' => 'Вы действительно хотите удалить осеменение?'],
-                                ]
-                            );
-                        },
-                    ],
-                ]
-            ]
-        ]); ?>
-    </div>
-
 </div>
 
 <!-- Модальное окно добавления осеменения -->

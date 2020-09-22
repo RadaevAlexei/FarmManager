@@ -19,73 +19,82 @@ $this->params['breadcrumbs'][] = $this->title;
 
 ?>
 
-    <div class="form-group">
-        <?php if (Yii::$app->user->can('schemeManageEdit')) : ?>
-            <?= Html::a(
-                Yii::t('app/action', 'ACTION_ADD'),
-                Url::toRoute(['action/new']),
-                [
-                    'class' => 'btn btn-primary'
-                ]
-            ) ?>
-        <?php endif; ?>
-    </div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card card-primary">
+                <div class="card-body">
+                    <?php if (Yii::$app->user->can('schemeManageEdit')) : ?>
+                        <div class="form-group">
+                            <?= Html::a(
+                                Yii::t('app/action', 'ACTION_ADD'),
+                                Url::toRoute(['action/new']),
+                                [
+                                    'class' => 'btn btn-primary'
+                                ]
+                            ) ?>
+                        </div>
+                    <?php endif; ?>
 
-<?php echo GridView::widget([
-    "dataProvider" => $dataProvider,
-    "filterModel" => $searchModel,
-    'formatter' => ['class' => 'yii\i18n\Formatter', 'nullDisplay' => ''],
-    'tableOptions' => [
-        'style' => 'display:block; width:100%; overflow-x:auto',
-        'class' => 'table table-striped',
-    ],
-    'columns' => [
-        ['class' => 'yii\grid\SerialColumn'],
-        'name',
-        [
-            'attribute' => 'type',
-            'value' => function (Action $model) {
-                return TypeField::getType($model->type);
-            }
-        ],
-        [
-            'attribute' => 'action_list_id',
-            'format' => 'raw',
-            'value' => function (Action $model) {
-                return Html::a(ArrayHelper::getValue($model, "actionList.name"),
-                    Url::to(['action-list/edit', 'id' => $model->action_list_id]));
-            }
-        ],
-        [
-            'attribute' => 'preparation_id',
-            'value' => function (Action $model) {
-                return ArrayHelper::getValue($model, "preparation.name");
-            }
-        ],
-        [
-            'class' => 'yii\grid\ActionColumn',
-            'header' => Yii::t('app/action', 'ACTIONS'),
-            'template' => '<div class="btn-group">{update} {delete} </div>',
-            'visibleButtons' => [
-                'update' => Yii::$app->user->can('schemeManageEdit'),
-                'delete' => Yii::$app->user->can('schemeManageEdit'),
-            ],
-            'buttons' => [
-                'update' => function ($url, $model) {
-                    return Html::a(
-                        '<span class="glyphicon glyphicon-edit"></span>',
-                        Url::toRoute(['action/edit', 'id' => $model->id]),
-                        ['class' => 'btn btn-warning']
-                    );
-                },
-                'delete' => function ($url, $model) {
-                    return Html::a(
-                        '<span class="glyphicon glyphicon-trash"></span>',
-                        Url::toRoute(['action/delete', 'id' => $model->id]),
-                        ['class' => 'btn btn-danger']
-                    );
-                },
-            ],
-        ],
-    ]
-]);
+                    <?php echo GridView::widget([
+                        "dataProvider" => $dataProvider,
+                        "filterModel" => $searchModel,
+                        'formatter' => ['class' => 'yii\i18n\Formatter', 'nullDisplay' => ''],
+                        'tableOptions' => ['class' => 'table table-sm table-striped table-hover table-condensed'],
+                        'columns' => [
+                            ['class' => 'yii\grid\SerialColumn'],
+                            'name',
+                            [
+                                'attribute' => 'type',
+                                'value' => function (Action $model) {
+                                    return TypeField::getType($model->type);
+                                }
+                            ],
+                            [
+                                'attribute' => 'action_list_id',
+                                'format' => 'raw',
+                                'value' => function (Action $model) {
+                                    return Html::a(ArrayHelper::getValue($model, "actionList.name"),
+                                        Url::to(['action-list/edit', 'id' => $model->action_list_id]));
+                                }
+                            ],
+                            [
+                                'attribute' => 'preparation_id',
+                                'value' => function (Action $model) {
+                                    return ArrayHelper::getValue($model, "preparation.name");
+                                }
+                            ],
+                            [
+                                'class' => 'yii\grid\ActionColumn',
+                                'header' => Yii::t('app/action', 'ACTIONS'),
+                                'template' => '<div class="btn-group">{update} {delete} </div>',
+                                'visibleButtons' => [
+                                    'update' => Yii::$app->user->can('schemeManageEdit'),
+                                    'delete' => Yii::$app->user->can('schemeManageEdit'),
+                                ],
+                                'buttons' => [
+                                    'update' => function ($url, $model) {
+                                        return Html::a(
+                                            '<span class="fas fa-sm fa-edit"></span>',
+                                            Url::toRoute(['action/edit', 'id' => $model->id]),
+                                            ['class' => 'btn btn-warning']
+                                        );
+                                    },
+                                    'delete' => function ($url, $model) {
+                                        return Html::a(
+                                            '<span class="fas fa-sm fa-trash"></span>',
+                                            Url::toRoute(['action/delete', 'id' => $model->id]),
+                                            ['class' => 'btn btn-danger']
+                                        );
+                                    },
+                                ],
+                            ],
+                        ]
+                    ]); ?>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

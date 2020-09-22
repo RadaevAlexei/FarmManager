@@ -17,66 +17,72 @@ $groupsAction = $day->groupsAction;
 ?>
 
 <div class="row day_block" style="margin-left: auto">
-    <div class="col-xs-12">
-        <div class="box box-info">
-            <div class="box-header">
-                <h3 class="box-title">Что нужно выполнить в этот день</h3>
-                <?php
-                if (!$scheme->approve && Yii::$app->user->can('schemeManageEdit')) :
-                    echo Html::a('<i class="fa fa-trash-o"></i>',
-                        Url::to(['remove-day', 'scheme_id' => $scheme->id, 'scheme_day_id' => $day->id]),
-                        [
-                            "class" => "text-red pull-right",
-                            "data"  => ["confirm" => "Вы действительно хотите удалить этот день?"],
-                        ]
-                    );
-                endif; ?>
-            </div>
+    <div class="col-sm-12">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title">Что нужно выполнить в этот день</h3>
+                            <?php if (!$scheme->approve && Yii::$app->user->can('schemeManageEdit')) :
+                                echo Html::a('<i class="fa fa-trash-o"></i>',
+                                    Url::to(['remove-day', 'scheme_id' => $scheme->id, 'scheme_day_id' => $day->id]),
+                                    [
+                                        "class" => "text-red pull-right",
+                                        "data" => ["confirm" => "Вы действительно хотите удалить этот день?"],
+                                    ]
+                                );
+                            endif; ?>
+                        </div>
 
-            <div class="box-body table-responsive no-padding">
-                <table class="table table-hover">
-                    <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Группа действий</th>
-                        <th>Список действий</th>
-                        <th></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <?php if (!empty($groupsAction)) :
-                        foreach ($groupsAction as $index => $group) :
-                            echo $this->render('new-groups-action', [
-                                'index'  => $index,
-                                'day'    => $day,
-                                'model'  => $group,
-                                'scheme' => $scheme,
-                            ]); ?>
-                        <?php endforeach;
-                    endif; ?>
-                    </tbody>
-                </table>
-            </div>
+                        <div class="card-body">
+                            <table class="table table-sm table-striped table-hover table-condensed">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Группа действий</th>
+                                    <th>Список действий</th>
+                                    <th></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <?php if (!empty($groupsAction)) :
+                                    foreach ($groupsAction as $index => $group) :
+                                        echo $this->render('new-groups-action', [
+                                            'index' => $index,
+                                            'day' => $day,
+                                            'model' => $group,
+                                            'scheme' => $scheme,
+                                        ]); ?>
+                                    <?php endforeach;
+                                endif; ?>
+                                </tbody>
+                            </table>
+                        </div>
 
-            <div class="box-footer clearfix">
-                <div class="input-group">
-                    <div class="input-group-btn">
-                        <button add-groups-action
-                                data-day-id="<?= $day->id ?>"
-                                data-add-group-action-url="<?= Url::to(['add-new-groups-action']) ?>"
-                                type="button"
-                                class="btn btn-sm btn-info btn-flat pull-left"
-                                disabled="true">Добавить группу действий
-                        </button>
+                        <div class="card-footer">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <button add-groups-action
+                                                data-day-id="<?= $day->id ?>"
+                                                data-add-group-action-url="<?= Url::to(['add-new-groups-action']) ?>"
+                                                type="button"
+                                                class="btn btn-sm btn-info btn-flat pull-left"
+                                                disabled="true">Добавить группу действий
+                                        </button>
+                                    </div>
+                                    <?= Html::dropDownList('groups-action-list', null, $groupsActionList, [
+                                        'class' => 'form-control form-control-sm',
+                                        'prompt' => 'Выберите группу',
+                                        'disabled' => $scheme->approve || !Yii::$app->user->can('schemeManageEdit') ? true : false
+                                    ]) ?>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <?= Html::dropDownList('groups-action-list', null, $groupsActionList, [
-                        'class'    => 'form-control',
-                        'prompt'   => 'Выберите группу',
-                        'disabled' => $scheme->approve || !Yii::$app->user->can('schemeManageEdit') ? true : false
-                    ]) ?>
                 </div>
             </div>
-
         </div>
     </div>
 </div>

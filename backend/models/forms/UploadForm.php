@@ -28,7 +28,7 @@ class UploadForm extends Model
     public function attributeLabels()
     {
         return [
-            'file' => 'Файл'
+            'file' => 'Файл для обновления'
         ];
     }
 }
