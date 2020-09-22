@@ -76,7 +76,7 @@ $isFremartinText = $model->fremartin ? "(фримартин)" : ""
                                     class="float-right"><?= ArrayHelper::getValue($model, "cowshed.name") ?></a>
                         </li>
                         <li class="list-group-item">
-                            <b>Возраст</b> <a class="float-right">1 год 2 месяца 6 дней</a>
+                            <b>Возраст</b> <a class="float-right"><?= $model->getAge() ?></a>
                         </li>
                         <li class="list-group-item">
                             <b>Физ состояние</b>
@@ -142,10 +142,10 @@ $isFremartinText = $model->fremartin ? "(фримартин)" : ""
 
                         <div class="tab-pane active" id="scheme">
                             <?= $this->render('/animal/tabs/scheme', [
-                                'animal'              => $model,
-                                'schemeList'          => $schemeList,
+                                'animal' => $model,
+                                'schemeList' => $schemeList,
                                 'appropriationScheme' => $appropriationScheme,
-                                'dataProvider'        => $dataProvider,
+                                'dataProvider' => $dataProvider,
                             ]) ?>
                         </div>
 
@@ -157,31 +157,31 @@ $isFremartinText = $model->fremartin ? "(фримартин)" : ""
 
                         <div class="tab-pane" id="inseminations">
                             <?= $this->render('/animal/tabs/inseminations', [
-                                'animal'             => $model,
-                                'dataProvider'       => $inseminationDataProvider,
-                                'usersList'          => $usersList,
-                                'seedBullList'       => $seedBullList,
+                                'animal' => $model,
+                                'dataProvider' => $inseminationDataProvider,
+                                'usersList' => $usersList,
+                                'seedBullList' => $seedBullList,
                                 'containerDuaraList' => $containerDuaraList,
-                                'addRectal'          => $addRectal,
+                                'addRectal' => $addRectal,
                             ]) ?>
                         </div>
 
                         <?php if ($model->isWoman()) : ?>
                             <div class="tab-pane" id="rectalings">
                                 <?= $this->render('/animal/tabs/rectalings', [
-                                    'animal'             => $model,
-                                    'usersList'          => $usersList,
-                                    'rectalResults'      => $rectalResults,
+                                    'animal' => $model,
+                                    'usersList' => $usersList,
+                                    'rectalResults' => $rectalResults,
                                     'dataProviderRectal' => $dataProviderRectal,
-                                    'addRectal'          => $addRectal,
+                                    'addRectal' => $addRectal,
                                 ]) ?>
                             </div>
 
                             <div class="tab-pane" id="calvings">
                                 <?= $this->render('/animal/tabs/calvings', [
-                                    'animal'               => $model,
+                                    'animal' => $model,
                                     'dataProviderCalvings' => $dataProviderCalvings,
-                                    'countSterileDays'     => $countSterileDays,
+                                    'countSterileDays' => $countSterileDays,
                                 ]) ?>
                             </div>
                         <?php endif; ?>

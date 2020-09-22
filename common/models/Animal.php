@@ -114,33 +114,33 @@ class Animal extends ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id'                     => 'ID',
-            'cowshed_id'             => 'Коровник',
-            'box'                    => 'Бокс',
-            'nickname'               => 'Кличка',
-            'label'                  => 'Бирка',
-            'farm_id'                => 'Происхождение',
-            'birthday'               => 'Дата Рождения',
-            'sex'                    => 'Пол животного',
-            'birth_weight'           => 'Вес при рождении',
-            'color_id'                  => 'Масть',
-            'mother_id'              => 'Мать',
-            'father_id'              => 'Отец',
-            'group_id'               => 'Группа',
-            'animal_group_id'        => 'Группа животного',
-            'physical_state'         => 'Физиологическое состояние',
-            'status'                 => 'Статус',
-            'rectal_examination'     => 'Ректальное исследование',
+            'id' => 'ID',
+            'cowshed_id' => 'Коровник',
+            'box' => 'Бокс',
+            'nickname' => 'Кличка',
+            'label' => 'Бирка',
+            'farm_id' => 'Происхождение',
+            'birthday' => 'Дата Рождения',
+            'sex' => 'Пол животного',
+            'birth_weight' => 'Вес при рождении',
+            'color_id' => 'Масть',
+            'mother_id' => 'Мать',
+            'father_id' => 'Отец',
+            'group_id' => 'Группа',
+            'animal_group_id' => 'Группа животного',
+            'physical_state' => 'Физиологическое состояние',
+            'status' => 'Статус',
+            'rectal_examination' => 'Ректальное исследование',
             'previous_weighing_date' => 'Дата предыдущего взвешивания',
-            'previous_weighing'      => 'Предыдущее взвешивание',
-            'current_weighing_date'  => 'Дата текущего взвешивания',
-            'current_weighing'       => 'Текущее взвешивание',
-            'collar'                 => 'Номер ошейника',
-            'health_status'          => 'Состояние здоровья',
-            'health_status_comment'  => 'Комментарий',
-            'diagnosis'              => 'Диагноз',
-            'cur_insemination_id'    => 'Текущее осеменение',
-            'fremartin'              => 'Фримартин',
+            'previous_weighing' => 'Предыдущее взвешивание',
+            'current_weighing_date' => 'Дата текущего взвешивания',
+            'current_weighing' => 'Текущее взвешивание',
+            'collar' => 'Номер ошейника',
+            'health_status' => 'Состояние здоровья',
+            'health_status_comment' => 'Комментарий',
+            'diagnosis' => 'Диагноз',
+            'cur_insemination_id' => 'Текущее осеменение',
+            'fremartin' => 'Фримартин',
         ];
     }
 
@@ -217,7 +217,7 @@ class Animal extends ActiveRecord
                 'current_weighing',
                 'collar',
             ],
-            self::SCENARIO_FILTER      => [
+            self::SCENARIO_FILTER => [
                 'cowshed_id',
                 'box',
                 'nickname',
@@ -250,8 +250,8 @@ class Animal extends ActiveRecord
     {
         return [
             self::RECTAL_EXAMINATION_NOT_STERILE => 'Не стельная',
-            self::RECTAL_EXAMINATION_STERILE     => 'Стельная',
-            self::RECTAL_EXAMINATION_DUBIOUS     => 'Сомнительная'
+            self::RECTAL_EXAMINATION_STERILE => 'Стельная',
+            self::RECTAL_EXAMINATION_DUBIOUS => 'Сомнительная'
         ];
     }
 
@@ -272,6 +272,28 @@ class Animal extends ActiveRecord
     public function isWoman()
     {
         return $this->sex === self::SEX_TYPE_WOMAN;
+    }
+
+    /**
+     * Вычисление возраста животного
+     *
+     * @return string
+     * @throws Exception
+     */
+    public function getAge()
+    {
+        $birthday = new DateTime($this->birthday);
+        $birthday->setTime(0, 0, 0);
+
+        $nowDate = new DateTime();
+        $nowDate->setTime(0, 0, 0);
+
+        $diff = $birthday->diff($nowDate);
+        $diff->h = 0;
+        $diff->m = 0;
+        $diff->s = 0;
+
+        return Yii::$app->formatter->asDuration($diff);
     }
 
     /**
@@ -323,8 +345,8 @@ class Animal extends ActiveRecord
     public static function getHealthStatusList()
     {
         return [
-            self::HEALTH_STATUS_HEALTHY  => 'Здоровая',
-            self::HEALTH_STATUS_SICK     => 'Больная',
+            self::HEALTH_STATUS_HEALTHY => 'Здоровая',
+            self::HEALTH_STATUS_SICK => 'Больная',
             self::HEALTH_STATUS_AWAITING => 'В ожидании',
         ];
     }
@@ -379,13 +401,13 @@ class Animal extends ActiveRecord
     public static function getListPhysicalState()
     {
         return [
-            self::PHYSICAL_STATE_BULL           => Yii::t('app/animal', 'ANIMAL_BULL'),
-            self::PHYSICAL_STATE_CALF           => Yii::t('app/animal', 'ANIMAL_CALF'),
+            self::PHYSICAL_STATE_BULL => Yii::t('app/animal', 'ANIMAL_BULL'),
+            self::PHYSICAL_STATE_CALF => Yii::t('app/animal', 'ANIMAL_CALF'),
             self::PHYSICAL_STATE_CALF_PREDSLUCH => Yii::t('app/animal', 'ANIMAL_CALF_PREDSLUCH'),
-            self::PHYSICAL_STATE_CALF_SLUCH     => Yii::t('app/animal', 'ANIMAL_CALF_SLUCH'),
-            self::PHYSICAL_STATE_CALF_NEMATODE  => Yii::t('app/animal', 'ANIMAL_NEMATODE'),
+            self::PHYSICAL_STATE_CALF_SLUCH => Yii::t('app/animal', 'ANIMAL_CALF_SLUCH'),
+            self::PHYSICAL_STATE_CALF_NEMATODE => Yii::t('app/animal', 'ANIMAL_NEMATODE'),
             self::PHYSICAL_STATE_CALF_FIRST_AID => Yii::t('app/animal', 'ANIMAL_FIRST_AID'),
-            self::PHYSICAL_STATE_COW            => Yii::t('app/animal', 'ANIMAL_COW'),
+            self::PHYSICAL_STATE_COW => Yii::t('app/animal', 'ANIMAL_COW'),
         ];
     }
 
@@ -409,9 +431,9 @@ class Animal extends ActiveRecord
     public static function getListStatuses()
     {
         return [
-            self::STATUS_INSEMINATED     => Yii::t('app/animal', 'ANIMAL_STATUS_INSEMINATED'),
+            self::STATUS_INSEMINATED => Yii::t('app/animal', 'ANIMAL_STATUS_INSEMINATED'),
             self::STATUS_NOT_INSEMINATED => Yii::t('app/animal', 'ANIMAL_STATUS_NOT_INSEMINATED'),
-            self::STATUS_HUNT            => Yii::t('app/animal', 'ANIMAL_STATUS_HUNT'),
+            self::STATUS_HUNT => Yii::t('app/animal', 'ANIMAL_STATUS_HUNT'),
         ];
     }
 
@@ -434,8 +456,8 @@ class Animal extends ActiveRecord
     {
         return [
             self::RECTAL_EXAMINATION_NOT_STERILE => Yii::t('app/animal', 'ANIMAL_NOT_STERILE'),
-            self::RECTAL_EXAMINATION_STERILE     => Yii::t('app/animal', 'ANIMAL_STERILE'),
-            self::RECTAL_EXAMINATION_DUBIOUS     => Yii::t('app/animal', 'ANIMAL_DUBIOUS'),
+            self::RECTAL_EXAMINATION_STERILE => Yii::t('app/animal', 'ANIMAL_STERILE'),
+            self::RECTAL_EXAMINATION_DUBIOUS => Yii::t('app/animal', 'ANIMAL_DUBIOUS'),
         ];
     }
 
@@ -554,9 +576,9 @@ class Animal extends ActiveRecord
             ->joinWith(['groupsAction', 'action'])
             ->where([
                 'appropriation_scheme_id' => $appropriationScheme->id,
-                'scheme_day_at'           => (new DateTime('now',
+                'scheme_day_at' => (new DateTime('now',
                     (new DateTimeZone('Europe/Samara'))))->format('Y-m-d'),
-                'status'                  => ActionHistory::STATUS_NEW
+                'status' => ActionHistory::STATUS_NEW
             ])
             ->all();
     }
@@ -720,18 +742,18 @@ class Animal extends ActiveRecord
 
         if (!$curInsemination) {
             return [
-                'disable'          => true,
+                'disable' => true,
                 'can-insemination' => true,
-                'stage'            => []
+                'stage' => []
             ];
         }
 
         $curStage = $curInsemination->getCurStage();
         if (!$curStage) {
             return [
-                'disable'          => true,
+                'disable' => true,
                 'can-insemination' => true,
-                'stage'            => []
+                'stage' => []
             ];
         }
 
@@ -744,9 +766,9 @@ class Animal extends ActiveRecord
             ])
         ) {
             return [
-                'disable'          => true,
+                'disable' => true,
                 'can-insemination' => true,
-                'stage'            => []
+                'stage' => []
             ];
         }
 
@@ -757,9 +779,9 @@ class Animal extends ActiveRecord
         $result = ArrayHelper::getValue($curStage, 'result');
 
         return [
-            'disable'          => ($curRectal->result == Rectal::RESULT_DUBIOUS) ? false : $curDate < $rectalDate,
+            'disable' => ($curRectal->result == Rectal::RESULT_DUBIOUS) ? false : $curDate < $rectalDate,
             'can-insemination' => $this->isNotSterile() && ($stage == 1) && ($result == Rectal::RESULT_NOT_RESULT),
-            'stage'            => $curStage
+            'stage' => $curStage
         ];
     }
 
