@@ -24,15 +24,20 @@ $groupsAction = $day->groupsAction;
                     <div class="card card-primary">
                         <div class="card-header">
                             <h3 class="card-title">Что нужно выполнить в этот день</h3>
-                            <?php if (!$scheme->approve && Yii::$app->user->can('schemeManageEdit')) :
-                                echo Html::a('<i class="fa fa-trash-o"></i>',
-                                    Url::to(['remove-day', 'scheme_id' => $scheme->id, 'scheme_day_id' => $day->id]),
-                                    [
-                                        "class" => "text-red pull-right",
-                                        "data" => ["confirm" => "Вы действительно хотите удалить этот день?"],
-                                    ]
-                                );
-                            endif; ?>
+                            <div class="card-tools">
+                                <ul class="nav nav-pills ml-auto">
+                                    <li class="nav-item">
+                                        <?= Html::a('<i class="fas fa-trash"></i>',
+                                            Url::to(['remove-day', 'scheme_id' => $scheme->id, 'scheme_day_id' => $day->id]),
+                                            [
+                                                "class" => "nav-link bg-red",
+                                                "data" => ["confirm" => "Вы действительно хотите удалить этот день?"],
+                                            ]
+                                        );
+                                        ?>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
 
                         <div class="card-body">
