@@ -17,6 +17,7 @@ use yii\helpers\ArrayHelper;
  *
  * @property integer $id
  * @property integer $animal_id
+ * @property integer $number
  * @property DateTime $date
  * @property integer $status
  * @property integer $position
@@ -49,11 +50,12 @@ class Calving extends ActiveRecord
     {
         return [
             'animal_id' => 'Кто отелился',
-            'date'      => 'Дата',
-            'status'    => 'Лёгкость отёла',
-            'position'  => 'Предлежание плода',
-            'note'      => 'Примечание',
-            'user_id'   => 'Кто проводил отёл',
+            'number' => '№ Отёла',
+            'date' => 'Дата',
+            'status' => 'Лёгкость отёла',
+            'position' => 'Предлежание плода',
+            'note' => 'Примечание',
+            'user_id' => 'Кто проводил отёл',
         ];
     }
 
@@ -63,8 +65,8 @@ class Calving extends ActiveRecord
     public function rules()
     {
         return [
-            [['animal_id', 'date', 'status', 'position', 'user_id'], 'required'],
-            [['animal_id', 'status', 'position', 'user_id'], 'integer'],
+            [['animal_id', 'date', 'status', 'position', 'user_id', 'number'], 'required'],
+            [['animal_id', 'status', 'position', 'user_id', 'number'], 'integer'],
             [['note'], 'string'],
             [['date'], 'safe'],
         ];
@@ -77,10 +79,10 @@ class Calving extends ActiveRecord
     public static function getListStatuses()
     {
         return [
-            self::STATUS_INDEPENDENTLY    => 'Самостоятельно',
-            self::STATUS_EASY             => 'Лёгкое родовспоможение',
-            self::STATUS_MEDIUM           => 'Роды средней тяжести',
-            self::STATUS_HEAVY            => 'Тяжелые роды',
+            self::STATUS_INDEPENDENTLY => 'Самостоятельно',
+            self::STATUS_EASY => 'Лёгкое родовспоможение',
+            self::STATUS_MEDIUM => 'Роды средней тяжести',
+            self::STATUS_HEAVY => 'Тяжелые роды',
             self::STATUS_CESAREAN_SECTION => 'Кесарево сечение',
         ];
     }
@@ -102,7 +104,7 @@ class Calving extends ActiveRecord
     public static function getListPositions()
     {
         return [
-            self::POSITION_BACK  => 'Спинное',
+            self::POSITION_BACK => 'Спинное',
             self::POSITION_BELLY => 'Брюшное'
         ];
     }
@@ -212,7 +214,7 @@ class Calving extends ActiveRecord
                 !ArrayHelper::getValue($animal, 'dead')
             );
         });
-        
+
         if (!$womanAnimals) {
             return false;
         }
@@ -221,7 +223,6 @@ class Calving extends ActiveRecord
             (count($womanAnimals) == 1) &&
             (count($animals) == 2);
     }
-
 
 
 }

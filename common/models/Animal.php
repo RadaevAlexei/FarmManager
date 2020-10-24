@@ -667,12 +667,17 @@ class Animal extends ActiveRecord
             ->all();
     }
 
-    public function getCalvings()
+    /**
+     * @param false $isDistributed
+     * @return array|ActiveRecord[]
+     */
+    public function getCalvings($isDistributed = false)
     {
-        return Calving::find()
+        $query = Calving::find()
             ->alias('c')
             ->select([
                 'c.date',
+                'c.number',
                 'c.status',
                 'c.position',
                 'c.note',
@@ -692,7 +697,15 @@ class Animal extends ActiveRecord
             ->innerJoin(['ac' => Animal::tableName()], 'cl.child_animal_id = ac.id')
             ->leftJoin(['u' => User::tableName()], 'c.user_id = u.id')
             ->andWhere(['=', 'c.animal_id', $this->id])
-            ->orderBy(['c.date' => SORT_DESC])
+            ->orderBy(['c.date' => SORT_DESC]);
+
+        if ($isDistributed) {
+            $query->andWhere(['=', 'c.number', 0]);
+        } else {
+            $query->andWhere(['<>', 'c.number', 0]);
+        }
+
+        return $query
             ->asArray()
             ->all();
     }

@@ -23,6 +23,7 @@ use yii\data\ArrayDataProvider;
  * @var array $seedBullList
  * @var array $containerDuaraList
  * @var ArrayDataProvider $dataProviderCalvings
+ * @var ArrayDataProvider $dataProviderDistributedCalvings
  * @var ArrayDataProvider $dataProviderRectal
  * @var array $addRectal
  * @var integer $countSterileDays
@@ -74,7 +75,7 @@ $isFremartinText = $model->fremartin ? "(фримартин)" : ""
             <div class="row">
                 <div class="col-md-6">
                     <div class="card card-widget widget-user-2">
-                        <div class="card-footer p-0">
+                        <div class="card-body p-0">
                             <ul class="nav flex-column">
                                 <li class="nav-item">
                                     <a href="#" class="nav-link">
@@ -106,7 +107,7 @@ $isFremartinText = $model->fremartin ? "(фримартин)" : ""
                 </div>
                 <div class="col-md-6">
                     <div class="card card-widget widget-user-2">
-                        <div class="card-footer p-0">
+                        <div class="card-body p-0">
                             <ul class="nav flex-column">
                                 <li class="nav-item">
                                     <a href="#" class="nav-link">
@@ -178,7 +179,13 @@ $isFremartinText = $model->fremartin ? "(фримартин)" : ""
                             ]) ?>
                         </div>
                         <div class="tab-pane" id="animal-calvings">
-                            Отёлки
+                            <div class="tab-pane" id="calvings">
+                                <?= $this->render('/animal/tabs/new-calvings', [
+                                    'animal' => $model,
+                                    'dataProviderCalvings' => $dataProviderCalvings,
+                                    'dataProviderDistributedCalvings' => $dataProviderDistributedCalvings,
+                                ]) ?>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -269,12 +276,13 @@ $isFremartinText = $model->fremartin ? "(фримартин)" : ""
                                                         </div>
 
                                                         <div class="tab-pane" id="calvings">
-                                                            <?= $this->render('/animal/tabs/calvings', [
+                                                            <?/*= $this->render('/animal/tabs/calvings', [
                                                                 'animal' => $model,
                                                                 'dataProviderCalvings' => $dataProviderCalvings,
                                                                 'countSterileDays' => $countSterileDays,
-                                                            ]) ?>
+                                                            ])*/ ?>
                                                         </div>
+
                                                     <?php endif; ?>
                                                 </div>
                                             </div>

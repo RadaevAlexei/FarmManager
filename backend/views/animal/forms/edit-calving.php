@@ -47,6 +47,18 @@ use yii\helpers\ArrayHelper;
 
     <div class="form-group">
         <div class="col-sm-12">
+            <?= $form->field($editModel, 'number')->input(
+                'number',
+                [
+                    'class' => 'form-control',
+                    'min' => 1,
+                ]
+            ) ?>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-sm-12">
             <?= $form->field($editModel, 'status')->dropDownList(
                 $statusesList,
                 [
