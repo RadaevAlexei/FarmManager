@@ -26,74 +26,33 @@ $healthModel = new HealthForm([
     'health_status_comment' => $animal->health_status_comment
 ]);
 $animalDiagnosisForm = new AnimalDiagnosisForm();
-
+$disabledChooseDiagnosis = $animal->isHealthy();
+$disabledAppropriationScheme = $animal->isHealthy() || !$animal->diagnosis;
 ?>
 
 <div class="container-fluid">
     <div class="row">
-        <div class="col-md-12">
-            <div class="card card-success">
-                <div class="card-header">
-                    <h3 class="card-title">Контроль здоровья</h3>
-                </div>
+        <div class="col-md-4">
+            <?= $this->render('../scheme/control-health', compact(
+                'animal',
+                'healthModel'
+            )) ?>
+        </div>
 
-                <?php $formHealth = ActiveForm::begin([
-                    'action' => Url::toRoute(['update-health']),
-                ]); ?>
+        <div class="col-md-4">
+            <?= $this->render('../scheme/choose-diagnosis', compact(
+                'animal',
+                'animalDiagnosisForm',
+                'disabledChooseDiagnosis'
+            )) ?>
+        </div>
 
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <?= $formHealth->field($healthModel, 'health_status')->dropDownList(
-                                    Animal::getHealthStatusList(),
-                                    [
-                                        'id' => 'health_status_list',
-                                        'prompt' => 'Выберите статус здоровья',
-                                        'class' => 'form-control form-control-sm',
-                                        'value' => $animal->health_status,
-                                    ]
-                                ) ?>
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <?= $formHealth->field($healthModel, 'health_status_comment')->textInput(
-                                    ['class' => 'form-control form-control-sm']
-                                ) ?>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <?= $formHealth->field($healthModel, 'date_health')->widget(DatePicker::class, [
-                                    'language' => 'ru',
-                                    'dateFormat' => 'dd.MM.yyyy',
-                                    'options' => ['class' => 'form-control form-control-sm', 'autocomplete' => 'off']
-                                ]) ?>
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <?= $formHealth->field($healthModel, 'animal_id')
-                                ->hiddenInput(['value' => $animal->id])
-                                ->label(false)
-                            ?>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card-footer">
-                    <?php if (Yii::$app->user->can('animalEdit')) : ?>
-                        <?= Html::submitButton('Сменить состояние здоровья', [
-                            'class' => 'btn btn-sm btn-success',
-                            'data' => ['confirm' => 'Вы действительно хотите сменить состояние здоровья?']
-                        ]) ?>
-                    <?php endif; ?>
-                </div>
-
-                <?php ActiveForm::end(); ?>
-            </div>
+        <div class="col-md-4">
+            <?= $this->render('../scheme/appropriation-scheme', compact(
+                'schemeList',
+                'appropriationScheme',
+                'disabledAppropriationScheme'
+            )) ?>
         </div>
     </div>
 </div>
@@ -101,108 +60,10 @@ $animalDiagnosisForm = new AnimalDiagnosisForm();
 <?php if ($animal->isSick()) : ?>
     <div class="container-fluid">
         <div class="row">
-            <div class="col-md-12">
-                <div class="card card-success">
-                    <div class="card-header">
-                        <h3 class="card-title">Диагноз</h3>
-                    </div>
 
-                    <?php $formDiagnosis = ActiveForm::begin([
-                        'action' => Url::toRoute(['update-diagnoses']),
-                    ]); ?>
-
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <div class="form-group">
-                                    <?= $formDiagnosis->field($animalDiagnosisForm, 'diagnosis')->dropDownList(
-                                        ArrayHelper::map(Diagnosis::getAllList(), "id", "name"),
-                                        [
-                                            'prompt' => 'Выберите диагноз',
-                                            'class' => ['form-control form-control-sm'],
-                                            'value' => $animal->diagnosis,
-                                        ]
-                                    ) ?>
-                                </div>
-                                <div class="form-group">
-                                    <?= $formDiagnosis->field($animalDiagnosisForm, 'animal_id')
-                                        ->hiddenInput(['value' => $animal->id])
-                                        ->label(false)
-                                    ?>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card-footer">
-                        <?php if (Yii::$app->user->can('animalEdit')) : ?>
-                            <?= Html::submitButton('Поставить диагноз', [
-                                'class' => 'btn btn-sm btn-success',
-                                'data' => ['confirm' => 'Вы действительно хотите поставить такой диагноз?']
-                            ]) ?>
-                        <?php endif; ?>
-                    </div>
-
-                    <?php ActiveForm::end(); ?>
-                </div>
-            </div>
         </div>
     </div>
 <?php endif; ?>
-
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card card-success">
-                <div class="card-header">
-                    <h3 class="card-title">Поставить на схему лечения</h3>
-                </div>
-
-                <?php $formOnScheme = ActiveForm::begin([
-                    'action' => Url::toRoute(['appropriation-scheme']),
-                ]); ?>
-
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-sm-3">
-                            <?= $formOnScheme->field($appropriationScheme, 'started_at')->widget(DatePicker::class, [
-                                'language' => 'ru',
-                                'dateFormat' => 'yyyy-MM-dd',
-                                'options' => [
-                                    'class' => 'form-control form-control-sm',
-                                    'autocomplete' => 'off'
-                                ]
-                            ]) ?>
-                        </div>
-                        <div class="col-sm-7">
-                            <?= $formOnScheme->field($appropriationScheme, 'scheme_id')->dropDownList(
-                                $schemeList,
-                                [
-                                    'class' => 'form-control form-control-sm',
-                                    'prompt' => 'Выберите схему'
-                                ]
-                            ) ?>
-                            <?= $formOnScheme->field($appropriationScheme, 'animal_id')->hiddenInput()->label(false); ?>
-                            <?= $formOnScheme->field($appropriationScheme, 'status')->hiddenInput()->label(false); ?>
-                        </div>
-                        <div class="col-sm-2">
-                            <label>&nbsp;</label>
-                            <?php if (Yii::$app->user->can('animalEdit')) : ?>
-                                <?= Html::submitButton('Поставить на схему', [
-                                    'class' => 'btn btn-sm btn-success',
-                                    'data' => ['confirm' => 'Вы действительно хотите поставить на эту схему?']
-                                ]) ?>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                </div>
-
-                <?php ActiveForm::end(); ?>
-            </div>
-        </div>
-    </div>
-</div>
-
 
 <div class="container-fluid">
     <div class="row">

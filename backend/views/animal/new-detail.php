@@ -193,7 +193,7 @@ $isFremartinText = $model->fremartin ? "(фримартин)" : ""
         </div>
     </div>
 
-    <div class="row">
+    <!--<div class="row">
         <div class="col-md-12">
             <div class="card card-success collapsed-card">
                 <div class="card-header" data-card-widget="collapse">
@@ -237,7 +237,7 @@ $isFremartinText = $model->fremartin ? "(фримартин)" : ""
                                                         <a class="nav-link" href="#inseminations" data-toggle="tab">Осеменения</a>
                                                     </li>
 
-                                                    <?php if ($model->isWoman()) : ?>
+                                                    <?php /*if ($model->isWoman()) : */ ?>
                                                         <li class="nav-item">
                                                             <a class="nav-link" href="#rectalings" data-toggle="tab">Ректальные
                                                                 исследования</a>
@@ -246,7 +246,7 @@ $isFremartinText = $model->fremartin ? "(фримартин)" : ""
                                                             <a class="nav-link" href="#calvings"
                                                                data-toggle="tab">Отёлы</a>
                                                         </li>
-                                                    <?php endif; ?>
+                                                    <?php /*endif; */ ?>
 
                                                 </ul>
                                             </div>
@@ -254,36 +254,36 @@ $isFremartinText = $model->fremartin ? "(фримартин)" : ""
                                                 <div class="tab-content">
 
                                                     <div class="tab-pane" id="inseminations">
-                                                        <?= $this->render('/animal/tabs/inseminations', [
+                                                        <? /*= $this->render('/animal/tabs/inseminations', [
                                                             'animal' => $model,
                                                             'dataProvider' => $inseminationDataProvider,
                                                             'usersList' => $usersList,
                                                             'seedBullList' => $seedBullList,
                                                             'containerDuaraList' => $containerDuaraList,
                                                             'addRectal' => $addRectal,
-                                                        ]) ?>
+                                                        ]) */ ?>
                                                     </div>
 
-                                                    <?php if ($model->isWoman()) : ?>
+                                                    <?php /*if ($model->isWoman()) : */ ?>
                                                         <div class="tab-pane" id="rectalings">
-                                                            <?= $this->render('/animal/tabs/rectalings', [
+                                                            <? /*= $this->render('/animal/tabs/rectalings', [
                                                                 'animal' => $model,
                                                                 'usersList' => $usersList,
                                                                 'rectalResults' => $rectalResults,
                                                                 'dataProviderRectal' => $dataProviderRectal,
                                                                 'addRectal' => $addRectal,
-                                                            ]) ?>
+                                                            ]) */ ?>
                                                         </div>
 
                                                         <div class="tab-pane" id="calvings">
-                                                            <?/*= $this->render('/animal/tabs/calvings', [
+                                                            <? /*= $this->render('/animal/tabs/calvings', [
                                                                 'animal' => $model,
                                                                 'dataProviderCalvings' => $dataProviderCalvings,
                                                                 'countSterileDays' => $countSterileDays,
                                                             ])*/ ?>
                                                         </div>
 
-                                                    <?php endif; ?>
+                                                    <?php /*endif; */ ?>
                                                 </div>
                                             </div>
                                         </div>
@@ -295,6 +295,6 @@ $isFremartinText = $model->fremartin ? "(фримартин)" : ""
                 </div>
             </div>
         </div>
-    </div>
+    </div>-->
 
 </div>
