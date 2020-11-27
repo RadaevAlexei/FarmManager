@@ -224,5 +224,16 @@ class Calving extends ActiveRecord
             (count($animals) == 2);
     }
 
+    /**
+     * @return Calving|null
+     */
+    public function getExistingCalving()
+    {
+        return Calving::findOne([
+            'animal_id' => $this->animal_id,
+            'number' => $this->number,
+        ]);
+    }
+
 
 }

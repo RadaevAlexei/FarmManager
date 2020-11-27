@@ -11,7 +11,7 @@ use yii\data\ArrayDataProvider;
 <div class="card">
     <div class="card-header">
         <ul class="nav nav-pills">
-            <?php foreach ($dataProvider->getModels() as $index => $tab) : ?>
+            <?php foreach ($dataProvider->getModels() as $index => $calving) : ?>
                 <li class="nav-item">
                     <a class="nav-link" data-toggle="tab" href="#animal-calving-<?= ($index + 1) ?>">
                         <?= ($index + 1) ?>-й отёл
@@ -22,9 +22,11 @@ use yii\data\ArrayDataProvider;
     </div>
     <div class="card-body">
         <div class="tab-content">
-            <?php foreach ($dataProvider->getModels() as $index => $tab) : ?>
+            <?php foreach ($dataProvider->getModels() as $index => $calving) : ?>
                 <div class="tab-pane" id="animal-calving-<?= ($index + 1) ?>">
-                    <?= ($index + 1) ?>
+                    <?= $this->render('calving-block', [
+                        'model' => $calving
+                    ]) ?>
                 </div>
             <?php endforeach; ?>
         </div>

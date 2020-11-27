@@ -8,6 +8,7 @@ use \backend\modules\scheme\models\AppropriationScheme;
 use \backend\modules\scheme\models\AnimalHistory;
 use \backend\assets\AnimalAsset;
 use yii\data\ArrayDataProvider;
+use \hail812\adminlte3\widgets\FlashAlert;
 
 //ChartAsset::register($this);
 
@@ -49,6 +50,7 @@ $isFremartinText = $model->fremartin ? "(фримартин)" : ""
         <div class="col-md-12">
             <div class="row">
                 <div class="col-md-12">
+                    <?= FlashAlert::widget() ?>
                     <div class="card card-widget widget-user-2">
                         <div class="widget-user-header bg-warning">
                             <div class="widget-user-image">

@@ -27,9 +27,9 @@ $model = new Calving([
 
 <?php $form = ActiveForm::begin([
     'action' => Url::toRoute(['add-calving']),
-    'id'     => 'calving-form',
+    'id' => 'calving-form',
     'method' => 'post',
-    'class'  => 'form-horizontal',
+    'class' => 'form-horizontal',
 ]); ?>
 <div class="box-body">
 
@@ -38,10 +38,10 @@ $model = new Calving([
             <?= $form->field($model, 'animal_id')->hiddenInput()->label(false); ?>
 
             <?= $form->field($model, 'date')->widget(DatePicker::class, [
-                'language'   => 'ru',
+                'language' => 'ru',
                 'dateFormat' => 'dd.MM.yyyy',
-                'options'    => [
-                    'class'        => 'form-control',
+                'options' => [
+                    'class' => 'form-control',
                     'autocomplete' => 'off'
                 ]
             ]) ?>
@@ -50,10 +50,22 @@ $model = new Calving([
 
     <div class="form-group">
         <div class="col-sm-12">
+            <?= $form->field($model, 'number')->input(
+                'number',
+                [
+                    'class' => 'form-control',
+                    'min' => 1,
+                ]
+            ) ?>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-sm-12">
             <?= $form->field($model, 'status')->dropDownList(
                 Calving::getListStatuses(),
                 [
-                    'class'  => 'form-control',
+                    'class' => 'form-control',
                     'prompt' => 'Укажите лёгкость отёла'
                 ]
             ) ?>
@@ -65,7 +77,7 @@ $model = new Calving([
             <?= $form->field($model, 'position')->dropDownList(
                 Calving::getListPositions(),
                 [
-                    'class'  => 'form-control',
+                    'class' => 'form-control',
                     'prompt' => 'Укажите предлежание плода'
                 ]
             ) ?>
@@ -76,7 +88,7 @@ $model = new Calving([
         <div class="col-sm-12">
             <?= $form->field($model, 'note')->textInput(
                 [
-                    'class'  => 'form-control',
+                    'class' => 'form-control',
                     'prompt' => 'Примечание'
                 ]
             ) ?>
@@ -88,7 +100,7 @@ $model = new Calving([
             <?= $form->field($model, 'user_id')->dropDownList(
                 ArrayHelper::map(User::getAllList(), "id", "lastName"),
                 [
-                    'class'  => 'form-control',
+                    'class' => 'form-control',
                     'prompt' => 'Укажите кто проводил отёл'
                 ]
             ) ?>
@@ -99,60 +111,78 @@ $model = new Calving([
         <div class="col-sm-12">
             <?= Html::button('Добавить приплод', [
                 'class' => 'btn btn-warning',
-                'id'    => 'add_calving_template',
+                'id' => 'add_calving_template',
             ]) ?>
         </div>
     </div>
     <div class="form-group">
-        <div class="col-sm-3">Пол</div>
-        <div class="col-sm-2">Мертвород</div>
-        <div class="col-sm-3">Бирка</div>
-        <div class="col-sm-2">Вес,кг</div>
-        <div class="col-sm-2">Действие</div>
-    </div>
-    <div id="child_animals">
-
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Приплод</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body p-0">
+                        <table class="table table-sm">
+                            <thead>
+                            <tr>
+                                <th>Пол</th>
+                                <th>Мертвород</th>
+                                <th>Бирка</th>
+                                <th>Вес,кг</th>
+                                <th style="width: 40px">Действие</th>
+                            </tr>
+                            </thead>
+                            <tbody id="child_animals">
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
 <div class="box-footer">
     <?= Html::submitButton('Добавить', [
         'class' => 'btn btn-primary',
-        'data'  => ['confirm' => 'Вы действительно хотите добавить отёл?']
+        'data' => ['confirm' => 'Вы действительно хотите добавить отёл?']
     ]) ?>
 </div>
 <?php ActiveForm::end(); ?>
 
 <script type="text/html" id="newCalving">
-    <div class="row calving_row_block">
-        <div class="col-sm-3">
+    <tr class="calving_row_block">
+        <td>
             <select class="form-control" name="Calving[child][<%-index%>][sex]">
                 <option value="1">Бычок</option>
                 <option value="2">Тёлочка</option>
             </select>
-        </div>
-        <div class="col-sm-2">
+        </td>
+        <td>
             <select class="form-control" name="Calving[child][<%-index%>][dead]">
                 <option value="0">Нет</option>
                 <option value="1">Да</option>
             </select>
-        </div>
-        <div class="col-sm-3">
+        </td>
+        <td>
             <input type="text" name="Calving[child][<%-index%>][label]" class="form-control">
-        </div>
-        <div class="col-sm-2">
+        </td>
+        <td>
             <input type="number" name="Calving[child][<%-index%>][weight]" class="form-control"
                    min="1"
             >
-        </div>
-        <div class="col-sm-2">
+        </td>
+        <td>
             <button
                     class="btn btn-danger"
                     type="button"
                     id="remove_calving"
             >
-                <span class="glyphicon glyphicon-trash"></span>
+                <span class="fas fa-trash"></span>
             </button>
-        </div>
-    </div>
+        </td>
+    </tr>
 </script>

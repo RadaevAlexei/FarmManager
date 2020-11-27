@@ -372,7 +372,6 @@ class AnimalController extends BackendController
     /**
      * Добавление отёла
      * @return Response
-     * @throws Exception
      */
     public function actionAddCalving()
     {
@@ -390,10 +389,16 @@ class AnimalController extends BackendController
             }
 
             $isLoading = $model->load($post);
+
+            // TODO:: Автоматическое форматирование даты в нужный формат. Перед сохранением и после find()
             $date = (new DateTime($model->date))->format('Y-m-d H:i:s');
             $model->date = $date;
 
             if ($isLoading && $model->validate()) {
+                if ($model->getExistingCalving()) {
+                    throw new Exception('Отёл с таким номером уже существует');
+                }
+
                 // Сохраняем данные по отелу
                 if (!$model->save()) {
                     throw new Exception('При сохрании возникли ошибки');
@@ -407,8 +412,8 @@ class AnimalController extends BackendController
                     $dead = ArrayHelper::getValue($childAnimal, 'dead');
                     $weight = ArrayHelper::getValue($childAnimal, 'weight');
 
-                    $childLabel = ($dead == $sex) ?
-                        $childLabel = md5(microtime(true)) :
+                    $childLabel = $dead ?
+                        md5(microtime(true)) :
                         ArrayHelper::getValue($childAnimal, 'label');
 
                     if (!$dead && (empty($childLabel) || empty($weight))) {

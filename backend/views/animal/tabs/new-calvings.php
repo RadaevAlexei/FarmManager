@@ -137,7 +137,7 @@ use yii\helpers\ArrayHelper;
 <div class="modal fade" id="add-calving-form-button" tabindex="-1" role="dialog"
      aria-labelledby="addCalvingLabel"
      aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header" style="background-color: #0ead0e78">
                 <h5 class="modal-title" id="addCalvingLabel">Добавление отёла</h5>
@@ -158,7 +158,7 @@ use yii\helpers\ArrayHelper;
 <div class="modal fade" id="edit-calving-modal" tabindex="-1" role="dialog"
      aria-labelledby="editCalvingLabel"
      aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header" style="background-color: #0ead0e78">
                 <h5 class="modal-title" id="editCalvingLabel">Редактирование отёла</h5>
