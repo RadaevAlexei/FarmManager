@@ -24,8 +24,12 @@ $this->registerCssFile('https://code.ionicframework.com/ionicons/2.0.1/css/ionic
     <?php  $this->beginBody() ?>
     <div class="login-box">
         <div class="login-logo">
-            <a href="<?=Yii::$app->homeUrl?>"><b>LIFE</b>CATTLE</a>
+            <img src="<?= Yii::getAlias('@web') . '/images/life cattle_5.png' ?>">
         </div>
+
+        <!--<div class="login-logo">
+            <a href="<?/*=Yii::$app->homeUrl*/?>"><b>LIFE</b>CATTLE</a>
+        </div>-->
         <!-- /.login-logo -->
 
         <?= $content ?>
