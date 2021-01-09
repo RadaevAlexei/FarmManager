@@ -35,7 +35,7 @@ AnimalAsset::register($this);
 $this->title = 'Детальная карточка животного';
 $this->params['breadcrumbs'][] = [
     'label' => Yii::t('app/animal', "ANIMAL_LIST"),
-    'url' => Url::toRoute(['/animal/index'])
+    'url'   => Url::toRoute(['/animal/index'])
 ];
 
 $this->params['breadcrumbs'][] = ['label' => $this->title];
@@ -61,14 +61,14 @@ $isFremartinText = $model->fremartin ? "(фримартин)" : ""
                             <h3 class="widget-user-username">
                                 <?= ArrayHelper::getValue($model, "nickname") ?>
                                 <span class="badge bg-info">
-                            <?= ArrayHelper::getValue($model, "label") ?>
-                        </span>
+                                    <?= ArrayHelper::getValue($model, "label") ?>
+                                </span>
                             </h3>
                             <h5 class="widget-user-desc">
                                 Физиологическое состояние:
                                 <span class="badge badge-danger">
-                            <?= Animal::getPhysicalState($model->physical_state) . $isFremartinText ?>
-                        </span>
+                                    <?= Animal::getPhysicalState($model->physical_state) . $isFremartinText ?>
+                                </span>
                             </h5>
                         </div>
                     </div>
@@ -83,24 +83,24 @@ $isFremartinText = $model->fremartin ? "(фримартин)" : ""
                                     <a href="#" class="nav-link">
                                         Происхождение
                                         <span class="float-right badge bg-primary">
-                                    <?= ArrayHelper::getValue($model, "farm.name") ?>
-                                </span>
+                                            <?= ArrayHelper::getValue($model, "farm.name") ?>
+                                        </span>
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a href="#" class="nav-link">
                                         Коровник
                                         <span class="float-right badge bg-info">
-                                    <?= ArrayHelper::getValue($model, "cowshed.name") ?>
-                                </span>
+                                            <?= ArrayHelper::getValue($model, "cowshed.name") ?>
+                                        </span>
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a href="#" class="nav-link">
                                         Возраст
                                         <span class="float-right badge bg-success">
-                                    <?= $model->getAge() ?>
-                                </span>
+                                            <?= $model->getAge() ?>
+                                        </span>
                                     </a>
                                 </li>
                             </ul>
@@ -115,16 +115,16 @@ $isFremartinText = $model->fremartin ? "(фримартин)" : ""
                                     <a href="#" class="nav-link">
                                         Ректальное исследование
                                         <span class="float-right badge bg-danger">
-                                    <?= Animal::getPhysicalState($model->rectal_examination) ?>
-                                </span>
+                                            <?= Animal::getPhysicalState($model->rectal_examination) ?>
+                                        </span>
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a href="#" class="nav-link">
                                         Состояние здоровья
                                         <span class="float-right badge bg-<?= ($model->health_status == Animal::HEALTH_STATUS_HEALTHY ? "success" : "danger") ?>">
-                                    <?= $model->getHealthStatus() ?>
-                                </span>
+                                            <?= $model->getHealthStatus() ?>
+                                        </span>
                                     </a>
                                 </li>
 
@@ -133,12 +133,11 @@ $isFremartinText = $model->fremartin ? "(фримартин)" : ""
                                         <a href="#" class="nav-link">
                                             Диагноз
                                             <span class="float-right badge bg-danger">
-                                    <?= ArrayHelper::getValue($model, "diagnoses.name") ?>
-                                </span>
+                                                <?= ArrayHelper::getValue($model, "diagnoses.name") ?>
+                                            </span>
                                         </a>
                                     </li>
                                 <?php endif; ?>
-
                             </ul>
                         </div>
                     </div>
@@ -174,17 +173,17 @@ $isFremartinText = $model->fremartin ? "(фримартин)" : ""
                         </div>
                         <div class="tab-pane" id="animal-scheme">
                             <?= $this->render('/animal/tabs/scheme', [
-                                'animal' => $model,
-                                'schemeList' => $schemeList,
+                                'animal'              => $model,
+                                'schemeList'          => $schemeList,
                                 'appropriationScheme' => $appropriationScheme,
-                                'dataProvider' => $dataProvider,
+                                'dataProvider'        => $dataProvider,
                             ]) ?>
                         </div>
                         <div class="tab-pane" id="animal-calvings">
                             <div class="tab-pane" id="calvings">
                                 <?= $this->render('/animal/tabs/new-calvings', [
-                                    'animal' => $model,
-                                    'dataProviderCalvings' => $dataProviderCalvings,
+                                    'animal'                          => $model,
+                                    'dataProviderCalvings'            => $dataProviderCalvings,
                                     'dataProviderDistributedCalvings' => $dataProviderDistributedCalvings,
                                 ]) ?>
                             </div>
@@ -195,108 +194,91 @@ $isFremartinText = $model->fremartin ? "(фримартин)" : ""
         </div>
     </div>
 
-    <!--<div class="row">
-        <div class="col-md-12">
-            <div class="card card-success collapsed-card">
-                <div class="card-header" data-card-widget="collapse">
-                    <h3 class="card-title">Отёлы</h3>
-
-                    <div class="card-tools">
-                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                            <i class="fas fa-plus"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="card-body" style="display: none;">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="card card-primary card-tabs">
-                                <div class="card-header p-0 pt-1">
-                                    <ul class="nav nav-tabs" id="custom-tabs-two-tab" role="tablist">
-                                        <li class="pt-2 px-3">
-                                            <h3 class="card-title">Отёлы</h3>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link active" id="custom-tabs-two-home-tab" data-toggle="pill"
-                                               href="#custom-tabs-two-home" role="tab"
-                                               aria-controls="custom-tabs-two-home"
-                                               aria-selected="true">1-й отёл</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" id="custom-tabs-two-profile-tab" data-toggle="pill"
-                                               href="#custom-tabs-two-profile" role="tab"
-                                               aria-controls="custom-tabs-two-profile"
-                                               aria-selected="false">2-й отёл</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div class="card-body">
-                                    <div class="tab-content" id="custom-tabs-two-tabContent">
-                                        <div class="card">
-                                            <div class="card-header p-2">
-                                                <ul class="nav nav-pills">
-                                                    <li class="nav-item">
-                                                        <a class="nav-link" href="#inseminations" data-toggle="tab">Осеменения</a>
-                                                    </li>
-
-                                                    <?php /*if ($model->isWoman()) : */ ?>
-                                                        <li class="nav-item">
-                                                            <a class="nav-link" href="#rectalings" data-toggle="tab">Ректальные
-                                                                исследования</a>
-                                                        </li>
-                                                        <li class="nav-item">
-                                                            <a class="nav-link" href="#calvings"
-                                                               data-toggle="tab">Отёлы</a>
-                                                        </li>
-                                                    <?php /*endif; */ ?>
-
-                                                </ul>
-                                            </div>
-                                            <div class="card-body">
-                                                <div class="tab-content">
-
-                                                    <div class="tab-pane" id="inseminations">
-                                                        <? /*= $this->render('/animal/tabs/inseminations', [
-                                                            'animal' => $model,
-                                                            'dataProvider' => $inseminationDataProvider,
-                                                            'usersList' => $usersList,
-                                                            'seedBullList' => $seedBullList,
-                                                            'containerDuaraList' => $containerDuaraList,
-                                                            'addRectal' => $addRectal,
-                                                        ]) */ ?>
-                                                    </div>
-
-                                                    <?php /*if ($model->isWoman()) : */ ?>
-                                                        <div class="tab-pane" id="rectalings">
-                                                            <? /*= $this->render('/animal/tabs/rectalings', [
-                                                                'animal' => $model,
-                                                                'usersList' => $usersList,
-                                                                'rectalResults' => $rectalResults,
-                                                                'dataProviderRectal' => $dataProviderRectal,
-                                                                'addRectal' => $addRectal,
-                                                            ]) */ ?>
-                                                        </div>
-
-                                                        <div class="tab-pane" id="calvings">
-                                                            <? /*= $this->render('/animal/tabs/calvings', [
-                                                                'animal' => $model,
-                                                                'dataProviderCalvings' => $dataProviderCalvings,
-                                                                'countSterileDays' => $countSterileDays,
-                                                            ])*/ ?>
-                                                        </div>
-
-                                                    <?php /*endif; */ ?>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>-->
+    <!--    <div class="row">-->
+    <!--        <div class="col-md-12">-->
+    <!--            <div class="card card-primary card-tabs">-->
+    <!--                <div class="card-header p-0 pt-1">-->
+    <!--                    <ul class="nav nav-tabs" id="custom-tabs-two-tab" role="tablist">-->
+    <!--                        <li class="pt-2 px-3">-->
+    <!--                            <h3 class="card-title">Отёлы</h3>-->
+    <!--                        </li>-->
+    <!--                        <li class="nav-item">-->
+    <!--                            <a class="nav-link active" id="custom-tabs-two-home-tab" data-toggle="pill"-->
+    <!--                               href="#custom-tabs-two-home" role="tab"-->
+    <!--                               aria-controls="custom-tabs-two-home"-->
+    <!--                               aria-selected="true">1-й отёл</a>-->
+    <!--                        </li>-->
+    <!--                        <li class="nav-item">-->
+    <!--                            <a class="nav-link" id="custom-tabs-two-profile-tab" data-toggle="pill"-->
+    <!--                               href="#custom-tabs-two-profile" role="tab"-->
+    <!--                               aria-controls="custom-tabs-two-profile"-->
+    <!--                               aria-selected="false">2-й отёл</a>-->
+    <!--                        </li>-->
+    <!--                    </ul>-->
+    <!--                </div>-->
+    <!--                <div class="card-body">-->
+    <!--                    <div class="tab-content" id="custom-tabs-two-tabContent">-->
+    <!--                        <div class="card">-->
+    <!--                            <div class="card-header p-2">-->
+    <!--                                <ul class="nav nav-pills">-->
+    <!--                                    <li class="nav-item">-->
+    <!--                                        <a class="nav-link" href="#inseminations" data-toggle="tab">Осеменения</a>-->
+    <!--                                    </li>-->
+    <!---->
+    <!--                                    --><?php ///*if ($model->isWoman()) : */ ?>
+    <!--                                    <li class="nav-item">-->
+    <!--                                        <a class="nav-link" href="#rectalings" data-toggle="tab">Ректальные-->
+    <!--                                            исследования</a>-->
+    <!--                                    </li>-->
+    <!--                                    <li class="nav-item">-->
+    <!--                                        <a class="nav-link" href="#calvings"-->
+    <!--                                           data-toggle="tab">Отёлы</a>-->
+    <!--                                    </li>-->
+    <!--                                    --><?php ///*endif; */ ?>
+    <!---->
+    <!--                                </ul>-->
+    <!--                            </div>-->
+    <!--                            <div class="card-body">-->
+    <!--                                <div class="tab-content">-->
+    <!---->
+    <!--                                    <div class="tab-pane" id="inseminations">-->
+    <!--                                        --><? // /*= $this->render('/animal/tabs/inseminations', [
+    //                                                            'animal' => $model,
+    //                                                            'dataProvider' => $inseminationDataProvider,
+    //                                                            'usersList' => $usersList,
+    //                                                            'seedBullList' => $seedBullList,
+    //                                                            'containerDuaraList' => $containerDuaraList,
+    //                                                            'addRectal' => $addRectal,
+    //                                                        ]) */ ?>
+    <!--                                    </div>-->
+    <!---->
+    <!--                                    --><?php ///*if ($model->isWoman()) : */ ?>
+    <!--                                    <div class="tab-pane" id="rectalings">-->
+    <!--                                        --><? // /*= $this->render('/animal/tabs/rectalings', [
+    //                                                                'animal' => $model,
+    //                                                                'usersList' => $usersList,
+    //                                                                'rectalResults' => $rectalResults,
+    //                                                                'dataProviderRectal' => $dataProviderRectal,
+    //                                                                'addRectal' => $addRectal,
+    //                                                            ]) */ ?>
+    <!--                                    </div>-->
+    <!---->
+    <!--                                    <div class="tab-pane" id="calvings">-->
+    <!--                                        --><? // /*= $this->render('/animal/tabs/calvings', [
+    //                                                                'animal' => $model,
+    //                                                                'dataProviderCalvings' => $dataProviderCalvings,
+    //                                                                'countSterileDays' => $countSterileDays,
+    //                                                            ])*/ ?>
+    <!--                                    </div>-->
+    <!---->
+    <!--                                    --><?php ///*endif; */ ?>
+    <!--                                </div>-->
+    <!--                            </div>-->
+    <!--                        </div>-->
+    <!--                    </div>-->
+    <!--                </div>-->
+    <!--            </div>-->
+    <!--        </div>-->
+    <!--    </div>-->
 
 </div>

@@ -142,7 +142,8 @@ class Insemination extends ActiveRecord
     }
 
     /**
-     * @return mixed
+     * @return mixed|null
+     * @throws \Exception
      */
     public function getTypeInsemination()
     {
@@ -216,6 +217,7 @@ class Insemination extends ActiveRecord
 
     /**
      * @return array|ActiveRecord|null
+     * @throws \Exception
      */
     public function getCurStage()
     {
@@ -332,16 +334,28 @@ class Insemination extends ActiveRecord
         }
     }
 
+    /**
+     * @param $type
+     * @return bool
+     */
     public static function isHormonal($type)
     {
         return ($type == self::TYPE_HORMONAL);
     }
 
+    /**
+     * @param $type
+     * @return bool
+     */
     public static function isNatural($type)
     {
         return ($type == self::TYPE_NATURAL);
     }
 
+    /**
+     * @param $type
+     * @return string
+     */
     public static function getTypeInseminationLabel($type)
     {
         return self::isNatural($type) ? "ОХОТА" : "Другое";

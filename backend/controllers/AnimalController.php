@@ -236,11 +236,9 @@ class AnimalController extends BackendController
         $seedBullList = ArrayHelper::map(SeedBull::getAllList(), "id", "nickname");
         $containerDuaraList = ArrayHelper::map(ContainerDuara::getAllList(), "id", "name");
 
-        /*$calvings = ArrayHelper::map($model->calvings, 'label', function ($item) {
+        $calvings = ArrayHelper::map($model->calvings, 'label', function ($item) {
             return $item;
-        }, 'calving_id');*/
-
-        $calvings = $model->calvings;
+        }, 'calving_id');
 
         $distributedCalvings = $model->getCalvings(true);
         $dataProviderDistributedCalvings = new ArrayDataProvider(['allModels' => $distributedCalvings]);

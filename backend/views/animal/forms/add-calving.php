@@ -27,80 +27,78 @@ $model = new Calving([
 
 <?php $form = ActiveForm::begin([
     'action' => Url::toRoute(['add-calving']),
-    'id' => 'calving-form',
+    'id'     => 'calving-form',
     'method' => 'post',
-    'class' => 'form-horizontal',
+    'class'  => 'form-horizontal',
 ]); ?>
 <div class="box-body">
 
-    <div class="form-group">
-        <div class="col-sm-12">
-            <?= $form->field($model, 'animal_id')->hiddenInput()->label(false); ?>
+    <div class="row">
+        <div class="col-sm-6">
+            <?= $form->field($model, 'animal_id', [
+                'options' => ['style' => 'display:none']
+            ])
+                ->hiddenInput()
+                ->label(false);
+            ?>
 
             <?= $form->field($model, 'date')->widget(DatePicker::class, [
-                'language' => 'ru',
+                'language'   => 'ru',
                 'dateFormat' => 'dd.MM.yyyy',
-                'options' => [
-                    'class' => 'form-control',
+                'options'    => [
+                    'class'        => 'form-control',
                     'autocomplete' => 'off'
                 ]
             ]) ?>
         </div>
-    </div>
-
-    <div class="form-group">
-        <div class="col-sm-12">
-            <?= $form->field($model, 'number')->input(
-                'number',
-                [
-                    'class' => 'form-control',
-                    'min' => 1,
-                ]
-            ) ?>
+        <div class="col-sm-6">
+            <div class="form-group">
+                <?= $form->field($model, 'number')->input(
+                    'number',
+                    [
+                        'class' => 'form-control',
+                        'min'   => 1,
+                    ]
+                ) ?>
+            </div>
         </div>
     </div>
 
-    <div class="form-group">
-        <div class="col-sm-12">
+    <div class="row">
+        <div class="col-sm-6">
             <?= $form->field($model, 'status')->dropDownList(
                 Calving::getListStatuses(),
                 [
-                    'class' => 'form-control',
+                    'class'  => 'form-control',
                     'prompt' => 'Укажите лёгкость отёла'
                 ]
             ) ?>
         </div>
-    </div>
-
-    <div class="form-group">
-        <div class="col-sm-12">
+        <div class="col-sm-6">
             <?= $form->field($model, 'position')->dropDownList(
                 Calving::getListPositions(),
                 [
-                    'class' => 'form-control',
+                    'class'  => 'form-control',
                     'prompt' => 'Укажите предлежание плода'
                 ]
             ) ?>
         </div>
     </div>
 
-    <div class="form-group">
-        <div class="col-sm-12">
+    <div class="row">
+        <div class="col-sm-6">
             <?= $form->field($model, 'note')->textInput(
                 [
-                    'class' => 'form-control',
+                    'class'  => 'form-control',
                     'prompt' => 'Примечание'
                 ]
             ) ?>
         </div>
-    </div>
-
-    <div class="form-group">
-        <div class="col-sm-12">
+        <div class="col-sm-6">
             <?= $form->field($model, 'user_id')->dropDownList(
                 ArrayHelper::map(User::getAllList(), "id", "lastName"),
                 [
-                    'class' => 'form-control',
+                    'class'  => 'form-control',
                     'prompt' => 'Укажите кто проводил отёл'
                 ]
             ) ?>
@@ -108,21 +106,15 @@ $model = new Calving([
     </div>
 
     <div class="form-group">
-        <div class="col-sm-12">
-            <?= Html::button('Добавить приплод', [
-                'class' => 'btn btn-warning',
-                'id' => 'add_calving_template',
-            ]) ?>
-        </div>
-    </div>
-    <div class="form-group">
         <div class="row">
             <div class="col-md-12">
                 <div class="card card-primary">
                     <div class="card-header">
                         <h3 class="card-title">Приплод</h3>
+                        <div class="card-tools">
+                            <span class="fas fa-plus" id="add_calving_template"></span>
+                        </div>
                     </div>
-                    <!-- /.card-header -->
                     <div class="card-body p-0">
                         <table class="table table-sm">
                             <thead>
@@ -138,7 +130,6 @@ $model = new Calving([
                             </tbody>
                         </table>
                     </div>
-                    <!-- /.card-body -->
                 </div>
             </div>
         </div>
@@ -146,9 +137,9 @@ $model = new Calving([
 </div>
 
 <div class="box-footer">
-    <?= Html::submitButton('Добавить', [
-        'class' => 'btn btn-primary',
-        'data' => ['confirm' => 'Вы действительно хотите добавить отёл?']
+    <?= Html::submitButton('Добавить отёл', [
+        'class' => 'btn btn-success float-right',
+        'data'  => ['confirm' => 'Вы действительно хотите добавить отёл?']
     ]) ?>
 </div>
 <?php ActiveForm::end(); ?>
