@@ -113,6 +113,7 @@ class AnimalController extends BackendController
         $isLoading = $model->load(Yii::$app->request->post());
 
         if ($isLoading && $model->validate()) {
+            $model->birthday = (new DateTime($model->birthday, new DateTimeZone('Europe/Samara')))->format('Y-m-d H:i:s');
             $model->save();
             Yii::$app->session->setFlash('success', Yii::t('app/animal', 'ANIMAL_CREATE_SUCCESS'));
             return $this->redirect(["animal/index"]);
