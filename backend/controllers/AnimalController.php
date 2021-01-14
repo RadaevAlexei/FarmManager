@@ -3,6 +3,7 @@
 namespace backend\controllers;
 
 use backend\models\reports\ReportExcelAnimalSickList;
+use common\models\AnimalNote;
 use common\helpers\DateHelper;
 use common\models\rectal\InseminationRectalLink;
 use common\models\rectal\RectalSettings;
@@ -74,7 +75,7 @@ class AnimalController extends BackendController
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
-            "searchModel"  => $searchModel,
+            "searchModel" => $searchModel,
             "dataProvider" => $dataProvider,
         ]);
 
@@ -223,11 +224,19 @@ class AnimalController extends BackendController
 
         $appropriationScheme = new AppropriationScheme([
             'animal_id' => $id,
-            'status'    => AppropriationScheme::STATUS_IN_PROGRESS,
+            'status' => AppropriationScheme::STATUS_IN_PROGRESS,
         ]);
 
         /** @var AnimalHistory[] $history */
         $history = $model->getHistory();
+
+        $animalNoteModel = new AnimalNote([
+            'animal_id' => $id,
+            'user_id' => Yii::$app->getUser()->id,
+        ]);
+
+        /** @var AnimalNote[] $notes */
+        $notes = $model->getNotes();
 
         $inseminations = $model->getInseminations();
         $inseminationDataProvider = new ArrayDataProvider(['allModels' => $inseminations]);
@@ -260,6 +269,8 @@ class AnimalController extends BackendController
                 'schemeList',
                 'appropriationScheme',
                 'history',
+                'animalNoteModel',
+                'notes',
                 'dataProvider',
                 'inseminationDataProvider',
                 'usersList',
@@ -272,6 +283,36 @@ class AnimalController extends BackendController
                 'countSterileDays'
             )
         );
+    }
+
+    /**
+     * Добавление заметки
+     * @return Response
+     */
+    public function actionSaveNote()
+    {
+        $model = new AnimalNote();
+
+        $isLoading = $model->load(Yii::$app->request->post());
+
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $model->date = (new DateTime('now', new DateTimeZone('Europe/Samara')))->format('Y-m-d H:i:s');
+
+            if ($isLoading && $model->validate()) {
+                $model->save();
+                $transaction->commit();
+                Yii::$app->session->setFlash('success', 'Успешное добавление заметки');
+                return $this->redirect(["detail", "id" => $model->animal_id]);
+            }
+
+            Yii::$app->session->setFlash('warning', 'Ошибка валидации модели');
+            return $this->redirect(["detail", "id" => $model->animal_id]);
+        } catch (\Exception $exception) {
+            $transaction->rollBack();
+            Yii::$app->session->setFlash('error', $exception->getMessage());
+            return $this->redirect(["detail", "id" => $model->animal_id]);
+        }
     }
 
     /**
@@ -337,9 +378,9 @@ class AnimalController extends BackendController
 
                 /** @var AnimalHistory $newAnimalHistory */
                 $newAnimalHistory = new AnimalHistory([
-                    'animal_id'   => $model->animal_id,
-                    'user_id'     => $userId,
-                    'date'        => (new DateTime($model->date))->format('Y-m-d H:i:s'),
+                    'animal_id' => $model->animal_id,
+                    'user_id' => $userId,
+                    'date' => (new DateTime($model->date))->format('Y-m-d H:i:s'),
                     'action_type' => AnimalHistory::ACTION_TYPE_CREATE_INSEMINATION,
                     'action_text' => $actionText
                 ]);
@@ -410,15 +451,15 @@ class AnimalController extends BackendController
                     }
 
                     $newAnimal = new Animal([
-                        'label'          => $childLabel,
-                        'birthday'       => $date,
-                        'birth_weight'   => $weight,
-                        'sex'            => $sex,
-                        'mother_id'      => $model->animal_id,
-                        'health_status'  => $dead ? Animal::HEALTH_STATUS_DEAD : Animal::HEALTH_STATUS_HEALTHY,
+                        'label' => $childLabel,
+                        'birthday' => $date,
+                        'birth_weight' => $weight,
+                        'sex' => $sex,
+                        'mother_id' => $model->animal_id,
+                        'health_status' => $dead ? Animal::HEALTH_STATUS_DEAD : Animal::HEALTH_STATUS_HEALTHY,
                         'physical_state' => $sex == Cow::ANIMAL_SEX_TYPE ?
                             Animal::PHYSICAL_STATE_CALF : Animal::PHYSICAL_STATE_BULL,
-                        'fremartin'      => (($sex == Cow::ANIMAL_SEX_TYPE) && $isFremartin) ? 1 : 0
+                        'fremartin' => (($sex == Cow::ANIMAL_SEX_TYPE) && $isFremartin) ? 1 : 0
                     ]);
                     $newAnimal->setScenario(Animal::SCENARIO_CREATE_EDIT);
 
@@ -439,9 +480,9 @@ class AnimalController extends BackendController
 
                 /** @var AnimalHistory $newAnimalHistory */
                 $newAnimalHistory = new AnimalHistory([
-                    'animal_id'   => $model->animal_id,
-                    'user_id'     => $model->user_id,
-                    'date'        => (new DateTime('now',
+                    'animal_id' => $model->animal_id,
+                    'user_id' => $model->user_id,
+                    'date' => (new DateTime('now',
                         new DateTimeZone('Europe/Samara')))->format('Y-m-d H:i:s'),
                     'action_type' => AnimalHistory::ACTION_TYPE_CREATE_CALVING,
                     'action_text' => $actionText
@@ -487,9 +528,9 @@ class AnimalController extends BackendController
 
                 /** @var AnimalHistory $newAnimalHistory */
                 $newAnimalHistory = new AnimalHistory([
-                    'animal_id'   => $model->animal_id,
-                    'user_id'     => $model->user_id,
-                    'date'        => (new DateTime('now',
+                    'animal_id' => $model->animal_id,
+                    'user_id' => $model->user_id,
+                    'date' => (new DateTime('now',
                         new DateTimeZone('Europe/Samara')))->format('Y-m-d H:i:s'),
                     'action_type' => AnimalHistory::ACTION_TYPE_REMOVE_CALVING,
                     'action_text' => $actionText
@@ -565,9 +606,9 @@ class AnimalController extends BackendController
 
                 $appropriationScheme = AppropriationScheme::find()
                     ->where([
-                        'animal_id'   => $model->animal_id,
-                        'scheme_id'   => $model->scheme_id,
-                        'status'      => AppropriationScheme::STATUS_IN_PROGRESS,
+                        'animal_id' => $model->animal_id,
+                        'scheme_id' => $model->scheme_id,
+                        'status' => AppropriationScheme::STATUS_IN_PROGRESS,
                         'finished_at' => null
                     ])
                     ->one();
@@ -797,11 +838,11 @@ class AnimalController extends BackendController
         $fathers = [];
 
         return $this->render('animal-add', [
-            "action"  => $action,
-            "url"     => $url,
-            "model"   => $model,
-            "groups"  => $groups,
-            "colors"  => $colors,
+            "action" => $action,
+            "url" => $url,
+            "model" => $model,
+            "groups" => $groups,
+            "colors" => $colors,
             "mothers" => $mothers,
             "fathers" => $fathers,
         ]);
@@ -892,9 +933,9 @@ class AnimalController extends BackendController
 
                     if ($animal) {
                         $animal->updateAttributes([
-                            'health_status'         => $model->health_status,
+                            'health_status' => $model->health_status,
                             'health_status_comment' => $model->health_status_comment,
-                            'date_health'           => (new DateTime($model->date_health))->format('Y-m-d H:i:s'),
+                            'date_health' => (new DateTime($model->date_health))->format('Y-m-d H:i:s'),
                         ]);
 
                         $userId = Yii::$app->getUser()->getIdentity()->getId();
@@ -903,9 +944,9 @@ class AnimalController extends BackendController
 
                         /** @var AnimalHistory $newAnimalHistory */
                         $newAnimalHistory = new AnimalHistory([
-                            'animal_id'   => $animal->id,
-                            'user_id'     => $userId,
-                            'date'        => (new DateTime('now',
+                            'animal_id' => $animal->id,
+                            'user_id' => $userId,
+                            'date' => (new DateTime('now',
                                 new DateTimeZone('Europe/Samara')))->format('Y-m-d H:i:s'),
                             'action_type' => AnimalHistory::ACTION_TYPE_SET_HEALTH_STATUS,
                             'action_text' => "Поставил статус \"$health_status\""
@@ -997,9 +1038,9 @@ class AnimalController extends BackendController
 
                     /** @var AnimalHistory $newAnimalHistory */
                     $newAnimalHistory = new AnimalHistory([
-                        'animal_id'   => $model->animal_id,
-                        'user_id'     => $model->user_id,
-                        'date'        => (new DateTime('now',
+                        'animal_id' => $model->animal_id,
+                        'user_id' => $model->user_id,
+                        'date' => (new DateTime('now',
                             new DateTimeZone('Europe/Samara')))->format('Y-m-d H:i:s'),
                         'action_type' => AnimalHistory::ACTION_TYPE_EDIT_CALVING,
                         'action_text' => $actionText
@@ -1071,9 +1112,9 @@ class AnimalController extends BackendController
 
                     /** @var AnimalHistory $newAnimalHistory */
                     $newAnimalHistory = new AnimalHistory([
-                        'animal_id'   => $model->animal_id,
-                        'user_id'     => $userId,
-                        'date'        => (new DateTime($model->date))->format('Y-m-d H:i:s'),
+                        'animal_id' => $model->animal_id,
+                        'user_id' => $userId,
+                        'date' => (new DateTime($model->date))->format('Y-m-d H:i:s'),
                         'action_type' => AnimalHistory::ACTION_TYPE_EDIT_INSEMINATION,
                         'action_text' => $actionText
                     ]);
@@ -1113,9 +1154,9 @@ class AnimalController extends BackendController
 
                 /** @var AnimalHistory $newAnimalHistory */
                 $newAnimalHistory = new AnimalHistory([
-                    'animal_id'   => $model->animal_id,
-                    'user_id'     => $userId,
-                    'date'        => (new DateTime($model->date))->format('Y-m-d H:i:s'),
+                    'animal_id' => $model->animal_id,
+                    'user_id' => $userId,
+                    'date' => (new DateTime($model->date))->format('Y-m-d H:i:s'),
                     'action_type' => AnimalHistory::ACTION_TYPE_DELETE_INSEMINATION,
                     'action_text' => $actionText
                 ]);
@@ -1159,8 +1200,8 @@ class AnimalController extends BackendController
 
                         AppropriationScheme::findOne($model->appropriation_scheme_id)
                             ->updateAttributes([
-                                'status'      => $model->health_status,
-                                'comment'     => $model->comment,
+                                'status' => $model->health_status,
+                                'comment' => $model->comment,
                                 'finished_at' => $dateHealth
                             ]);
 
@@ -1183,8 +1224,8 @@ class AnimalController extends BackendController
                         }
 
                         $updateParameters = array_merge($updateParameters, [
-                            'diagnosis'             => $diagnosis,
-                            'health_status'         => $healthStatus,
+                            'diagnosis' => $diagnosis,
+                            'health_status' => $healthStatus,
                             'health_status_comment' => $model->comment,
                         ]);
                         $animal->updateAttributes($updateParameters);
@@ -1194,9 +1235,9 @@ class AnimalController extends BackendController
 
                         /** @var AnimalHistory $newAnimalHistory */
                         $newAnimalHistory = new AnimalHistory([
-                            'animal_id'   => $animal->id,
-                            'user_id'     => $userId,
-                            'date'        => (new DateTime('now',
+                            'animal_id' => $animal->id,
+                            'user_id' => $userId,
+                            'date' => (new DateTime('now',
                                 new DateTimeZone('Europe/Samara')))->format('Y-m-d H:i:s'),
                             'action_type' => AnimalHistory::ACTION_TYPE_CLOSE_SCHEME,
                             'action_text' => "Выписал животное со статусом \"$health_status\""
@@ -1236,7 +1277,7 @@ class AnimalController extends BackendController
                     if ($animal) {
                         $animal->updateAttributes([
                             'health_status' => $model->health_status,
-                            'diagnosis'     => $model->diagnosis,
+                            'diagnosis' => $model->diagnosis,
                         ]);
 
                         $userId = Yii::$app->getUser()->getIdentity()->getId();
@@ -1250,9 +1291,9 @@ class AnimalController extends BackendController
 
                         /** @var AnimalHistory $newAnimalHistory */
                         $newAnimalHistory = new AnimalHistory([
-                            'animal_id'   => $animal->id,
-                            'user_id'     => $userId,
-                            'date'        => (new DateTime('now',
+                            'animal_id' => $animal->id,
+                            'user_id' => $userId,
+                            'date' => (new DateTime('now',
                                 new DateTimeZone('Europe/Samara')))->format('Y-m-d H:i:s'),
                             'action_type' => AnimalHistory::ACTION_TYPE_SET_DIAGNOSIS,
                             'action_text' => "Поставил диагноз \"$diagnosisName\""
@@ -1350,9 +1391,9 @@ class AnimalController extends BackendController
 
                 /** @var AnimalHistory $newAnimalHistory */
                 $newAnimalHistory = new AnimalHistory([
-                    'animal_id'   => $model->animal_id,
-                    'user_id'     => Yii::$app->getUser()->getId(),
-                    'date'        => (new DateTime('now',
+                    'animal_id' => $model->animal_id,
+                    'user_id' => Yii::$app->getUser()->getId(),
+                    'date' => (new DateTime('now',
                         new DateTimeZone('Europe/Samara')))->format('Y-m-d H:i:s'),
                     'action_type' => AnimalHistory::ACTION_TYPE_CREATE_RECTAL,
                     'action_text' => $actionText
@@ -1411,26 +1452,26 @@ class AnimalController extends BackendController
                         $nextRectalDate = RectalSettings::calculateRectalDate($model->date, $nextStage);
 
                         $nextRectal = new Rectal([
-                            'user_id'      => $model->user_id,
-                            'date'         => $nextRectalDate,
-                            'animal_id'    => $model->animal_id,
-                            'result'       => Rectal::RESULT_NOT_RESULT,
+                            'user_id' => $model->user_id,
+                            'date' => $nextRectalDate,
+                            'animal_id' => $model->animal_id,
+                            'result' => Rectal::RESULT_NOT_RESULT,
                             'rectal_stage' => $nextStage,
                         ]);
 
                         $nextRectal->save();
 
                         $prevLink = InseminationRectalLink::findOne([
-                            'animal_id'       => $model->animal_id,
+                            'animal_id' => $model->animal_id,
                             'insemination_id' => $curInsemination->id,
-                            'rectal_id'       => $model->id
+                            'rectal_id' => $model->id
                         ]);
 
                         $newInseminationRectalLink = new InseminationRectalLink([
-                            'prev_id'         => ArrayHelper::getValue($prevLink, 'id'),
-                            'animal_id'       => $model->animal_id,
+                            'prev_id' => ArrayHelper::getValue($prevLink, 'id'),
+                            'animal_id' => $model->animal_id,
                             'insemination_id' => $curInsemination->id,
-                            'rectal_id'       => $nextRectal->id
+                            'rectal_id' => $nextRectal->id
                         ]);
 
                         $newInseminationRectalLink->save();
@@ -1473,9 +1514,9 @@ class AnimalController extends BackendController
 
                 /** @var AnimalHistory $newAnimalHistory */
                 $newAnimalHistory = new AnimalHistory([
-                    'animal_id'   => $model->animal_id,
-                    'user_id'     => Yii::$app->getUser()->getId(),
-                    'date'        => (new DateTime('now',
+                    'animal_id' => $model->animal_id,
+                    'user_id' => Yii::$app->getUser()->getId(),
+                    'date' => (new DateTime('now',
                         new DateTimeZone('Europe/Samara')))->format('Y-m-d H:i:s'),
                     'action_type' => AnimalHistory::ACTION_TYPE_REMOVE_RECTAL,
                     'action_text' => $actionText
@@ -1573,9 +1614,9 @@ class AnimalController extends BackendController
 
                     /** @var AnimalHistory $newAnimalHistory */
                     $newAnimalHistory = new AnimalHistory([
-                        'animal_id'   => $model->animal_id,
-                        'user_id'     => Yii::$app->getUser()->getId(),
-                        'date'        => (new DateTime('now',
+                        'animal_id' => $model->animal_id,
+                        'user_id' => Yii::$app->getUser()->getId(),
+                        'date' => (new DateTime('now',
                             new DateTimeZone('Europe/Samara')))->format('Y-m-d H:i:s'),
                         'action_type' => AnimalHistory::ACTION_TYPE_EDIT_RECTAL,
                         'action_text' => $actionText

@@ -6,6 +6,7 @@ use common\models\Animal;
 use \backend\modules\scheme\models\Scheme;
 use \backend\modules\scheme\models\AppropriationScheme;
 use \backend\modules\scheme\models\AnimalHistory;
+use common\models\AnimalNote;
 use \backend\assets\AnimalAsset;
 use yii\data\ArrayDataProvider;
 
@@ -16,6 +17,8 @@ use yii\data\ArrayDataProvider;
  * @var Scheme[] $schemeList
  * @var AppropriationScheme $appropriationScheme
  * @var AnimalHistory[] $history
+ * @var AnimalNote[] $notes
+ * @var AnimalNote $animalNoteModel
  * @var ArrayDataProvider $dataProvider
  * @var ArrayDataProvider $inseminationDataProvider
  * @var array $usersList
@@ -135,6 +138,9 @@ $isFremartinText = $model->fremartin ? "(фримартин)" : ""
                             </li>
                         <?php endif; ?>
 
+                        <li class="nav-item">
+                            <a class="nav-link" href="#animal-note" data-toggle="tab">Заметки</a>
+                        </li>
                     </ul>
                 </div>
                 <div class="card-body">
@@ -185,6 +191,10 @@ $isFremartinText = $model->fremartin ? "(фримартин)" : ""
                                 ]) ?>
                             </div>
                         <?php endif; ?>
+
+                        <div class="tab-pane" id="animal-note">
+                            <?= $this->render('/animal/tabs/animal-notes', compact('notes', 'animalNoteModel')) ?>
+                        </div>
                     </div>
                 </div>
             </div>
