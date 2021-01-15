@@ -301,7 +301,23 @@ class AnimalController extends BackendController
             $model->date = (new DateTime('now', new DateTimeZone('Europe/Samara')))->format('Y-m-d H:i:s');
 
             if ($isLoading && $model->validate()) {
-                $model->save();
+                if (!$model->save()) {
+                    throw new Exception('Ошибка при сохранении заметки');
+                }
+
+                $actionText = "Добавил заметку #$model->description";
+                $newAnimalHistory = new AnimalHistory([
+                    'animal_id' => $model->animal_id,
+                    'user_id' => Yii::$app->getUser()->getId(),
+                    'date' => (new DateTime('now', new DateTimeZone('Europe/Samara')))->format('Y-m-d H:i:s'),
+                    'action_type' => AnimalHistory::ACTION_TYPE_ADD_NOTE,
+                    'action_text' => $actionText
+                ]);
+
+                if (!$newAnimalHistory->save()) {
+                    throw new Exception('Ошибка при сохранении в амбулаторный журнал');
+                }
+
                 $transaction->commit();
                 Yii::$app->session->setFlash('success', 'Успешное добавление заметки');
                 return $this->redirect(["detail", "id" => $model->animal_id]);
@@ -312,6 +328,51 @@ class AnimalController extends BackendController
         } catch (\Exception $exception) {
             $transaction->rollBack();
             Yii::$app->session->setFlash('error', $exception->getMessage());
+            return $this->redirect(["detail", "id" => $model->animal_id]);
+        }
+    }
+
+    /**
+     * Удаление заметки
+     * @param $id
+     * @return Response
+     * @throws Throwable
+     */
+    public function actionRemoveNote($id)
+    {
+        $transaction = Yii::$app->db->beginTransaction();
+
+        /** @var AnimalNote $model */
+        $model = AnimalNote::findOne($id);
+
+        try {
+            if (empty($model)) {
+                throw new \Exception('Заметка не найдена');
+            }
+
+            if (!$model->delete()) {
+                throw new \Exception('Ошибка при удалении заметки');
+            }
+
+            $actionText = "Удалил заметку #$model->description";
+            $newAnimalHistory = new AnimalHistory([
+                'animal_id' => $model->animal_id,
+                'user_id' => Yii::$app->getUser()->getId(),
+                'date' => (new DateTime('now', new DateTimeZone('Europe/Samara')))->format('Y-m-d H:i:s'),
+                'action_type' => AnimalHistory::ACTION_TYPE_REMOVE_NOTE,
+                'action_text' => $actionText
+            ]);
+            if (!$newAnimalHistory->save()) {
+                throw new Exception('Ошибка при сохранении в амбулаторный журнал');
+            }
+
+            $transaction->commit();
+
+            \Yii::$app->session->setFlash('success', 'Успешное удаление заметки');
+            return $this->redirect(["detail", "id" => $model->animal_id]);
+        } catch (\Exception $exception) {
+            $transaction->rollBack();
+            \Yii::$app->session->setFlash('error', $exception->getMessage());
             return $this->redirect(["detail", "id" => $model->animal_id]);
         }
     }

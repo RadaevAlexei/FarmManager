@@ -84,5 +84,25 @@ $historyDataProvider = new ArrayDataProvider([
                 return ArrayHelper::getValue($action, "description");
             }
         ],
+        [
+            'class' => 'yii\grid\ActionColumn',
+            'header' => 'Действия',
+            'template' => '<div class="btn-group">{delete}</div>',
+            'visibleButtons' => [
+                'delete' => Yii::$app->user->can('animalEdit'),
+            ],
+            'buttons' => [
+                'delete' => function ($url, $model) {
+                    return Html::a(
+                        '<span class="fas fa-sm fa-trash"></span>',
+                        Url::toRoute(['animal/remove-note', 'id' => $model->id]),
+                        [
+                            'class' => 'btn btn-danger',
+                            'data' => ['confirm' => 'Вы действительно хотите удалить эту заметку?']
+                        ]
+                    );
+                },
+            ],
+        ],
     ]
 ]); ?>
