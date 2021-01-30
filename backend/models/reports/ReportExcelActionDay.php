@@ -3,6 +3,8 @@
 namespace backend\models\reports;
 
 use Yii;
+use common\models\Animal;
+use common\models\AnimalNote;
 use backend\modules\scheme\models\ActionHistory;
 use backend\modules\scheme\models\Scheme;
 use DateTime;
@@ -73,7 +75,7 @@ class ReportExcelActionDay extends ReportExcel
                     $query->joinWith([
                         'animal' => function (ActiveQuery $query) {
                             $query->alias('a');
-                            $query->joinWith(['animalGroup']);
+                            $query->joinWith(['animalGroup', 'notes']);
                         },
                         'scheme' => function (ActiveQuery $query) {
                             $query->alias('s');
@@ -111,44 +113,68 @@ class ReportExcelActionDay extends ReportExcel
             $this->activeSheet()->insertNewRowBefore($this->offset + 1, $count - 1);
         }
 
-        foreach ($this->data as $action) {
-            $this->activeSheet()->setCellValue(
-                "A$this->offset",
-                ArrayHelper::getValue($action, "appropriationScheme.scheme.name")
-            );
-            $this->activeSheet()->setCellValue(
-                "B$this->offset",
-                ArrayHelper::getValue($action, "scheme_day")
-            );
-            $this->activeSheet()->setCellValue(
-                "C$this->offset",
-                ArrayHelper::getValue($action, "appropriationScheme.animal.animalGroup.name")
-            );
-            $this->activeSheet()->setCellValue(
-                "D$this->offset",
-                ArrayHelper::getValue($action, "appropriationScheme.animal.collar")
-            );
-            $this->activeSheet()->setCellValue(
-                "E$this->offset",
-                ArrayHelper::getValue($action, "appropriationScheme.animal.label")
-            );
-            $this->activeSheet()->setCellValue(
-                "F$this->offset",
-                ArrayHelper::getValue($action, "appropriationScheme.scheme.diagnosis.name")
-            );
-            $this->activeSheet()->setCellValue(
-                "G$this->offset",
-                ArrayHelper::getValue($action, "groupsAction.name")
-            );
-            $this->activeSheet()->setCellValue(
-                "H$this->offset",
-                ArrayHelper::getValue($action, "action.name")
-            );
+        // Группируем по животным
+        $grouped = [];
+        foreach ($this->data as $item) {
+            $animalId = ArrayHelper::getValue($item, "appropriationScheme.animal.id");
+            $grouped[$animalId][] = $item;
+        }
 
-            $this->offset++;
+        foreach ($grouped as $animalId => $historyItem) {
+            foreach ($historyItem as $index => $action) {
+                /** @var Animal $animal */
+                $animal = ArrayHelper::getValue($action, "appropriationScheme.animal");
+
+                $this->activeSheet()->setCellValue(
+                    "A$this->offset",
+                    ArrayHelper::getValue($action, "appropriationScheme.scheme.name")
+                );
+                $this->activeSheet()->setCellValue(
+                    "B$this->offset",
+                    ArrayHelper::getValue($action, "scheme_day")
+                );
+                $this->activeSheet()->setCellValue(
+                    "C$this->offset",
+                    ArrayHelper::getValue($animal, "animalGroup.name")
+                );
+                $this->activeSheet()->setCellValue(
+                    "D$this->offset",
+                    ArrayHelper::getValue($animal, "collar")
+                );
+                $this->activeSheet()->setCellValue(
+                    "E$this->offset",
+                    ArrayHelper::getValue($animal, "label")
+                );
+                $this->activeSheet()->setCellValue(
+                    "F$this->offset",
+                    ArrayHelper::getValue($action, "appropriationScheme.scheme.diagnosis.name")
+                );
+                $this->activeSheet()->setCellValue(
+                    "G$this->offset",
+                    ArrayHelper::getValue($action, "groupsAction.name")
+                );
+                $this->activeSheet()->setCellValue(
+                    "H$this->offset",
+                    ArrayHelper::getValue($action, "action.name")
+                );
+
+                /** @var AnimalNote $lastNote */
+                $lastNote = $animal->getLastNote();
+                $lastNoteText = ArrayHelper::getValue($lastNote, "description");
+
+                if (!$index) {
+                    $this->activeSheet()->setCellValue(
+                        "J$this->offset",
+                        $lastNoteText
+                    );
+                }
+
+                $this->offset++;
+            }
         }
 
         $end = $this->offset + 1;
+
         $this->activeSheet()->getStyle("A3:J$end")->getFont()->setBold(false);
         $this->activeSheet()->getProtection()->setSheet(false);
         $this->activeSheet()->getPageSetup()->setScale(100);

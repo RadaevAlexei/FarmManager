@@ -237,7 +237,7 @@ class AnimalController extends BackendController
         ]);
 
         /** @var AnimalNote[] $notes */
-        $notes = $model->getNotes();
+        $notes = $model->getAnimalNotes();
 
         $inseminations = $model->getInseminations();
         $inseminationDataProvider = new ArrayDataProvider(['allModels' => $inseminations]);
@@ -298,7 +298,9 @@ class AnimalController extends BackendController
 
         $transaction = Yii::$app->db->beginTransaction();
         try {
-            $model->date = (new DateTime('now', new DateTimeZone('Europe/Samara')))->format('Y-m-d H:i:s');
+            $date = (new DateTime($model->date ? $model->date : 'now', new DateTimeZone('Europe/Samara')));
+            DateHelper::addCurTimeToDate($date);
+            $model->date = $date->format('Y-m-d H:i:s');
 
             if ($isLoading && $model->validate()) {
                 if (!$model->save()) {

@@ -7,6 +7,7 @@ use \yii\bootstrap4\ActiveForm;
 use yii\helpers\Url;
 use common\models\AnimalNote;
 use yii\helpers\Html;
+use \yii\jui\DatePicker;
 
 /**
  * @var array $notes
@@ -16,6 +17,8 @@ use yii\helpers\Html;
 $historyDataProvider = new ArrayDataProvider([
     'allModels' => $notes,
 ]);
+
+$animalNoteModel->date = (new DateTime('now', new DateTimeZone('Europe/Samara')))->format('d.m.Y');
 
 ?>
 
@@ -32,7 +35,21 @@ $historyDataProvider = new ArrayDataProvider([
 
             <div class="card-body">
                 <div class="row">
-                    <div class="col-sm-10">
+                    <div class="col-sm-3">
+                        <?= $form->field($animalNoteModel, 'date')
+                            ->widget(DatePicker::class, [
+                                'language' => 'ru',
+                                'dateFormat' => 'dd.MM.yyyy',
+                                'options' => [
+                                    'class' => 'form-control form-control-sm',
+                                    'autocomplete' => 'off'
+                                ]
+                            ])->textInput([
+                                'placeholder' => 'Дата',
+                                'class' => 'form-control form-control-sm'
+                            ])->label(false) ?>
+                    </div>
+                    <div class="col-sm-7">
                         <?= $form->field($animalNoteModel, 'description')->textInput([
                             'autofocus' => true,
                             'placeholder' => 'напишите что-нибудь...',
@@ -75,7 +92,7 @@ $historyDataProvider = new ArrayDataProvider([
         [
             'label' => 'Кто написал заметку?',
             'value' => function ($action) {
-                return ArrayHelper::getValue($action, "user.lastName");
+                return ArrayHelper::getValue($action, "user.username");
             }
         ],
         [

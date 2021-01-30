@@ -658,12 +658,32 @@ class Animal extends ActiveRecord
      * Заметки оставленные пользователями на детальной страничке животного
      * @return array|ActiveRecord[]
      */
-    public function getNotes()
+    public function getAnimalNotes()
     {
         return AnimalNote::find()
             ->where(['animal_id' => $this->id])
             ->orderBy(['date' => SORT_DESC])
             ->all();
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getNotes()
+    {
+        return $this->hasMany(AnimalNote::class, ['animal_id' => 'id'])
+            ->orderBy(['date' => SORT_DESC]);
+    }
+
+    /**
+     * Получение последней заметки
+     * @return mixed|null
+     * @throws Exception
+     */
+    public function getLastNote()
+    {
+        $notes = ArrayHelper::getValue($this, "notes", []);
+        return !empty($notes) ? $notes[0] : null;
     }
 
     /**

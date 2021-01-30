@@ -69,4 +69,20 @@ class DateHelper
 
         return $months[$number - 1];
     }
+
+    /**
+     * Добавление текущего времени к дате
+     * @param $date
+     */
+    public static function addCurTimeToDate(&$date)
+    {
+        $now = new DateTime();
+
+        if ($date instanceof DateTime) {
+            $date->setTime($now->format('H'), $now->format('i'), $now->format('s'));
+            return;
+        }
+
+        $date = $now;
+    }
 }
