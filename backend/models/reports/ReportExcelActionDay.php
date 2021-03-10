@@ -169,6 +169,8 @@ class ReportExcelActionDay extends ReportExcel
                     );
                 }
 
+                $this->activeSheet()->getRowDimension($this->offset)->setRowHeight(-1);
+
                 $this->offset++;
             }
         }
