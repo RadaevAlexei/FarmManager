@@ -67,6 +67,8 @@ class AnimalController extends BackendController
      */
     public function actionIndex()
     {
+        // TODO:: Тестовый коммит после долгого перерыва в разработке
+
         $searchModel = new AnimalSearch([
             "scenario" => AnimalSearch::SCENARIO_FILTER
         ]);
