@@ -1,17 +1,17 @@
 <?php
 
-use \yii\grid\GridView;
-use \common\models\search\CowSearch;
-use \yii\helpers\Html;
-use \yii\helpers\Url;
-use \common\models\Animal;
-use \common\models\Bull;
-use \yii\widgets\ActiveForm;
-use \backend\models\forms\UploadForm;
-use \backend\assets\AnimalAsset;
-use \backend\modules\scheme\models\AppropriationScheme;
-use \yii\helpers\ArrayHelper;
-use \kartik\file\FileInput;
+use yii\grid\GridView;
+use yii\helpers\Html;
+use yii\helpers\Url;
+use yii\widgets\ActiveForm;
+use yii\helpers\ArrayHelper;
+use common\models\search\CowSearch;
+use common\models\Animal;
+use common\models\Bull;
+use backend\models\forms\UploadForm;
+use backend\assets\AnimalAsset;
+use backend\modules\scheme\models\AppropriationScheme;
+use kartik\file\FileInput;
 
 $this->title = Yii::t('app/animal', 'ANIMAL_LIST');
 $this->params['breadcrumbs'][] = $this->title;
@@ -202,10 +202,14 @@ AnimalAsset::register($this);
                                     'delete' => function ($url, $model) {
                                         return Html::a(
                                             '<span class="fas fa-trash"></span>',
-                                            Url::toRoute(['animal/delete', 'id' => $model->id]),
+                                            Url::toRoute(['animal/disposal-form', 'id' => $model->id]),
                                             [
+                                                'id' => 'animal-disposal',
                                                 'class' => 'btn btn-danger',
-                                                'data' => ['confirm' => 'Вы уверены, что хотите удалить этот элемент?']
+                                                'data' => [
+                                                    'confirm' => '',
+
+                                                ]
                                             ]
                                         );
                                     },

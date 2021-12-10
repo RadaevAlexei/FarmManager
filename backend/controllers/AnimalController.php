@@ -2,13 +2,22 @@
 
 namespace backend\controllers;
 
-use backend\models\reports\ReportExcelAnimalSickList;
+use Yii;
+
+use common\helpers\Excel\ExcelHelper;
+use common\models\Calving;
+use common\models\rectal\Rectal;
+use common\models\User;
 use common\models\AnimalNote;
 use common\helpers\DateHelper;
 use common\models\rectal\InseminationRectalLink;
 use common\models\rectal\RectalSettings;
-use DateInterval;
-use Yii;
+use common\helpers\DataHelper;
+use common\models\Animal;
+use common\models\Cow;
+use common\models\Color;
+
+use backend\models\reports\ReportExcelAnimalSickList;
 use backend\models\forms\AnimalDiagnosisForm;
 use backend\models\forms\CloseSchemeForm;
 use backend\models\forms\HealthForm;
@@ -23,33 +32,21 @@ use backend\modules\reproduction\models\SeedBullStorage;
 use backend\modules\reproduction\models\SeedCashBook;
 use backend\modules\scheme\models\AnimalHistory;
 use backend\modules\scheme\models\Diagnosis;
-use backend\modules\scheme\models\Scheme;
-use common\helpers\Excel\ExcelHelper;
-use common\models\Calving;
-use common\models\rectal\Rectal;
-use common\models\User;
-use DateTime;
-use DateTimeZone;
-use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Reader\BaseReader;
-use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
-use Throwable;
 use backend\modules\scheme\models\AppropriationScheme;
-use common\helpers\DataHelper;
-use common\models\Animal;
-use common\models\Cow;
-use common\models\Color;
+
 use yii\data\ActiveDataProvider;
 use yii\data\ArrayDataProvider;
-use yii\db\ActiveQuery;
 use yii\db\Exception;
+use yii\db\StaleObjectException;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use yii\web\UploadedFile;
+
+use DateTime;
+use DateTimeZone;
+use Throwable;
 
 /**
  * Class AnimalController
@@ -192,7 +189,7 @@ class AnimalController extends BackendController
      *
      * @return Response
      * @throws Throwable
-     * @throws \yii\db\StaleObjectException
+     * @throws StaleObjectException
      */
     public function actionDelete($id)
     {
@@ -202,6 +199,30 @@ class AnimalController extends BackendController
         \Yii::$app->session->setFlash('success', Yii::t('app/animal', 'ANIMAL_DELETE_SUCCESS'));
 
         return $this->redirect(['animal/index']);
+    }
+
+    public function actionDisposal($id)
+    {
+        
+    }
+
+    /**
+     * @param $id
+     * @return string
+     * @throws \Exception
+     */
+    public function actionDisposalForm($id)
+    {
+        $post = Yii::$app->request->post();
+        
+        $animalId = ArrayHelper::getValue($post, "animal_id");
+        $animal = Animal::findOne($animalId);
+        
+        Yii::$app->response->format = Response::FORMAT_HTML;
+        return $this->renderPartial(
+            'forms/add-disposal',
+            compact('animal')
+        );
     }
 
     /**
@@ -870,7 +891,7 @@ class AnimalController extends BackendController
      * @param null $id
      * @return string|Response
      * @throws Throwable
-     * @throws \yii\db\StaleObjectException
+     * @throws StaleObjectException
      */
     public function actionActions($action = null, $id = null)
     {
@@ -1036,6 +1057,7 @@ class AnimalController extends BackendController
 
     /**
      * @return string
+     * @throws \Exception
      */
     public function actionCloseSchemeForm()
     {
@@ -1050,7 +1072,10 @@ class AnimalController extends BackendController
 
         $response->format = Response::FORMAT_HTML;
 
-        return $this->renderPartial('tabs/close-scheme', compact('animal', 'appropriationScheme'));
+        return $this->renderPartial(
+            'tabs/close-scheme',
+            compact('animal', 'appropriationScheme')
+        );
     }
 
     /**

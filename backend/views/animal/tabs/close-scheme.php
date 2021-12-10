@@ -1,12 +1,12 @@
 <?php
 
-use \yii\widgets\ActiveForm;
-use \yii\helpers\Url;
-use \yii\helpers\Html;
-use\common\models\Animal;
-use \yii\jui\DatePicker;
-use \backend\models\forms\CloseSchemeForm;
-use \backend\modules\scheme\models\AppropriationScheme;
+use yii\widgets\ActiveForm;
+use yii\helpers\Url;
+use yii\helpers\Html;
+use yii\jui\DatePicker;
+use common\models\Animal;
+use backend\models\forms\CloseSchemeForm;
+use backend\modules\scheme\models\AppropriationScheme;
 
 $closeForm = new CloseSchemeForm();
 
