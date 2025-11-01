@@ -6,7 +6,7 @@ use \common\models\search\UserSearch;
 use \yii\helpers\Html;
 use \yii\helpers\Url;
 use \common\models\Position;
-use \hail812\adminlte\widgets\FlashAlert;
+use \hail812\adminlte3\widgets\FlashAlert;
 
 $this->title = Yii::t('app/user', 'USER_LIST');
 $this->params['breadcrumbs'][] = $this->title;

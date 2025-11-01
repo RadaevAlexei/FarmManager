@@ -1,7 +1,7 @@
 <?php
 
 use yii\helpers\ArrayHelper;
-use \hail812\adminlte\widgets\Menu;
+use \hail812\adminlte3\widgets\Menu;
 use \yii\helpers\Url;
 
 ?>
