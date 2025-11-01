@@ -261,7 +261,8 @@ class Animal extends ActiveRecord
      */
     public static function getRectalStatusLabel($status)
     {
-        return self::getListRectalStatuses()[$status];
+        $statuses = self::getListRectalStatuses();
+        return isset($statuses[$status]) ? $statuses[$status] : '';
     }
 
     public function isMan()
@@ -282,18 +283,39 @@ class Animal extends ActiveRecord
      */
     public function getAge()
     {
-        $birthday = new DateTime($this->birthday);
+        if (empty($this->birthday)) {
+            return '';
+        }
+
+        // Конвертируем дату рождения к полуночи
+        $birthday = (is_string($this->birthday) ? new DateTime($this->birthday) : clone $this->birthday);
         $birthday->setTime(0, 0, 0);
 
+        // Используем текущую дату
         $nowDate = new DateTime();
         $nowDate->setTime(0, 0, 0);
 
-        $diff = $birthday->diff($nowDate);
-        $diff->h = 0;
-        $diff->m = 0;
-        $diff->s = 0;
+        // Если животное еще не родилось - возвращаем "0 дн."
+        if ($nowDate < $birthday) {
+            return Yii::$app->formatter->asDuration(0);
+        }
 
-        return Yii::$app->formatter->asDuration($diff);
+        $interval = $birthday->diff($nowDate);
+
+        // Красивая русская строка: X лет Y мес. Z дн.
+        $years = $interval->y;
+        $months = $interval->m;
+        $days = $interval->d;
+
+        $result = [];
+        if ($years > 0)
+            $result[] = Yii::t('app/animal', '{count, plural, one{# год} few{# года} many{# лет} other{# лет}}', ['count' => $years]);
+        if ($months > 0)
+            $result[] = Yii::t('app/animal', '{count, plural, one{# мес.} few{# мес.} many{# мес.} other{# мес.}}', ['count' => $months]);
+        if ($days > 0 || empty($result))
+            $result[] = Yii::t('app/animal', '{count, plural, one{# дн.} few{# дн.} many{# дн.} other{# дн.}}', ['count' => $days]);
+
+        return implode(' ', $result);
     }
 
     /**
@@ -390,7 +412,8 @@ class Animal extends ActiveRecord
      */
     public static function getSexType($value)
     {
-        return self::getListSexTypes()[$value];
+        $types = self::getListSexTypes();
+        return isset($types[$value]) ? $types[$value] : '';
     }
 
     /**
@@ -420,7 +443,8 @@ class Animal extends ActiveRecord
      */
     public static function getPhysicalState($value)
     {
-        return self::getListPhysicalState()[$value];
+        $states = self::getListPhysicalState();
+        return isset($states[$value]) ? $states[$value] : '';
     }
 
     /**
@@ -444,7 +468,8 @@ class Animal extends ActiveRecord
      */
     public static function getStatus($value)
     {
-        return self::getListStatuses()[$value];
+        $statuses = self::getListStatuses();
+        return isset($statuses[$value]) ? $statuses[$value] : '';
     }
 
     /**
@@ -469,7 +494,8 @@ class Animal extends ActiveRecord
      */
     public static function getRectalExamination($value)
     {
-        return self::getListRectalExaminations()[$value];
+        $examinations = self::getListRectalExaminations();
+        return isset($examinations[$value]) ? $examinations[$value] : '';
     }
 
     /**

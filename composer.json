@@ -47,7 +47,10 @@
         "bower-asset-library": "vendor/bower"
       }
     },
-    "process-timeout": 1800
+    "process-timeout": 1800,
+    "allow-plugins": {
+      "yiisoft/yii2-composer": true
+    }
   },
   "scripts": {
     "post-install-cmd": "php init --env=Development --overwrite=n"

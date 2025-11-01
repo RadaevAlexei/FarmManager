@@ -20,7 +20,8 @@ class CalfController extends Controller
             'totalCount' => $query->count(),
         ]);
 
-        $calfs = $query->orderBy('id')
+        $calfs = $query->with(['color', 'animalGroup'])
+            ->orderBy('id')
             ->offset($pagination->offset)
             ->limit($pagination->limit)
             ->all();
