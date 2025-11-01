@@ -2,7 +2,7 @@
 
 use yii\helpers\Html;
 use \yii\bootstrap4\ActiveForm;
-use hail812\adminlte3\widgets\FlashAlert;
+use hail812\adminlte\widgets\FlashAlert;
 
 ?>
 <div class="card">
