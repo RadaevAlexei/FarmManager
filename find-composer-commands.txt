@@ -1,0 +1,27 @@
+# Команды для поиска composer на продакшене
+
+# 1. Проверьте, установлен ли composer глобально
+which composer
+
+# 2. Поиск composer в системе
+find /usr -name "composer" 2>/dev/null
+find /usr/local -name "composer" 2>/dev/null
+
+# 3. Попробуйте стандартные пути
+ls -la /usr/local/bin/composer
+ls -la /usr/bin/composer
+ls -la /opt/composer
+
+# 4. Проверьте, может composer установлен через php
+php -r "echo PHP_VERSION;"
+php -r "readfile('https://getcomposer.org/installer');" | php
+
+# 5. Альтернатива - использовать composer.phar если он есть в проекте
+ls -la composer.phar
+
+# 6. Проверьте через hosting панель (если есть cPanel, ISPManager и т.д.)
+# Или спросите у хостинг-провайдера
+
+# 7. Если есть ssh доступ, может composer доступен через полный путь к PHP
+/usr/bin/php composer.phar install
+
