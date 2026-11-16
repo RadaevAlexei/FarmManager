@@ -29,14 +29,11 @@ class ExcelHelper
      * @return \PhpOffice\PhpSpreadsheet\Spreadsheet
      * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
      */
-    private static function loadWorksheet($filename, $startRow = null, $endRow = null)
+    private static function loadWorksheet($filename)
     {
         $reader = IOFactory::createReader(IOFactory::identify($filename));
         $reader->setLoadSheetsOnly('worksheet');
-        $reader->setReadFilter(new WorksheetReadFilter(
-            $startRow === null ? 3 : $startRow,
-            $endRow
-        ));
+        $reader->setReadFilter(new WorksheetReadFilter());
         $reader->setReadDataOnly(true);
 
         return $reader->load($filename);
@@ -113,55 +110,17 @@ class ExcelHelper
      */
     public static function updateFields($filename)
     {
-        $totalRows = self::getWorksheetTotalRows($filename);
-
-        for ($startRow = 3; $startRow <= $totalRows; $startRow += self::UPDATE_BATCH_SIZE) {
-            $endRow = min($totalRows, $startRow + self::UPDATE_BATCH_SIZE - 1);
-            self::updateFieldBatch($filename, $startRow, $endRow);
-        }
-    }
-
-    /**
-     * @param string $filename
-     * @return int
-     */
-    private static function getWorksheetTotalRows($filename)
-    {
-        $reader = IOFactory::createReader(IOFactory::identify($filename));
-        $sheets = $reader->listWorksheetInfo($filename);
-
-        foreach ($sheets as $sheet) {
-            if ($sheet['worksheetName'] === 'worksheet') {
-                return (int)$sheet['totalRows'];
-            }
-        }
-
-        return 0;
-    }
-
-    /**
-     * @param string $filename
-     * @param int $startRow
-     * @param int $endRow
-     */
-    private static function updateFieldBatch($filename, $startRow, $endRow)
-    {
-        $spreadsheet = self::loadWorksheet($filename, $startRow, $endRow);
-        $animals = $spreadsheet->getActiveSheet()->rangeToArray(
-            'D' . $startRow . ':F' . $endRow,
-            null,
-            true,
-            true,
-            true
-        );
-
-        foreach ($animals as $animal_data) {
-            self::updateAnimalGroup($animal_data);
-            self::updateField($animal_data);
-        }
-
+        $spreadsheet = self::loadWorksheet($filename);
+        $animals = $spreadsheet->getActiveSheet()->toArray(null, true, true, true);
         $spreadsheet->disconnectWorksheets();
         unset($spreadsheet);
+
+        foreach (array_chunk($animals, self::UPDATE_BATCH_SIZE) as $batch) {
+            foreach ($batch as $animal_data) {
+                self::updateAnimalGroup($animal_data);
+                self::updateField($animal_data);
+            }
+        }
     }
 
     /**
