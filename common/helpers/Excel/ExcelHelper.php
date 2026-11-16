@@ -21,6 +21,24 @@ use yii\helpers\ArrayHelper;
 class ExcelHelper
 {
     /**
+     * Читает лист worksheet. Стили и условное форматирование не загружаются:
+     * в выгрузках бывают пустые диапазоны, из-за них PhpSpreadsheet на PHP 8 падает.
+     *
+     * @param string $filename
+     * @return \PhpOffice\PhpSpreadsheet\Spreadsheet
+     * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
+     */
+    private static function loadWorksheet($filename)
+    {
+        $reader = IOFactory::createReader(IOFactory::identify($filename));
+        $reader->setLoadSheetsOnly('worksheet');
+        $reader->setReadFilter(new WorksheetReadFilter());
+        $reader->setReadDataOnly(true);
+
+        return $reader->load($filename);
+    }
+
+    /**
      * @param string $filename
      * @return bool
      */
@@ -28,16 +46,7 @@ class ExcelHelper
     {
         $result_import = true;
 
-        $filter_subset = new WorksheetReadFilter();
-
-        $input_file_type = IOFactory::identify($filename);
-
-        $sheet_name = "worksheet";
-        $reader = IOFactory::createReader($input_file_type);
-        $reader->setLoadSheetsOnly($sheet_name);
-        $reader->setReadFilter($filter_subset);
-        $spreadsheet = $reader->load($filename);
-
+        $spreadsheet = self::loadWorksheet($filename);
         $animals = $spreadsheet->getActiveSheet()->toArray(null, true, true, true);
 
         foreach ($animals as $animal_data) {
@@ -100,15 +109,7 @@ class ExcelHelper
      */
     public static function updateFields($filename)
     {
-        $filter_subset = new WorksheetReadFilter();
-
-        $input_file_type = IOFactory::identify($filename);
-
-        $sheet_name = "worksheet";
-        $reader = IOFactory::createReader($input_file_type);
-        $reader->setLoadSheetsOnly($sheet_name);
-        $reader->setReadFilter($filter_subset);
-        $spreadsheet = $reader->load($filename);
+        $spreadsheet = self::loadWorksheet($filename);
         $animals = $spreadsheet->getActiveSheet()->toArray(null, true, true, true);
 
         foreach ($animals as $animal_data) {

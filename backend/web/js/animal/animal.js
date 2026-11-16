@@ -1,5 +1,45 @@
 $(function () {
 
+    var uploadPreloaderId = "animal-upload-preloader";
+
+    function setUploadPreloaderVisible(isVisible) {
+        var $preloader = $("#" + uploadPreloaderId);
+
+        if (!isVisible) {
+            $preloader.remove();
+            return;
+        }
+
+        if ($preloader.length) {
+            return;
+        }
+
+        $("body").append(
+            '<div id="' + uploadPreloaderId + '" class="animal-upload-preloader" role="alertdialog" aria-busy="true" aria-live="polite">' +
+                '<div class="animal-upload-preloader__content">' +
+                    '<div class="animal-upload-preloader__spinner"></div>' +
+                    '<div class="animal-upload-preloader__text">Файл загружается, подождите…</div>' +
+                '</div>' +
+            '</div>'
+        );
+    }
+
+    $(document).on("submit", "#animal-file-update-form", function (event) {
+        var fileInput = this.querySelector('input[type="file"]');
+        var hasFile = fileInput && fileInput.files && fileInput.files.length > 0;
+
+        if (!hasFile) {
+            return;
+        }
+
+        setUploadPreloaderVisible(true);
+        window.setTimeout(function () {
+            if (event.isDefaultPrevented()) {
+                setUploadPreloaderVisible(false);
+            }
+        }, 0);
+    });
+
     let $childAnimals = $("#child_animals");
 
     $(document).on("change", "#health_status_list", function (event) {

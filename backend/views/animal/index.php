@@ -12,6 +12,7 @@ use backend\models\forms\UploadForm;
 use backend\assets\AnimalAsset;
 use backend\modules\scheme\models\AppropriationScheme;
 use kartik\file\FileInput;
+use hail812\adminlte\widgets\FlashAlert;
 
 $this->title = Yii::t('app/animal', 'ANIMAL_LIST');
 $this->params['breadcrumbs'][] = $this->title;
@@ -27,6 +28,7 @@ AnimalAsset::register($this);
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-12">
+            <?= FlashAlert::widget() ?>
             <div class="card card-primary">
 
                 <div class="card-header">
@@ -38,6 +40,7 @@ AnimalAsset::register($this);
                     <?php if (Yii::$app->user->can('animalEdit')) : ?>
 
                         <?php $form = ActiveForm::begin([
+                            'id' => 'animal-file-update-form',
                             'action' => Url::toRoute(['update-from-file']),
                             'options' => ['enctype' => 'multipart/form-data']
                         ]) ?>
@@ -57,6 +60,7 @@ AnimalAsset::register($this);
                                     <?= $form->field($uploadModel, 'file')->widget(FileInput::class, [
                                         'options' => ['multiple' => false],
                                         'pluginOptions' => [
+                                            'language' => 'ru',
                                             'previewFileType' => 'xlsx',
                                             'browseClass' => 'btn btn-success',
                                             'uploadClass' => 'btn btn-primary',

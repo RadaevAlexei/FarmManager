@@ -987,12 +987,21 @@ class AnimalController extends BackendController
             if (Yii::$app->request->isPost) {
                 $model->file = UploadedFile::getInstance($model, 'file');
 
-                if ($model->file && $model->validate()) {
-                    ExcelHelper::updateFields($model->file->tempName);
+                if (!$model->file || !$model->validate()) {
+                    $transaction->rollBack();
+                    Yii::$app->session->setFlash(
+                        'error',
+                        $model->getFirstError('file') ?: 'Файл не получен.'
+                    );
+
+                    return $this->redirect(['index']);
                 }
 
-                Yii::$app->session->setFlash('success', 'Успешное обновление данных');
+                ExcelHelper::updateFields($model->file->tempName);
+
                 $transaction->commit();
+                Yii::$app->session->setFlash('success', 'Успешное обновление данных');
+
                 return $this->redirect(['index']);
             }
         } catch (\Exception $exception) {
