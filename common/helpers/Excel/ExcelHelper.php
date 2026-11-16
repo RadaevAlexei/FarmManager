@@ -114,22 +114,7 @@ class ExcelHelper
         $groupIds = self::ensureGroups(self::uniqueGroupNames($rows));
 
         foreach (array_chunk($rows, self::UPDATE_BATCH_SIZE) as $batch) {
-            $batchByLabel = [];
-            foreach ($batch as $row) {
-                $batchByLabel[(string)$row['label']] = $row;
-            }
-
-            $animals = Animal::find()
-                ->where(['label' => array_column($batch, 'label')])
-                ->all();
-
-            foreach ($animals as $animal) {
-                $label = (string)$animal->label;
-                if (!isset($batchByLabel[$label])) {
-                    continue;
-                }
-                self::applyAnimalRow($animal, $batchByLabel[$label], $groupIds);
-            }
+            self::updateBatch($batch, $groupIds);
         }
     }
 
@@ -147,15 +132,15 @@ class ExcelHelper
         $rows = [];
 
         for ($rowNumber = 3; $rowNumber <= $highestRow; $rowNumber++) {
-            $label = $sheet->getCell('F' . $rowNumber)->getCalculatedValue();
-            if ($label === null || $label === '') {
+            $label = $sheet->getCell('F' . $rowNumber)->getValue();
+            if (!self::isDigits($label)) {
                 continue;
             }
 
             $rows[] = [
                 'label' => (string)$label,
-                'collar' => $sheet->getCell('E' . $rowNumber)->getCalculatedValue(),
-                'group' => $sheet->getCell('D' . $rowNumber)->getCalculatedValue(),
+                'collar' => $sheet->getCell('E' . $rowNumber)->getValue(),
+                'group' => $sheet->getCell('D' . $rowNumber)->getValue(),
             ];
         }
 
@@ -176,10 +161,67 @@ class ExcelHelper
             if ($row['group'] === null || $row['group'] === '') {
                 continue;
             }
-            $names[(string)$row['group']] = (string)$row['group'];
+            $name = (string)$row['group'];
+            $names[$name] = $name;
         }
 
         return array_values($names);
+    }
+
+    /**
+     * Бирка в файле должна состоять только из цифр. "13360." в обновление не берётся.
+     *
+     * @param mixed $value
+     * @return bool
+     */
+    private static function isDigits($value)
+    {
+        if ($value === null || $value === '') {
+            return false;
+        }
+
+        return preg_match('/^\d+$/', (string)$value) === 1;
+    }
+
+    /**
+     * В бирке остаются только цифры: "13360." и "13360" — одна бирка.
+     *
+     * @param mixed $value
+     * @return string
+     */
+    private static function digitsOnly($value)
+    {
+        return preg_replace('/\D+/', '', (string)$value);
+    }
+
+    /**
+     * Ошейник — целое число. Пустое значение становится null.
+     * false: в ячейке есть нецифровые символы, животное обновлять нельзя.
+     *
+     * @param mixed $value
+     * @return int|null|false
+     */
+    private static function collarValue($value)
+    {
+        if ($value === null || $value === '') {
+            return null;
+        }
+        if (is_int($value)) {
+            return $value;
+        }
+        if (is_float($value)) {
+            return floor($value) == $value ? (int)$value : false;
+        }
+
+        $value = trim((string)$value);
+        if ($value === '') {
+            return null;
+        }
+        if (!preg_match('/^\d+$/', $value)) {
+            return false;
+        }
+
+        return (int)$value;
     }
 
     /**
@@ -228,28 +270,103 @@ class ExcelHelper
     }
 
     /**
-     * Пустая ячейка не затирает текущее значение.
+     * Одна запись на пачку.
+     * Пустой ошейник записывается как null, нечисловой ошейник исключает животное из обновления.
+     * Пустое место размещения группу не затирает.
+     * Несколько животных с одной биркой обновляются каждое по своему id.
      *
-     * @param Animal $animal
-     * @param array $row
+     * @param array $batch
      * @param array $groupIds
      */
-    private static function applyAnimalRow(Animal $animal, array $row, array $groupIds)
+    private static function updateBatch(array $batch, array $groupIds)
     {
-        $update = [];
-
-        if (!empty($row['collar'])) {
-            $update['collar'] = $row['collar'];
+        $labels = [];
+        $batchByLabel = [];
+        foreach ($batch as $row) {
+            $label = self::digitsOnly($row['label']);
+            if ($label === '') {
+                continue;
+            }
+            $labels[] = $label;
+            $batchByLabel[$label] = $row;
         }
 
-        $groupName = ($row['group'] === null || $row['group'] === '') ? '' : (string)$row['group'];
-        if ($groupName !== '' && isset($groupIds[$groupName])) {
-            $update['animal_group_id'] = $groupIds[$groupName];
+        if (!$labels) {
+            return;
         }
 
-        if ($update) {
-            $animal->updateAttributes($update);
+        $animals = Animal::find()
+            ->select(['id', 'label', 'collar', 'animal_group_id'])
+            ->where(['or',
+                ['label' => $labels],
+                ['REGEXP', 'label', '[^0-9]'],
+            ])
+            ->asArray()
+            ->all();
+
+        $collars = [];
+        $groups = [];
+        $ids = [];
+        foreach ($animals as $animal) {
+            $label = self::digitsOnly($animal['label']);
+            if ($label === '' || !isset($batchByLabel[$label])) {
+                continue;
+            }
+            $row = $batchByLabel[$label];
+            $collar = self::collarValue($row['collar']);
+            if ($collar === false) {
+                continue;
+            }
+
+            $id = (int)$animal['id'];
+            $changed = false;
+            $currentCollar = ($animal['collar'] === null || $animal['collar'] === '') ? null : (int)$animal['collar'];
+            if ($currentCollar !== $collar) {
+                $collars[$id] = $collar;
+                $changed = true;
+            }
+
+            $groupName = ($row['group'] === null || $row['group'] === '') ? '' : (string)$row['group'];
+            if ($groupName !== '' && isset($groupIds[$groupName]) && (int)$animal['animal_group_id'] !== (int)$groupIds[$groupName]) {
+                $groups[$id] = (int)$groupIds[$groupName];
+                $changed = true;
+            }
+
+            if ($changed) {
+                $ids[] = $id;
+            }
         }
+
+        if (!$ids) {
+            return;
+        }
+
+        $sets = [];
+        $params = [];
+        if ($collars) {
+            $case = 'collar = CASE id';
+            foreach ($collars as $id => $value) {
+                if ($value === null) {
+                    $case .= ' WHEN ' . $id . ' THEN NULL';
+                    continue;
+                }
+                $case .= ' WHEN ' . $id . ' THEN :c' . $id;
+                $params[':c' . $id] = $value;
+            }
+            $sets[] = $case . ' ELSE collar END';
+        }
+        if ($groups) {
+            $case = 'animal_group_id = CASE id';
+            foreach ($groups as $id => $value) {
+                $case .= ' WHEN ' . $id . ' THEN ' . $value;
+            }
+            $sets[] = $case . ' ELSE animal_group_id END';
+        }
+
+        $table = Yii::$app->db->quoteTableName(Animal::tableName());
+        $sql = 'UPDATE ' . $table . ' SET ' . implode(', ', $sets)
+            . ' WHERE id IN (' . implode(',', $ids) . ')';
+        Yii::$app->db->createCommand($sql, $params)->execute();
     }
 
     /**
