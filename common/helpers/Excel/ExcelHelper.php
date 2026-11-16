@@ -110,16 +110,145 @@ class ExcelHelper
      */
     public static function updateFields($filename)
     {
+        $rows = self::readUpdateRows($filename);
+        $groupIds = self::ensureGroups(self::uniqueGroupNames($rows));
+
+        foreach (array_chunk($rows, self::UPDATE_BATCH_SIZE) as $batch) {
+            $batchByLabel = [];
+            foreach ($batch as $row) {
+                $batchByLabel[(string)$row['label']] = $row;
+            }
+
+            $animals = Animal::find()
+                ->where(['label' => array_column($batch, 'label')])
+                ->all();
+
+            foreach ($animals as $animal) {
+                $label = (string)$animal->label;
+                if (!isset($batchByLabel[$label])) {
+                    continue;
+                }
+                self::applyAnimalRow($animal, $batchByLabel[$label], $groupIds);
+            }
+        }
+    }
+
+    /**
+     * Строки файла: бирка (F), ошейник (E), группа (D). Кличка не используется.
+     *
+     * @param string $filename
+     * @return array
+     */
+    private static function readUpdateRows($filename)
+    {
         $spreadsheet = self::loadWorksheet($filename);
-        $animals = $spreadsheet->getActiveSheet()->toArray(null, true, true, true);
+        $sheet = $spreadsheet->getActiveSheet();
+        $highestRow = (int)$sheet->getHighestRow();
+        $rows = [];
+
+        for ($rowNumber = 3; $rowNumber <= $highestRow; $rowNumber++) {
+            $label = $sheet->getCell('F' . $rowNumber)->getCalculatedValue();
+            if ($label === null || $label === '') {
+                continue;
+            }
+
+            $rows[] = [
+                'label' => (string)$label,
+                'collar' => $sheet->getCell('E' . $rowNumber)->getCalculatedValue(),
+                'group' => $sheet->getCell('D' . $rowNumber)->getCalculatedValue(),
+            ];
+        }
+
         $spreadsheet->disconnectWorksheets();
         unset($spreadsheet);
 
-        foreach (array_chunk($animals, self::UPDATE_BATCH_SIZE) as $batch) {
-            foreach ($batch as $animal_data) {
-                self::updateAnimalGroup($animal_data);
-                self::updateField($animal_data);
+        return $rows;
+    }
+
+    /**
+     * @param array $rows
+     * @return array
+     */
+    private static function uniqueGroupNames(array $rows)
+    {
+        $names = [];
+        foreach ($rows as $row) {
+            if ($row['group'] === null || $row['group'] === '') {
+                continue;
             }
+            $names[(string)$row['group']] = (string)$row['group'];
+        }
+
+        return array_values($names);
+    }
+
+    /**
+     * Группа в файле задана названием места, не id.
+     *
+     * @param array $names
+     * @return array name => id
+     */
+    private static function ensureGroups(array $names)
+    {
+        if (!$names) {
+            return [];
+        }
+
+        $ids = self::mapGroupIds($names);
+        $missing = [];
+        foreach ($names as $name) {
+            if (!isset($ids[$name])) {
+                $missing[] = [$name];
+            }
+        }
+
+        if ($missing) {
+            Yii::$app->db->createCommand()
+                ->batchInsert(AnimalGroup::tableName(), ['name'], $missing)
+                ->execute();
+            $ids = self::mapGroupIds($names);
+        }
+
+        return $ids;
+    }
+
+    /**
+     * @param array $names
+     * @return array
+     */
+    private static function mapGroupIds(array $names)
+    {
+        $groups = AnimalGroup::find()
+            ->select(['id', 'name'])
+            ->where(['name' => $names])
+            ->asArray()
+            ->all();
+
+        return ArrayHelper::map($groups, 'name', 'id');
+    }
+
+    /**
+     * Пустая ячейка не затирает текущее значение.
+     *
+     * @param Animal $animal
+     * @param array $row
+     * @param array $groupIds
+     */
+    private static function applyAnimalRow(Animal $animal, array $row, array $groupIds)
+    {
+        $update = [];
+
+        if (!empty($row['collar'])) {
+            $update['collar'] = $row['collar'];
+        }
+
+        $groupName = ($row['group'] === null || $row['group'] === '') ? '' : (string)$row['group'];
+        if ($groupName !== '' && isset($groupIds[$groupName])) {
+            $update['animal_group_id'] = $groupIds[$groupName];
+        }
+
+        if ($update) {
+            $animal->updateAttributes($update);
         }
     }
 
