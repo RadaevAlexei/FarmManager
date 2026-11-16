@@ -981,14 +981,11 @@ class AnimalController extends BackendController
     {
         $model = new UploadForm();
 
-        $transaction = Yii::$app->db->beginTransaction();
-
         try {
             if (Yii::$app->request->isPost) {
                 $model->file = UploadedFile::getInstance($model, 'file');
 
                 if (!$model->file || !$model->validate()) {
-                    $transaction->rollBack();
                     Yii::$app->session->setFlash(
                         'error',
                         $model->getFirstError('file') ?: 'Файл не получен.'
@@ -998,15 +995,14 @@ class AnimalController extends BackendController
                 }
 
                 ExcelHelper::updateFields($model->file->tempName);
-
-                $transaction->commit();
                 Yii::$app->session->setFlash('success', 'Успешное обновление данных');
 
                 return $this->redirect(['index']);
             }
         } catch (\Exception $exception) {
+            Yii::error($exception, __METHOD__);
             Yii::$app->session->setFlash('error', 'Ошибка при обновлении данных');
-            $transaction->rollBack();
+
             return $this->redirect(['index']);
         }
 

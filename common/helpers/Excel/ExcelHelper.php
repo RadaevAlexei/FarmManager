@@ -111,10 +111,17 @@ class ExcelHelper
     public static function updateFields($filename)
     {
         $rows = self::readUpdateRows($filename);
-        $groupIds = self::ensureGroups(self::uniqueGroupNames($rows));
 
-        foreach (array_chunk($rows, self::UPDATE_BATCH_SIZE) as $batch) {
-            self::updateBatch($batch, $groupIds);
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $groupIds = self::ensureGroups(self::uniqueGroupNames($rows));
+            foreach (array_chunk($rows, self::UPDATE_BATCH_SIZE) as $batch) {
+                self::updateBatch($batch, $groupIds);
+            }
+            $transaction->commit();
+        } catch (\Exception $exception) {
+            $transaction->rollBack();
+            throw $exception;
         }
     }
 
@@ -181,17 +188,6 @@ class ExcelHelper
         }
 
         return preg_match('/^\d+$/', (string)$value) === 1;
-    }
-
-    /**
-     * В бирке остаются только цифры: "13360." и "13360" — одна бирка.
-     *
-     * @param mixed $value
-     * @return string
-     */
-    private static function digitsOnly($value)
-    {
-        return preg_replace('/\D+/', '', (string)$value);
     }
 
     /**
@@ -283,7 +279,7 @@ class ExcelHelper
         $labels = [];
         $batchByLabel = [];
         foreach ($batch as $row) {
-            $label = self::digitsOnly($row['label']);
+            $label = (string)$row['label'];
             if ($label === '') {
                 continue;
             }
@@ -297,10 +293,7 @@ class ExcelHelper
 
         $animals = Animal::find()
             ->select(['id', 'label', 'collar', 'animal_group_id'])
-            ->where(['or',
-                ['label' => $labels],
-                ['REGEXP', 'label', '[^0-9]'],
-            ])
+            ->where(['label' => $labels])
             ->asArray()
             ->all();
 
@@ -308,8 +301,8 @@ class ExcelHelper
         $groups = [];
         $ids = [];
         foreach ($animals as $animal) {
-            $label = self::digitsOnly($animal['label']);
-            if ($label === '' || !isset($batchByLabel[$label])) {
+            $label = (string)$animal['label'];
+            if (!isset($batchByLabel[$label])) {
                 continue;
             }
             $row = $batchByLabel[$label];
