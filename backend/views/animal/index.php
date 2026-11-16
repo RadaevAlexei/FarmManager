@@ -12,6 +12,7 @@ use backend\models\forms\UploadForm;
 use backend\assets\AnimalAsset;
 use backend\modules\scheme\models\AppropriationScheme;
 use kartik\file\FileInput;
+use hail812\adminlte\widgets\FlashAlert;
 
 $this->title = Yii::t('app/animal', 'ANIMAL_LIST');
 $this->params['breadcrumbs'][] = $this->title;
@@ -27,6 +28,7 @@ AnimalAsset::register($this);
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-12">
+            <?= FlashAlert::widget() ?>
             <div class="card card-primary">
 
                 <div class="card-header">
