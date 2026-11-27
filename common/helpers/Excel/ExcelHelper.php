@@ -127,32 +127,28 @@ class ExcelHelper
 
     /**
      * Строки файла: бирка (F), ошейник (E), группа (D). Кличка не используется.
+     * Лист читается построчно: полная загрузка PhpSpreadsheet на этой выгрузке не помещается в память.
      *
      * @param string $filename
      * @return array
      */
     private static function readUpdateRows($filename)
     {
-        $spreadsheet = self::loadWorksheet($filename);
-        $sheet = $spreadsheet->getActiveSheet();
-        $highestRow = (int)$sheet->getHighestRow();
+        $table = (new XlsxColumnReader())->read($filename, 'worksheet', 3, ['D', 'E', 'F']);
         $rows = [];
 
-        for ($rowNumber = 3; $rowNumber <= $highestRow; $rowNumber++) {
-            $label = $sheet->getCell('F' . $rowNumber)->getValue();
+        foreach ($table as $cells) {
+            $label = $cells['F'];
             if (!self::isDigits($label)) {
                 continue;
             }
 
             $rows[] = [
                 'label' => (string)$label,
-                'collar' => $sheet->getCell('E' . $rowNumber)->getValue(),
-                'group' => $sheet->getCell('D' . $rowNumber)->getValue(),
+                'collar' => $cells['E'],
+                'group' => $cells['D'],
             ];
         }
-
-        $spreadsheet->disconnectWorksheets();
-        unset($spreadsheet);
 
         return $rows;
     }
